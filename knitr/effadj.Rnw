@@ -1,0 +1,305 @@
+\documentclass[oupdraft]{bio}
+\usepackage[colorlinks=true,urlcolor=citecolor,linkcolor=citecolor,citecolor=citecolor]{hyperref}
+
+\newcommand{\tgt}{\textrm{tgt}}
+\newcommand{\rref}{\textrm{ref}}
+\newcommand{\case}{\textrm{case}}
+\newcommand{\ctrl}{\textrm{ctrl}}
+\newcommand{\Var}{\mathbb{V}\text{ar}}
+\newcommand{\bbOne}{\mathds{1}}
+\newcommand{\slfrac}[2]{\left.#1\middle/#2\right.}
+
+\usepackage{dsfont}
+% \usepackage{pdfpages}
+% \usepackage{url}
+
+
+% Add history information for the article if required
+\history{Received August 1, 2010;
+revised October 1, 2010;
+accepted for publication November 1, 2010}
+
+\begin{document}
+
+% Title of paper
+\title{Variance approximation of efficiency adjusted
+$\Delta\Delta \mbox{C}_q$-values in qPCR experiments}
+
+
+% List of authors, with corresponding author marked by asterisk
+\author{A.E. BILGRAU, S. FALGREEN, A. PETERSEN, M.K. KJELDSEN,\\
+J.S. B\O{}DKER,  H.E. JOHNSEN, K. DYBK\AE{}R, M. B\O{}GSTED$^\ast$\\[4pt]
+% Author addresses
+\textit{Department of Haematology, Aalborg University Hospital,
+Aalborg, Denmark  %Sdr. Skovvej 15, 9000 Aalborg, Denmark
+Department of Mathematical Sciences, Aalborg University,
+Aalborg \O{}, Denmark %Fredrik Bajers Vej 7G, 9220 Aalborg \O{}, Denmark
+}
+\\[2pt]
+% E-mail address for correspondence
+{mboegsted@rn.dk}}
+
+
+% Running headers of paper:
+\markboth%
+% First field is the short list of authors
+{A. E. Bilgrau and others}
+% Second field is the short title of the paper
+{Variance approximations in qPCR experiments}
+
+\maketitle
+
+% Add a footnote for the corresponding author if one has been
+% identified in the author list
+\footnotetext{To whom correspondence should be addressed.}
+
+\begin{abstract}
+{Accurate estimation of the amplification efficiency (AE) is an important prerequisite for quantification of gene expression by quantitative polymerase chain reaction (qPCR). The most commonly used correction strategy is to estimate the AE by dilution experiments. However, in recent years, it has become clear that determining the AE with high precision can require tedious laboratory work and a vast amount of biological material, which is often a scarce resource in e.g.\ molecular studies of cancer biology. It is therefore of great importance to assess the accuracy of the efficiency estimate to achieve the desired statistical power and significance level of statistical tests. We outline a novel method to obtain variance approximations of the efficiency adjusted $\Delta\Delta\mbox{C}_q$-value, which can be utilized to obtain reliable power calculations, confidence intervals, and test statistics for the detection of differentially expressed genes by qPCR experiments. The method is founded in a statistical model that enables the estimation of the AE and an approximation of the variance of efficiency adjusted $\Delta\Delta \mbox{C}_q$-values. We used the method to validate, in our own lab, two recent findings, that MGST1 is differentially expressed between multiple myeloma cell lines with high and low numbers of culture initiating cells and that miRNA-127 is differentially expressed between testicular and nodal diffuse large B-cell lymphoma (DLBCL). The presented method can be applied to evaluate the uncertainty from efficiency estimation by dilution curves and allow more reliable statistical inference based on qPCR data.}
+% Keywords
+{qPCR; amplification efficiency; efficiency adjusted $\Delta\Delta\mbox{C}_q$; sample size calculations.}
+\end{abstract}
+
+
+\section{Introduction}
+% Introduction of the problem. Move from the broader issues to your specific problem.
+% Craft this section carefully, setting up your argument in logical order.
+% Answer the question "what is the problem and why is it important?"
+
+Despite being an aging technique, quantitative polymerase chain reaction (qPCR), "one of the most significant biotech discoveries in our time" \citep{Rainbow1996}, is used in molecular biology to amplify and quantify nucleic acids such as DNA or mRNA molecules.
+In life sciences, qPCR is typically applied to rapidly detect gene transcripts that are biomarkers of diagnostic, prognostic, and even predictive value of, for example, infectious diseases, cancer, and genetic abnormalities.
+
+Despite the tremendous success of qPCR,   "statistical inference considerations are still not accorded high enough priority" \citep{Bustin2009,Bustin2010}. This is in particular true for the amplification efficiency.
+
+% Relevant  Refer to relevant ideas/theories and related research by other authors
+
+Although, efficiency calibration has been extensively treated by \cite{Pfaffl2001} or the more generalized model presented by \cite{Yuan2008},
+there still seems to lack a systematic study of the unavoidable influence of uncertainty in the efficiency amplification estimate on the conclusions of qPCR experiments based on formal statistical inference. Statistical inference is based on the formulation of a statistical model for the phenomenon under study. The model includes a set of parameters to be estimated including the effects of interest. The inferential tools allows for achieving parameter estimates, assessing their uncertainty,  and formulating as well as testing scientific hypotheses. In this paper we build the statistical inference on mixed effects models, which allows for an appropriate handling of the technical and sample errors.
+
+The idea of using mixed effects models for qPCR experiments is not new and has been used by e.g. \cite{fu2006} to formulate generalized estimation equations to handle within group variation. \cite{andersen2004} and \cite{abruzzo2005} have used mixed effects modeling to identify candidate normalizing genes. However, the idea of using the statistical $\Delta$-method to handle uncertainty in efficiency estimates seems to be novel and provides an extension of \cite{Yuan2008}.
+
+% Precise aims of the paper
+The aim of the paper is to formulate a mathematical model which allows us to draw formal statistical inference about qPCR experiments with non-efficient amplifications. This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation.The approach is used demonstrates that multiple myeloma cancer cell lines differentially express the MGST1 gene depending on the frequency of culture initiating cells. We also used the approach  to design a study which results turned out to support the hypothesis of \cite{Robertus2009} that miRNA-127 is differentially expressed between testicular and nodal DLBCL
+\section{Methods}
+
+\subsection{The observational model}
+
+In order to approximate the standard deviation of the efficiency adjusted
+$\Delta\Delta\textrm{C}_q$-value we formulate the amplification process
+in the following way
+\[
+  F_{C_q} = \kappa \sigma N_0 (2^{\alpha})^{C_q},
+\]
+where $F_{C_q}$ is the fluorescence measurement at the $C_q$'th cycle,
+$\kappa$ is a proportionality constant, $N_0$ is the copy number of
+interest in the
+initial template, $\sigma$ is the sample specific handling error and
+$\alpha$ is the percentage of the $\log_2$-AE. We rearrange terms
+and notice that $C_q$ can be expressed as
+\[
+  C_q = \frac{1}{\alpha}
+        \left(\log_2 F_{C_q} - \log_2 \kappa \sigma N_0 \right).
+\]
+In order to estimate the relative amount of transcripts between case
+and control samples for the target gene template, we assume
+the amount of the reference gene template is the same in both the case
+and the control, i.e.
+$N_{0,\rref,\case}=N_{0,\rref,\ctrl}$
+and the AE only vary between the target and reference gene. We then
+arrive at the following expression for the log-fold change of
+the target gene template between case and controls:
+\begin{align*}
+  \log_{ 2} \!\left(\slfrac{N_{ 0,\tgt,\case}}{N_{ 0,\tgt,\ctrl}}\right)
+  = {} & - \log_{ 2} \kappa \sigma_{ \case} N_{ 0,\tgt,\case}
+         + \log_{ 2} \kappa \sigma_{ \case} N_{ 0,\rref,\ctrl} \\
+       & + \log_{ 2} \kappa \sigma_{\ctrl} N_{ 0,\tgt,\ctrl}
+         - \log_{ 2} \kappa \sigma_{\ctrl} N_{0,\rref,\case}  \\
+  = {} & - \big[\alpha_{\tgt}  C_{ q,\tgt,\case}
+         -      \alpha_{\rref} C_{ q,\rref,\case}  \\
+       & -     (\alpha_{\tgt}  C_{ q,\tgt,\ctrl}
+         -      \alpha_{\rref} C_{ q,\rref,\ctrl})\big].
+\end{align*}
+This method of estimating the log relative abundance between case and controls is often referred to as
+the $\Delta\Delta\textrm{C}_q$-method \cite{Livak2001}, after the
+double difference appearing in the expression:
+\begin{align}
+  \Delta\Delta\textrm{C}_q :=
+    (\alpha_{ \tgt}C_{ q,\tgt,\case} - \alpha_{ \rref}C_{ q,\rref,\case})
+      - (\alpha_{ \tgt}C_{ q,\tgt,\ctrl} - \alpha_{ \rref}C_{ q,\rref,\ctrl}).
+\label{eq:deltadelta}
+\end{align}
+
+
+\subsection{Statistical model}
+For ease of notation we use the abbreviation $i\in\{\tgt,\rref\}$ for gene type,
+$j\in\{\case,\ctrl\}$ for sample type, $k\in\{1,\dots,K\}$ for dilution, and
+$l\in\{1,\dots,L\}$ for technical replicate. In order to estimate the
+$\Delta\Delta\textrm{C}_q$-value we need estimates of $\alpha_{i}$
+and $C_{q,i,j}$.
+A popular way of estimating $\alpha_{i}$ is by dilution curves,
+i.e.\ by regressing $C_{q,i,j}$ against a series of decreasing
+$N_{0,i,j}$-values, denoted by $N_{0,i,j,k}=N_{0,i,j,1}2^{-x_k}$, where
+$0=x_1<\cdots<x_n<\infty$. This can be formulated as a linear mixed effects model \citep{Pinheiro2000a}
+\[
+  C_{q,i,j,s,k} = \mu_{i,j} + A_{j/s} + \gamma_{i} x_k + \epsilon_{i,j,s,k},
+\]
+where $A_{j/s}$ is a random effect from sample $s$ nested under the $j$'th sample type,
+$\gamma_{i} = \alpha_{i}^{-1}$ and
+$\mu_{i,j} = \alpha_{i}^{-1}(\log_2 F_{C_q} - \log_2 \kappa \sigma_{j}
+N_{0,i,j})$. The random effects $A_{j/s}$'s is $N(0,\sigma_S^2)$-distributed and the
+$\epsilon_{i,j,s,k}$'s are independent and $N(0,\sigma^2)$-distributed.
+
+
+\subsection{Hypothesis test and confidence intervals for $\Delta\Delta\textrm{C}_q$-values}
+
+Let the maximum likelihood estimates of the fixed effects
+\[
+  \theta = (\mu_{\tgt,\case},  \mu_{\tgt,\ctrl},
+      \gamma_{\tgt},    \mu_{\rref,\case},
+            \mu_{\rref,\ctrl}, \gamma_{\rref}).
+\]
+be denoted by
+\[
+  \hat{\theta} = (\hat{\mu}_{\tgt,\case},  \hat{\mu}_{\tgt,\ctrl},
+                  \hat{\gamma}_{\tgt},    \hat{\mu}_{\rref,\case},
+                  \hat{\mu}_{\rref,\ctrl}, \hat{\gamma}_{\rref}).
+\]
+Suppose that we wish to test the hypothesis
+\[
+  H_0 : c(\theta) = 0,
+\]
+where $c$ is the continuously differentiable functional mapping of the
+fixed effects to the $\Delta\Delta\textrm{C}_q$-value given by
+\begin{align}
+  c(\theta)
+    =      \big[  \mu_{\tgt,\case}  \gamma_{ \tgt}^{-1}
+               -  \mu_{\rref,\case} \gamma_{ \rref}^{-1}
+               - (\mu_{\tgt,\ctrl}  \gamma_{ \tgt}^{-1}
+               -  \mu_{\rref,\ctrl} \gamma_{ \rref}^{-1})\big].
+  \label{eq:deltadelta}
+\end{align}
+Then a statistic for testing $H_0$, is given by
+\[
+  t = \frac{c(\hat{\theta})}
+           {\sqrt{\Var\!\big[c(\hat{\theta})\big]}}
+\]
+which according to a first order Taylor series expansion of $c$ can be
+approximated by
+\begin{equation}
+  t =
+  \frac{
+    c(\hat{\theta})
+  }{
+   \sqrt{\nabla c(\hat{\theta})^\top
+        \Var[\hat{\theta}]
+        \nabla c(\hat{\theta})}
+  }.
+  \label{eq:tstat}
+\end{equation}
+According to \citet[Section 2.4.2]{Pinheiro2000a}, $t$ is approximately
+$t$-distributed with $\eta = S_{\case}+S_{\ctrl} -5$ degrees
+of freedom. On the basis of (\ref{eq:tstat}), an approximate $(1- \alpha) 100\%$ confidence interval of $c(\theta)$ is then given by
+\[
+     c(\hat{\theta}) \pm  t_{\alpha/2,\eta}\sqrt{\nabla c(\hat{\theta})^{\top}\Var[\hat{\theta}]\nabla c(\hat{\theta})}.
+\]
+Both maximum likelihood (ML) and restricted maximum likelihood estimation (REML) of mixed linear model has been implemented by the R-package \texttt{lme4} based on the \texttt{nlme} package of  \cite{Pinheiro2000a}. Based on this package scripts have been constructed to compute the  estimates $\hat{\theta}$ and $\textrm{Var}(\hat{\theta})$ which are used in the construction of test and confidence intervals for the $\Delta\Delta\textrm{C}_q$-values as described above.
+
+\subsection{Power calculations}
+
+In order to properly design an experimental study one needs to have some idea of whether the proposed experimental conditions are sufficient to provide reasonable expection that the hypothesized effects will be detectable over experimental error. The power of a statistical test is the probability that the test will correctly correctly declare a result statistically significant given an effect size or difference of $\delta = c(\theta)$ between case and controls. Hence for qPCR-experiments the power is given by
+\[
+  \pi =
+    P\big(t > t_{\alpha/2,\eta} \big| c(\theta) = \delta\big).
+\]
+A straightforward way to obtain the power is to simulate a number of $t$-values $t_1,\dots,t_n$ under the alternative hypothesis of $c(\theta) = \delta$ and then estimate the power by
+\[
+  \hat{\pi} =
+    \frac{1}{n}\sum_{i=1}^n \bbOne \!\big[ t_i >  t_{\alpha/2,\eta} \big],
+\]
+i.e.\ the fraction of correctly significantly declared tests.
+
+Based on the above statistical model, we scripted \textsf{R} to compute the power given sample size, person and experimental variations, and effect size. For the purpose of illustration, we present a hypothetical example of a two-sided 5\%-level test for non-vanishing $\Delta\Delta C_q$-value in which a varying number subjects are divided into two groups (a case group and a control group).  The effect size was set to $\delta = 10/9$, the person and experimental variation  was set to $\sigma_{S}^2 = 1$ and $\sigma^2 = 1$, respectively. Finally, the AE was set to 0.9. Figure \ref{fig:powercurve} shows the estimated power as a function of sample size. The full-drawn lines shows the power for various number of dilutions steps. The black dashed line shows the power if a t-test is applied directly after AE-correction. The grey dahsed line shows the power for the "optima situation" of perfect AE.
+
+\subsection{Sample and data preparation}
+
+\subsubsection{CIC data}
+
+For this study 8 multiple myeloma (MM) cell lines with $>$10\% culture initiating cells (AMO-1, KMM-1, KMS-11, KMS12-PE, KMS12-BM, MOLP8, L-363, RPMI-8226), and 8 MM cell lines with $<$1\% culture initiating cells (ANBL-1, KAS-6-1, LP-1, MOLP-2, NCI-H929, OPM-2, SK-MM-2, U-266) were used. The fraction of culture initiating cells was determined by the limiting dilution method, see \cite{Lefkovits1999}
+ Total RNA was isolated from frozen cell culture pellets, using a combined method of Trizol (invitrogen) and Mirvana spin columns (Ambion). Isolated RNA was used in complementary DNA (cDNA) synthesis using SuperScript III First-Strand Synthesis Supermix (Invitrogen). 250ng of total RNA was used as input into the cDNA synthesis. Equal amounts of random hexamers and oligo(dT) were used as primers. Quantitative real-time reverse transcriptase-polymerase chain reaction (qPCR) was performed on a Mx3000p QPCR system (Agilent Technologies/Stratgene) using the TaqMan UniversalPCR Master Mi, No AmpErase UNG, and TaqMan gene expression Assays (Applied Biosystems). The following TaqMan Gene Expression Assays were used (Assay ID numbers in parentheses): MGST1 (Hs00220393\_m1), FGFR3 (Hs00179829\_m1), WHSC1 (Hs00983716\_m1). The Two reference genes beta actin (ACTB) and GAPDH were used as endogenous controls, assay IDs  4333762-0912030 and 4333764-1111036, respectively.
+
+\subsubsection{DLBCL data}
+
+DLBCL samples were collected from 8 testicular and 8 nodal parafin embedded lymphomas at Aalborg Hospital. Total RNA was isolated  using a combined method of  Trizol (Invitrogen) and Mirvana spin columns (Ambion). 10ng total
+RNA was synthesized into first strand cDNA in a 15$\mu$L reaction using
+TaqMan MicroRNA Reverse Transcription Kit (Applied Biosystems)
+according to the manufactures instruction. An amount of 1.33$\mu$L cDNA was used as
+template in the real time PCR amplification performed in  MX-3000P
+(Stratagene) with sequence specific TaqMan primers (Applied Biosystems). The two microRNAs, hsa-miR-127 and  hsa-miR-143, were chosen for validation of differential expression between testicular and nodal manifestation of diffuse large B-cell lymphoma. As reference  transcripts we chose RNU-6B and RNU-24, which were less variable and equally expressed across nodal and extranodal samples.For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference samples consisting of a pooled material from all 16 lymphomas.
+
+For both experiments $\rm{C}_q$ values were extracted for both the reference and target transcripts with automatic baseline and threshold selection \citep{Mx300P2013}.
+
+\section{Results}
+
+\subsection{Power calculation}
+
+\subsection{CIC experiment}
+The raw $C_q$-values and dilution curves are depicted in Figure \ref{fig:cqCIC} and Figure \ref{fig:powercurveCIC}, respectively. The differences in gene expressions in case genes, MGST1 and MMSNET, compared to control genes were estimated using four different methods: Naive $t$-test, regular $\Delta \Delta C_q$ estimate, and efficiency corrected estimates with and without a variance correction. These results are seen in Table \ref{tab:results}.
+
+\subsection{DLBCL experiment}
+
+\section{Discussion}
+% Main message
+Our approach based on the statistical  $\Delta$-method to approximate the variance of efficiency adjusted $\Delta\Delta\textrm{C}_q$-values, shows that it is possible to draw statistical inference about qPCR experiments. This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation. The approach was used to validate that MGST1 is differentially expressed between multiple myeloma cell lines and to design a study which results support the hypothesis that miRNA-127 is differentially expressed between testicular and nodal DLBCL.
+
+% Comparison with other studies
+We noticed a dramatic increase in the standard error of the estimate when the
+variance approximation was introduced, leading to a change of significance for the presented data set. This illustrates that it is important to consider all aspects of uncertainty when conducting efficiency correction of qPCR experiments. Problems with uncertainty in efficiency estimates should be handled by establishing well-estimated dilution curves as argued elsewhere \cite{Bustin2010}, however even in this case the presented method allows for design guidelines for power calculations and assessing the influcence of the estimated dilution curves.
+
+% Conclusions
+Despite the recent success of qPCR  much more statistical methodologcial researh is needed, in our opinion,  in order to firmly establish qPCR as a reliable quantitative method to assess the amount of nucleic acids.
+
+\section*{Software}
+All statistical analysis were done with R \citep{R2004} version 3.0.1 and the contributed lme4 package \citep{Pinheiro2000a} was applied for random effects modelling.
+
+\section*{Supplementary Material}
+An R-package with all data and scripts leading to the results of the present paper is available at \url{http://www.r-project.org}
+
+\section*{Acknowledgments}
+The research is supported by MSCNET, a translational program studying cancer stem cells in multiple myeloma supported by the EU FP6, and CHEPRE, a program studying chemosensitivity in malignant lymphoma by genomic signatures supported by The Danish Agency for Science, Technology and Innovation, as well as Karen Elise Jensen Fonden. The funders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.\\
+{\it Conflict of Interest}: None declared.
+
+
+\bibliographystyle{biorefs}
+\bibliography{references}
+
+\newpage
+
+\input{TableOfResults.tex}
+
+\newpage
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{powercurve.pdf}
+\end{center}
+\caption{Power as function of sample size for an increasing number of dilutions in the dilution curve of a two-sided test 5\%-level test for non-vanishing $\Delta\Delta C_q$-value.}
+\label{fig:powercurve}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{allgenes.pdf}
+\end{center}
+\caption{$C_q$-values: Raw $C_q$-values for each gene and sample type.}
+\label{fig:cqCIC}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{standard.pdf}
+\end{center}
+\caption{Dilution curves: Dilution curves for ACTB, GAPDH, MGST1, and FGFR3 }
+\label{fig:powercurveCIC}
+\end{figure}
+
+\end{document}
+

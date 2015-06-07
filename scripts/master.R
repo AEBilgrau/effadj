@@ -19,10 +19,22 @@ set.seed(300)
 
 recompute <- FALSE  # Recompute heavy computations if TRUE
 
+library("Bmisc")    # Resave and more. http://github.com/AEBilgrau/Bmisc
 library("lattice")  # For plots
 library("lme4")     # For mixed effects models
 library("Hmisc")    # For LaTeX tables
 library("ROCR")     # For ROC curves
+
+# Saved R binary output
+save.file <- "output/saved.RData"
+if (file.exists(save.file) | recompute) {
+  load(save.file)
+}
+
+# Colors
+jet.colors <-
+  colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan",
+                     "#7FFF7F", "yellow", "#FF7F00", "red"))
 
 
 # 1. Load auxillary functions
@@ -32,16 +44,11 @@ source("Scripts/functions.R")
 source("Scripts/simulation.R")
 
 # 3. Create data sets
-source("Scripts/CreateDataCIC.R", local = new.env())
-source("Scripts/CreateDataTestis.R", local = new.env())
+source("Scripts/createDataCIC.R", local = new.env())
+source("Scripts/createDataTestis.R", local = new.env())
 
 # 4. Analyse data sets and create output
-source("Scripts/CreateOutputCIC.R", local = new.env())
-source("Scripts/CreateOutputTestis.R", local = new.env())
-
-# Store session information
-sink(file = "Output/sessionInfo.txt")
-  sessionInfo()
-sink()
+source("Scripts/createOutputCIC.R", local = new.env())
+source("Scripts/createOutputTestis.R", local = new.env())
 
 

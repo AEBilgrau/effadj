@@ -5,12 +5,12 @@
 # Last revision: 16th of Feb, 2015
 ################################################################################
 
-# This script defines S3 class "data.qPCR". The data.qPCR-class is a
+# This script defines the S3 class "data.qPCR". The data.qPCR-class is a
 # subclass of data.frames. Therefore, data.qPCR have class
 # c("data.qPCR", "data.frame") and the additional logical attribute
 # "std.curve" indicating whether standard curve data is present
 # in the dataset. In addition, the the object must contain the columns:
-
+#
 #   "sampleName"  (factor; wit sample names)
 #   "sampleType"  (factor with 2 or 3 levels: "case", "control", "Standard"
 #   "geneType"    (factor with 2 levels: "tgt", "ref"
@@ -18,7 +18,7 @@
 #   "Cq",         (numeric; the Cq (aka Ct) values of the qPCR experiment)
 #   "copyNumber", (numeric; the dilution, e.g. 1.0, 0.5, 0.25, etc.)
 #   "l2con"       (numeric; minus log2 of the concentration)
-
+#
 # Note, a prototype of a data.qPCR instance can be created by running
 # SimqPCRData() with (std.curve = TRUE) or without (std.curve = FALSE)
 # standard curves.
@@ -52,8 +52,7 @@ SimqPCRData <-
     std.curve <- FALSE
 
   sim.data  <-
-    data.frame(sampleName = paste("S", sprintf("%03d", rep(rep(1:n, 4),each=m)),
-                                  sep = ""),
+    data.frame(sampleName = paste0("S",sprintf("%03d", rep(rep(1:n,4),each=m))),
                geneType   = rep(genes, each = 2*n*m),
                sampleType = rep(types, each = n*m, times = 2),
                replicate  = as.character(rep(1:m, 4*n)))
@@ -100,20 +99,28 @@ SimqPCRData <-
 # Fitting a qPCRData object
 #
 
-qPCRfit <- function(data, ...) {  # data is a "data.qPCR" object
+qPCRfit <- function(data, ...) {
+  # data is a "data.qPCR" object
+  # ... arguments passed to lmer
+
   if (!is.data.qPCR(data)) {
     arg <- deparse(substitute(data))
     stop(paste(arg, "is not of data.qPCR class."))
   }
+
   if (std.curve(data)) {
+
     fit <- lmer(Cq ~ -1 + sampleType:geneType
                         + l2con:geneType
                         + (1 | sampleType/sampleName),
                 data = data, REML = FALSE, ...)
+
   } else {
+
     fit <- lmer(Cq ~ -1 + sampleType:geneType
                         + (1 | sampleType/sampleName),
                 data = data, REML = FALSE, ...)
+
   }
   return(fit)
 }
@@ -122,12 +129,15 @@ qPCRfit <- function(data, ...) {  # data is a "data.qPCR" object
 # Delta delta Cq analysis method
 #
 
-# Function to calculate efficiency corrected with or without
-# adjusted variance DDCq values in qPCR experiments
-
 DDCq <- function (data, var.adj) {
+  # Function to calculate efficiency corrected with or without
+  # adjusted variance DDCq values in qPCR experiments
+  # data is a qPCR.data object
+  # var.adj is a boolean value
+
   # Internal functions:
-  cHyp <- function (fit) {  # Function for evaluating the mapping into DDCq
+  cHyp <- function (fit) {
+    # Function for evaluating the mapping into DDCq
     e <- fixef(fit)
     names(e) <- gsub("sample|gene|Type", "", names(e))
     eff <- e[c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref")]
@@ -140,7 +150,8 @@ DDCq <- function (data, var.adj) {
     return(sum(eff*gam^-1*c(1, -1, -1, 1)))
   }
 
-  DcHyp <- function (fit, var.adj) {  # Compute the gradient of cHyp
+  DcHyp <- function (fit, var.adj) {
+    # Compute the gradient of cHyp
     e <- fixef(fit)
     names(e) <- gsub("sample|gene|Type", "", names(e))
     eff <- e[c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref")]
@@ -154,7 +165,8 @@ DDCq <- function (data, var.adj) {
     }
   }
 
-  Var.cHyp <- function (fit, var.adj = var.adj) {  # Compute variance estimate
+  Var.cHyp <- function (fit, var.adj = var.adj) {
+    # Compute variance estimate
     e <- fixef(fit)
     names(e) <- gsub("sample|gene|Type", "", names(e))
     v <- vcov(fit)
@@ -170,7 +182,7 @@ DDCq <- function (data, var.adj) {
   con     <- cHyp(fit)
   var.con <- Var.cHyp(fit, var.adj)
   t       <- con/sqrt(var.con)
-  df      <- fit@dims["q"] - 2 - 2 - ifelse(std.curve(data), 2, 0)
+  df      <- getME(fit, "q") - 2 - 2 - 2*std.curve(data)
   p.val   <- 2*(1 - pt(abs(t), df))
   result  <- c("Estimate" = con, "Std. Error" = sqrt(var.con),
                "t value" = t, "df" = round(df), "Pr(>|t|)" = p.val)
@@ -204,9 +216,8 @@ DDCq.test <- function (data,
   if (!missing(subset.rows))
     data <- data[subset.rows, ]
 
-  # Naive method
-  switch(method,
-  "Naive" = {
+  if (method == "Naive") {    # Naive method
+
     data  <- data[data$sampleType != "Standard", ]  # Ignoring dilution data
     hmean <- aggregate(Cq ~ sampleName + geneType + sampleType,
                        data = data, FUN = mean)
@@ -218,8 +229,9 @@ DDCq.test <- function (data,
     result <- c(-diff(t$estimate), NA, t$statistic, t$parameter, t$p.value)
     names(result) <- c("Estimate", "Std. Error", "t value", "df", "Pr(>|t|)")
     return(result)
-  },
-  "LMM" = {
+
+  } else if (method == "LMM") {    # Linear mixed model method
+
     if (eff.cor == FALSE) {
       # Simple DDCq method
       data <- data[data$sampleType != "Standard", ]  # Ignoring dilution data
@@ -232,12 +244,14 @@ DDCq.test <- function (data,
       # LMM DDCq method. efficiency corrected and
       # variance adjusted if var.adj == TRUE
       data <- aggregate(Cq ~ sampleName + geneType + sampleType +
-                        l2con + copyNumber,
+                          l2con + copyNumber,
                         data = data, FUN = mean)  # Mean over replicates
       return(DDCq(as.data.qPCR(data), var.adj = var.adj))
     }
-  })
-  stop("No usable method found")
+
+  } else {
+    stop("No usable method found")
+  }
 }
 
 
@@ -245,7 +259,7 @@ DDCq.test <- function (data,
 # Power simulation of standard curves
 #
 
-PowerSim <- (#cmpfun(
+PowerSim <-
   function (n.sims         = 400,
             start.sample   = 5,
             n.samples      = 2,
@@ -268,14 +282,14 @@ PowerSim <- (#cmpfun(
   colnames(pow.res) <- paste("samples =",   1:n.samples   + start.sample  -1)
   rownames(pow.res) <- paste("dilutions =", 1:n.dilutions + start.dilution-1)
 
-  for (k in 1:n.dilutions) {
+  for (k in seq_len(n.dilutions)) {
     tests <- matrix(0, nrow = n.sims, ncol = n.samples)
 
-    for (i in 1:n.samples) {
+    for (i in seq_len(n.samples)) {
       cat("Computing power with", start.dilution + k - 1,
           "dilutions and", start.sample + i - 1, "samples.\n")
       flush.console()
-      for (j in 1:n.sims) {
+      for (j in seq_len(n.sims)) {
         #i <- j <- k <- 1
         sim.data <- SimqPCRData(std.curve   = std.curve,
                                 n.samples   = start.sample   + i - 1,
@@ -293,7 +307,7 @@ PowerSim <- (#cmpfun(
   cat("Simulation finished in", (proc.time()[3] - st[3])%/%60,
       "minutes.\n"); flush.console()
   return(pow.res)
-})
+}
 
 
 #
@@ -324,12 +338,12 @@ Bootstrap.qPCR <- function(data,               # A data.qPCR object
     return(tmp.data)
   }
 
-  for (i in 1:n.dilutions + start.dilution - 1) {
-    for (j in  1:n.samples + start.sample - 1) {
-      for (k in 1:n.resamp) {
+  for (i in seq_len(n.dilutions) + start.dilution - 1) {
+    for (j in  seq_len(n.samples) + start.sample - 1) {
+      for (k in seq_len(n.resamp)) {
 
         names.cons <- sort(unique(data$l2con))
-        data       <- data[data$l2con %in% names.cons[1:i], ]
+        data       <- data[data$l2con %in% names.cons[seq_len(i)], ]
 
         # Constructing sampled data set
         ntref.data <- samp(data, sampleType = "case", geneType = "tgt", j)

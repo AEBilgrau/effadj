@@ -16,7 +16,7 @@ alpha.ref      <- 0.80   # Amp. efficiency of refence gene
 ddcq           <- 10/9   # True effect size Delta-Delta-C_q
 tech.sd        <- 1      # Technical standard deviation
 sample.sd      <- 1.3    # Sample standrad deviation
-n.sims         <- 10000  # Number of simulations
+n.sims         <- 100 #10000   # Number of simulations
 n.replicates   <- 1      # Number of technical replicates
 
 start.sample   <- 3      # Smallest number of samples
@@ -31,7 +31,7 @@ n.dilutions    <- 12     # Total number of dilutions
 #
 
 # Power calculation with standard curves
-if (!file.exists("Output/dilution.power.results.Rdata") | recompute) {
+if (!exists("dilution.power.results") | recompute) {
   dilution.power.results <-
     PowerSim(n.sims         = n.sims,
              start.sample   = start.sample,
@@ -42,15 +42,12 @@ if (!file.exists("Output/dilution.power.results.Rdata") | recompute) {
              alpha.tgt = alpha.tgt, alpha.ref = alpha.ref,
              mu.tgt = mu.tgt, mu.ref = mu.ref, tech.sd = tech.sd,
              n.replicates = n.replicates)
-  save(dilution.power.results,
-       file = "Output/dilution.power.results.Rdata")
-} else {
-  load("Output/dilution.power.results.Rdata")
+  resave(dilution.power.results, file = save.file)
 }
 
-
+Rprof()
 # Power calculations without standard curves
-if (!file.exists("Output/no.dilution.power.results.Rdata") | recompute) {
+if (!exists("no.dilution.power.results") | recompute) {
   no.dilution.power.results <-
     PowerSim(std.curve      = FALSE,
              n.sims         = n.sims,
@@ -62,11 +59,11 @@ if (!file.exists("Output/no.dilution.power.results.Rdata") | recompute) {
              alpha.tgt = alpha.tgt, alpha.ref = alpha.ref,
              mu.tgt = mu.tgt, mu.ref = mu.ref, tech.sd = tech.sd,
              n.replicates = n.replicates)
-  save(no.dilution.power.results,
-       file = "Output/no.dilution.power.results.Rdata")
-} else {
-  load("Output/no.dilution.power.results.Rdata")
+  save(no.dilution.power.results, file = save.file)
 }
+Rprof(NULL)
+summaryRprof()
+
 
 # Theoretical power curve, with perfect efficiency
 t.pow.res <- rep(NA, n.samples)
@@ -82,13 +79,11 @@ for(i in 1:length(t.pow.res)){
 }
 
 # Plotting power curves
-jet.colors <-
-  colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan",
-                     "#7FFF7F", "yellow", "#FF7F00", "red"))
+
 pow.res     <- dilution.power.results
 without.res <- no.dilution.power.results
 
-pdf("Output/Figure1.pdf")
+pdf("output/Figure1.pdf")
   plot(1, type = "n",
        xlab = "Number of samples per group",
        xlim = c(start.sample, end.sample),
@@ -148,20 +143,20 @@ to.samp   <- 11
 from.dil  <- 4
 to.dil    <- 12
 
-if (!file.exists("Output/sim.results.Rdata") | recompute) {
+if (!exists("sim.results") | recompute) {
 
   st <- proc.time()
   sim.results        <- vector("list", to.dil - from.dil + 1)
   names(sim.results) <- paste("dilution", from.dil:to.dil, sep = "")
 
-  for (i in 1:length(sim.results)) {
+  for (i in seq_along(sim.results)) {
     samp        <- vector("list", to.samp - from.samp + 1)
     names(samp) <- paste("sample", from.samp:to.samp, sep = "")
 
-    for (j in 1:length(samp)) {
-      res <- array(NA, c(6, 5, n.sim))
+    for (j in seq_along(samp)) {
+      res <- array(NA, c(6, 5, n.sims))
       cat("Iteration:")
-      for (k in 1:n.sim) {
+      for (k in seq_len(n.sims)) {
         res[, , k] <-
           as.matrix(SimTemp((from.dil:to.dil)[i],
                             (from.samp:to.samp)[j]))
@@ -175,10 +170,8 @@ if (!file.exists("Output/sim.results.Rdata") | recompute) {
     }
     sim.results[[i]]  <- samp
   }
-  save(sim.results,  file = "Output/sim.results.Rdata")
+  resave(sim.results,  file = save.file)
   run.time <- proc.time() - st
-} else {
-  load("Output/sim.results.Rdata")
 }
 
 #
@@ -186,12 +179,11 @@ if (!file.exists("Output/sim.results.Rdata") | recompute) {
 #
 
 get.EC   <- function(data) {
-  cbind(rep(0:1, each = dim(data)[3]),
-        c(data[2,5, ], data[5,5, ]))
+  cbind(rep(0:1, each = dim(data)[3]), c(data[2,5, ], data[5,5, ]))
 }
+
 get.ECVA <- function(data) {
-  cbind(rep(0:1, each = dim(data)[3]),
-        c(data[3,5, ], data[6,5, ]))
+  cbind(rep(0:1, each = dim(data)[3]), c(data[3,5, ], data[6,5, ]))
 }
 
 
@@ -222,7 +214,7 @@ roc.ecva <- lapply(roc.ecva, function(x) {lapply(x, get.roc)})
 # All ROC curves
 #
 
-png("Output/simulation.roc.curves.png", height = 1.5*7, width = 1.5*7,
+png("output/simulation.roc.curves.png", height = 1.5*7, width = 1.5*7,
     units = "in", res = 300)
 par(mfrow=c(3,3))
 for (i in 1:length(roc.ec)) {
@@ -246,7 +238,7 @@ dev.off()
 # AUC ratios between EC+VA and EC
 #
 
-pdf("Output/simulation.auc.ratio.pdf")
+pdf("output/simulation.auc.ratio.pdf")
   heatmap.2(aucs.ecva/aucs.ec, dendrogram  = "non", keysize = 1,
             density.info = "none", main = "AUC(EC+VA) / AUC(EC)",
             trace = "none", Rowv = FALSE, Colv = FALSE)
@@ -256,7 +248,7 @@ dev.off()
 # Threshold against FPR and TPR
 #
 
-png("Output/simulation.threshold.vs.FPR.TPR.png", width = 14, height = 7,
+png("output/simulation.threshold.vs.FPR.TPR.png", width = 14, height = 7,
     units = "in", res = 300)
   plot(1, type = "n", axes = FALSE, xlab = "", ylab = "")
   split.screen(c(1,2))
@@ -309,7 +301,7 @@ sim.tmp.va <- as.data.frame(lapply(sim.tmp.va, function(x) sapply(x,"[",6,2)))
 samples   <- as.numeric(gsub("sample([0-9]+)",   "\\1", rownames(sim.tmp)))
 dilutions <- as.numeric(gsub("dilution([0-9]+)", "\\1", colnames(sim.tmp)))
 
-pdf("Output/simulation.mean.sd.of.ddcq.pdf", height = 7, width = 7)
+pdf("output/simulation.mean.sd.of.ddcq.pdf", height = 7, width = 7)
 
   plot(1, type = "n", main = "", ylim = c(0.3, 1), axes = FALSE,
        xlim = range(dilutions), xlab = "Dilutions",

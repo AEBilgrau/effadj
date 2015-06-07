@@ -1,7 +1,7 @@
 .Rproj.user
 .Rhistory
 .RData
-OLD/*
+\!OLD/*
 *.pdf
 *.aux
 *.bbl
@@ -10,3 +10,4 @@ OLD/*
 *.synctex.gz
 *.out
 *.tex
+output/

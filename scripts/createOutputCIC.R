@@ -6,11 +6,8 @@
 # Last revision: 10th of June, 2013                                            #
 ################################################################################
 
-# Loading data
-load("Data/cic.Rdata")
-
 # Trellis plot of all data
-pdf("Output/Figure2.cic.pdf", width = 7*2, height = 4)
+pdf("../output/Figure2.cic.pdf", width = 7*2, height = 4)
   trellis.par.set(strip.background=list(col="lightgrey"))
 
   fig2a <- dotplot(sampleName ~ Cq | geneType:sampleType,
@@ -49,20 +46,18 @@ start.dilution <- 3
 n.dilutions    <- 5
 end.sample     <- start.sample + n.samples - 1
 
-if (!file.exists("Output/cic.boot.Rdata") | recompute) {
+if (!exists("cic.boot") || recompute) {
   cic.boot <- Bootstrap.qPCR(new.cic,
                              start.sample   = start.sample,
                              n.samples      = n.samples,
                              start.dilution = start.dilution,
                              n.dilutions    = n.dilutions,
                              n.resamp       = 1000)
-  save(cic.boot, file = "Output/cic.boot.Rdata")
-} else {
-  load("Output/cic.boot.Rdata")
+  resave(cic.boot, file = save.file)
 }
 
 # Plotting bootstrap results
-pdf("Output/cic.pcurve.pdf")
+pdf("../output/cic.pcurve.pdf")
   plot(1, type = "n",
        xlab = "Samples per group",
        xlim = c(start.sample, start.sample + n.samples - 1),
@@ -86,7 +81,7 @@ pdf("Output/cic.pcurve.pdf")
          col = 1:length(cic.boot))
 dev.off()
 
-pdf("Output/cic.estcurve.pdf")
+pdf("../output/cic.estcurve.pdf")
   plot(1, type = "n",
        xlab = "Number of samples per group",
        xlim = c(start.sample, start.sample + n.samples - 1),
@@ -100,7 +95,7 @@ pdf("Output/cic.estcurve.pdf")
     lines(start.sample:end.sample, cic.boot[[i]][2,],
           type = "b", col = i, lwd = 1.5, lty = 2)
     lines(start.sample:end.sample, cic.boot[[i]][3,],
-          type = "b", col = i, lwd = 1.5, lty = 2)   
+          type = "b", col = i, lwd = 1.5, lty = 2)
   }
   legend("topright",
          legend = paste(start.dilution + 0:(n.dilutions - 1), "step dilution"),
@@ -129,9 +124,9 @@ grps.list <- list(c("MGST1", "GAPDH"),
 toTeX <- NULL
 for (i in 1:length(grps.list)) {
   genes <- grps.list[[i]]
-  
+
   cic.tmp <- as.data.qPCR(cic[cic$geneName %in% genes, ])
-  results <- 
+  results <-
     rbind("t-test" = DDCq.test(cic.tmp, method = "N"),
           "LMEM"   = DDCq.test(cic.tmp, method = "LMM", eff.cor = FALSE),
           "EC"     = DDCq.test(cic.tmp, method = "LMM",
@@ -152,45 +147,28 @@ colnames(toTeX) <- gsub(">|t|", "$>|t|$", colnames(toTeX), fixed = TRUE)
 rownames(toTeX) <- gsub("EC", "Eff. Corr.", rownames(toTeX))
 rownames(toTeX) <- gsub("VA", " \\\\& Var. Adj.", rownames(toTeX))
 
-grps <- 
-  sapply(grps.list, function(x) ifelse(length(x)==3, 
+grps <-
+  sapply(grps.list, function(x) ifelse(length(x)==3,
                                        paste(x[1], "vs", x[2], "+", x[3]),
                                        paste(x[1], "vs", x[2])))
 
-caption.txt <- "{\\bf CIC data: Comparison of different methods for 
-        estimating the $\\Delta\\Delta\\textrm{C}_q$-value.} 
-        In the naive method only undiluted data was used and 
-        a simple $t$-test performed. LMEM signifies the regular 
-        $\\Delta\\Delta\\textrm{C}_q$ method using a linaer 
-        mixed effects model without efficientcy correction. 
-        Eff.\\ corr.\\ denotes use of the plugin-estimator. 
-        Var.\\ adj.\\ denotes that the efficientcy correction 
+caption.txt <- "{\\bf CIC data: Comparison of different methods for
+        estimating the $\\Delta\\Delta\\textrm{C}_q$-value.}
+        In the naive method only undiluted data was used and
+        a simple $t$-test performed. LMEM signifies the regular
+        $\\Delta\\Delta\\textrm{C}_q$ method using a linaer
+        mixed effects model without efficientcy correction.
+        Eff.\\ corr.\\ denotes use of the plugin-estimator.
+        Var.\\ adj.\\ denotes that the efficientcy correction
         was variance adjusted."
-suppressWarnings({
-  pdfit(toTeX, 
-        file    = "Output/Table1.tex",
-        title   = "",
-        label   = "table:cic",
-        caption = caption.txt,
-        caption.loc = "top", 
-        rgroup  = grps,
-        center  = "center",
-        numeric.dollar = TRUE,
-        keep.tex = TRUE,
-        size = "small")
-  file.copy("Table1.pdf", "Output/Table1.pdf", overwrite = TRUE)
-  file.remove("Table1.pdf")
-})
-
-w <-
-  latex(toTeX, 
-        file    = "Output/Table1.tex",
-        title   = "",
-        label   = "table:cic",
-        caption = caption.txt,
-        caption.loc = "top", 
-        rgroup  = grps,
-        center  = "center",
-        numeric.dollar = TRUE,
-        keep.tex = TRUE,
-        size = "small")
+w <- latex(toTeX,
+           file    = "../output/Table1.tex",
+           title   = "",
+           label   = "table:cic",
+           caption = caption.txt,
+           caption.loc = "top",
+           rgroup  = grps,
+           center  = "center",
+           numeric.dollar = TRUE,
+           keep.tex = TRUE,
+           size = "small")

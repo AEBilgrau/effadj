@@ -48,11 +48,11 @@ SimqPCRData <-
   m <- n.replicates
   n <- n.samples
 
-  if (n.dilutions == 0 | n.dilutions == 1)
+  if (n.dilutions == 0 | n.dilutions == 1) {
     std.curve <- FALSE
-
+  }
   sim.data  <-
-    data.frame(sampleName = paste0("S",sprintf("%03d", rep(rep(1:n,4),each=m))),
+    data.frame(sampleName = sprintf("S%03d", rep(rep(1:n, 4), each = m)),
                geneType   = rep(genes, each = 2*n*m),
                sampleType = rep(types, each = n*m, times = 2),
                replicate  = as.character(rep(1:m, 4*n)))
@@ -63,7 +63,7 @@ SimqPCRData <-
 
   sim.data$Cq <-
     rep(c(alpha.tgt, alpha.ref), each = 2*n*m)^-1*
-      (mus.gene + mus.type) + rnd.eff + error
+    (mus.gene + mus.type) + rnd.eff + error
 
   if (std.curve) {
     # Simulating standard curve data
@@ -81,7 +81,7 @@ SimqPCRData <-
     error       <- rnorm(2*m*l, mean = 0, sd = tech.sd)
     std.data$Cq <-
       rep(c(alpha.tgt, alpha.ref), each = l*m)^-1*
-        (rep(mu.gene, each = l*m) + std.data$l2con) + error
+      (rep(mu.gene, each = l*m) + std.data$l2con) + error
 
     sim.data <- rbind(sim.data, std.data)
     attr(sim.data, "std.curve") <- TRUE
@@ -111,14 +111,14 @@ qPCRfit <- function(data, ...) {
   if (std.curve(data)) {
 
     fit <- lmer(Cq ~ -1 + sampleType:geneType
-                        + l2con:geneType
-                        + (1 | sampleType/sampleName),
+                + l2con:geneType
+                + (1 | sampleType/sampleName),
                 data = data, REML = FALSE, ...)
 
   } else {
 
     fit <- lmer(Cq ~ -1 + sampleType:geneType
-                        + (1 | sampleType/sampleName),
+                + (1 | sampleType/sampleName),
                 data = data, REML = FALSE, ...)
 
   }
@@ -236,7 +236,7 @@ DDCq.test <- function (data,
       # Simple DDCq method
       data <- data[data$sampleType != "Standard", ]  # Ignoring dilution data
       data <- aggregate(Cq ~ sampleName + geneType + sampleType +
-                        l2con + copyNumber,
+                          l2con + copyNumber,
                         data = data, FUN = mean)
       # Note, the use of var.adj has no impact here!
       return(DDCq(as.data.qPCR(data)))
@@ -272,42 +272,42 @@ PowerSim <-
             eff.cor        = TRUE,
             var.adj        = TRUE,
             ... ) {   # ... passed to SimqPCRData function
-  st <- proc.time()
-  if (std.curve == FALSE) {
-    start.dilution <- 1
-    n.dilutions    <- 1
-  }
-
-  pow.res           <- matrix(0, ncol = n.samples, nrow = n.dilutions)
-  colnames(pow.res) <- paste("samples =",   1:n.samples   + start.sample  -1)
-  rownames(pow.res) <- paste("dilutions =", 1:n.dilutions + start.dilution-1)
-
-  for (k in seq_len(n.dilutions)) {
-    tests <- matrix(0, nrow = n.sims, ncol = n.samples)
-
-    for (i in seq_len(n.samples)) {
-      cat("Computing power with", start.dilution + k - 1,
-          "dilutions and", start.sample + i - 1, "samples.\n")
-      flush.console()
-      for (j in seq_len(n.sims)) {
-        #i <- j <- k <- 1
-        sim.data <- SimqPCRData(std.curve   = std.curve,
-                                n.samples   = start.sample   + i - 1,
-                                n.dilutions = start.dilution + k - 1,
-                                ddcq        = ddcq,
-                                ... )
-        sim.ddcq <- DDCq.test(sim.data, method = method,
-                              eff.cor = eff.cor, var.adj = var.adj)
-
-        tests[j,i] <- ifelse(sim.ddcq[5] < alpha.lvl, 1, 0)
-      }
+    st <- proc.time()
+    if (std.curve == FALSE) {
+      start.dilution <- 1
+      n.dilutions    <- 1
     }
-    pow.res[k, ] <- colMeans(tests)
+
+    pow.res           <- matrix(0, ncol = n.samples, nrow = n.dilutions)
+    colnames(pow.res) <- paste("samples =",   1:n.samples   + start.sample  -1)
+    rownames(pow.res) <- paste("dilutions =", 1:n.dilutions + start.dilution-1)
+
+    for (k in seq_len(n.dilutions)) {
+      tests <- matrix(0, nrow = n.sims, ncol = n.samples)
+
+      for (i in seq_len(n.samples)) {
+        cat("Computing power with", start.dilution + k - 1,
+            "dilutions and", start.sample + i - 1, "samples.\n")
+        flush.console()
+        for (j in seq_len(n.sims)) {
+          #i <- j <- k <- 1
+          sim.data <- SimqPCRData(std.curve   = std.curve,
+                                  n.samples   = start.sample   + i - 1,
+                                  n.dilutions = start.dilution + k - 1,
+                                  ddcq        = ddcq,
+                                  ... )
+          sim.ddcq <- DDCq.test(sim.data, method = method,
+                                eff.cor = eff.cor, var.adj = var.adj)
+
+          tests[j,i] <- ifelse(sim.ddcq[5] < alpha.lvl, 1, 0)
+        }
+      }
+      pow.res[k, ] <- colMeans(tests)
+    }
+    cat("Simulation finished in", (proc.time()[3] - st[3])%/%60,
+        "minutes.\n"); flush.console()
+    return(pow.res)
   }
-  cat("Simulation finished in", (proc.time()[3] - st[3])%/%60,
-      "minutes.\n"); flush.console()
-  return(pow.res)
-}
 
 
 #
@@ -315,12 +315,12 @@ PowerSim <-
 #
 
 Bootstrap.qPCR <- function(data,               # A data.qPCR object
-                          start.sample   = 3,
-                          n.samples      = 5,
-                          start.dilution = 3,
-                          n.dilutions    = 5,
-                          n.resamp       = 100,
-                          verbose        = TRUE) {
+                           start.sample   = 3,
+                           n.samples      = 5,
+                           start.dilution = 3,
+                           n.dilutions    = 5,
+                           n.resamp       = 100,
+                           verbose        = TRUE) {
   res      <- NULL
   samp.res <- matrix(NA, nrow = 2, ncol = n.resamp)
   dil.res  <- matrix(NA, nrow = 6, ncol = n.samples)
@@ -331,7 +331,7 @@ Bootstrap.qPCR <- function(data,               # A data.qPCR object
   # Internal sampling function
   samp <- function (data, sampleType, geneType, j) {
     tmp.data <- data[data$sampleType ==  sampleType &
-                     data$geneType   ==  geneType, ]
+                       data$geneType   ==  geneType, ]
     nsamp    <- sample(nrow(tmp.data), j, replace = TRUE)
     tmp.data <- tmp.data[nsamp, ]
     tmp.data$sampleName <- paste("H", 1:nrow(tmp.data), sep = "")
@@ -465,8 +465,8 @@ is.data.qPCR <- function(object) {
   if (attr(object, "std.curve")) {
     if (!all(cols %in% colnames(object))) {
       message("Needed columns of ", arg, " are not present.\n",
-          "The missing column(s) are:\n",
-          cols[!(cols %in% colnames(object))])
+              "The missing column(s) are:\n",
+              cols[!(cols %in% colnames(object))])
       return(FALSE)
     }
   } else {

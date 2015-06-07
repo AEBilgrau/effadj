@@ -13,9 +13,8 @@
 # Read data
 #
 
-cic <- read.table(file = "Extern/cic.qpcr.data.txt",
-                  header = TRUE, sep  = "\t", stringsAsFactors = FALSE,
-                  dec = ",")
+cic <- read.table(file = "../data/Testis/cic.qpcr.data.txt", header = TRUE,
+                  sep  = "\t", stringsAsFactors = FALSE, dec = ",")
 
 # Cleaning, preperations and corrections
 names(cic)   <- gsub("cellLine", "sampleName", names(cic))
@@ -43,10 +42,4 @@ cic$l2con <- round(cic$l2con)  # Should we round?
 #
 
 class(cic)             <- c("data.qPCR", "data.frame")
-attr(cic, "std.curve") <- TRUE 
-
-#
-# Saving data frame
-#
-
-save(cic, file = "Data/cic.Rdata")
+attr(cic, "std.curve") <- TRUE

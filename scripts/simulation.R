@@ -16,7 +16,7 @@ alpha.ref      <- 0.80   # Amp. efficiency of refence gene
 ddcq           <- 10/9   # True effect size Delta-Delta-C_q
 tech.sd        <- 1      # Technical standard deviation
 sample.sd      <- 1.3    # Sample standrad deviation
-n.sims         <- 100 #10000   # Number of simulations
+n.sims         <- 10000  # Number of simulations
 n.replicates   <- 1      # Number of technical replicates
 
 start.sample   <- 3      # Smallest number of samples
@@ -45,12 +45,11 @@ if (!exists("dilution.power.results") | recompute) {
   resave(dilution.power.results, file = save.file)
 }
 
-Rprof()
 # Power calculations without standard curves
 if (!exists("no.dilution.power.results") | recompute) {
   no.dilution.power.results <-
     PowerSim(std.curve      = FALSE,
-             n.sims         = n.sims,
+             n.sims         = 2, #n.sims,
              start.sample   = start.sample,
              n.samples      = n.samples,
              start.dilution = 1,        # These are equivalent
@@ -59,10 +58,9 @@ if (!exists("no.dilution.power.results") | recompute) {
              alpha.tgt = alpha.tgt, alpha.ref = alpha.ref,
              mu.tgt = mu.tgt, mu.ref = mu.ref, tech.sd = tech.sd,
              n.replicates = n.replicates)
-  save(no.dilution.power.results, file = save.file)
+  resave(no.dilution.power.results, file = save.file)
 }
-Rprof(NULL)
-summaryRprof()
+
 
 
 # Theoretical power curve, with perfect efficiency
@@ -83,7 +81,7 @@ for(i in 1:length(t.pow.res)){
 pow.res     <- dilution.power.results
 without.res <- no.dilution.power.results
 
-pdf("output/Figure1.pdf")
+pdf("../output/Figure1.pdf")
   plot(1, type = "n",
        xlab = "Number of samples per group",
        xlim = c(start.sample, end.sample),
@@ -121,12 +119,12 @@ SimTemp <- function (nd, ns, ddcq = 10/9) {
     data[[i]] <-
       SimqPCRData(std.curve = TRUE, mu.tgt = mu.tgt, mu.ref = mu.ref,
                   n.samples = ns, n.replicates = n.replicates, n.dilutions = nd,
-                  tech.sd = tech.sd, alpha.tgt = alpha.tgt, alpha.ref = alpha.ref,
-                  sample.sd = sample.sd, tech.sd = tech.sd,
+                  tech.sd = tech.sd, alpha.tgt = alpha.tgt,
+                  alpha.ref = alpha.ref, sample.sd = sample.sd,
                   ddcq = ifelse(i==1, 0, ddcq))
   }
   res <- as.data.frame(
-    rbind(DDCq.test(data[[1]], method = "LMM", eff.co =FALSE, var.adj=FALSE),
+    rbind(DDCq.test(data[[1]], method = "LMM", eff.cor=FALSE, var.adj=FALSE),
           DDCq.test(data[[1]], method = "LMM", eff.cor=TRUE,  var.adj=FALSE),
           DDCq.test(data[[1]], method = "LMM", eff.cor=TRUE,  var.adj=TRUE),
           DDCq.test(data[[2]], method = "LMM", eff.cor=FALSE, var.adj=FALSE),
@@ -137,7 +135,8 @@ SimTemp <- function (nd, ns, ddcq = 10/9) {
   return(res)
 }
 
-# Parameters controling the number of samples and dilutions to be simulated under
+
+# Parameters controling the number of samples and dilutions to be simulated
 from.samp <- 4
 to.samp   <- 11
 from.dil  <- 4
@@ -158,8 +157,8 @@ if (!exists("sim.results") | recompute) {
       cat("Iteration:")
       for (k in seq_len(n.sims)) {
         res[, , k] <-
-          as.matrix(SimTemp((from.dil:to.dil)[i],
-                            (from.samp:to.samp)[j]))
+          as.matrix(SimTemp(seq(from.dil, to.dil)[i],
+                            seq(from.samp, to.samp)[j]))
 
         if (k%%100==0) cat(k, " "); flush.console()
         if (k%%1000==0) cat("\n")
@@ -214,7 +213,7 @@ roc.ecva <- lapply(roc.ecva, function(x) {lapply(x, get.roc)})
 # All ROC curves
 #
 
-png("output/simulation.roc.curves.png", height = 1.5*7, width = 1.5*7,
+png("../output/simulation.roc.curves.png", height = 1.5*7, width = 1.5*7,
     units = "in", res = 300)
 par(mfrow=c(3,3))
 for (i in 1:length(roc.ec)) {
@@ -238,7 +237,7 @@ dev.off()
 # AUC ratios between EC+VA and EC
 #
 
-pdf("output/simulation.auc.ratio.pdf")
+pdf("../output/simulation.auc.ratio.pdf")
   heatmap.2(aucs.ecva/aucs.ec, dendrogram  = "non", keysize = 1,
             density.info = "none", main = "AUC(EC+VA) / AUC(EC)",
             trace = "none", Rowv = FALSE, Colv = FALSE)
@@ -248,7 +247,7 @@ dev.off()
 # Threshold against FPR and TPR
 #
 
-png("output/simulation.threshold.vs.FPR.TPR.png", width = 14, height = 7,
+png("../output/simulation.threshold.vs.FPR.TPR.png", width = 14, height = 7,
     units = "in", res = 300)
   plot(1, type = "n", axes = FALSE, xlab = "", ylab = "")
   split.screen(c(1,2))
@@ -301,7 +300,7 @@ sim.tmp.va <- as.data.frame(lapply(sim.tmp.va, function(x) sapply(x,"[",6,2)))
 samples   <- as.numeric(gsub("sample([0-9]+)",   "\\1", rownames(sim.tmp)))
 dilutions <- as.numeric(gsub("dilution([0-9]+)", "\\1", colnames(sim.tmp)))
 
-pdf("output/simulation.mean.sd.of.ddcq.pdf", height = 7, width = 7)
+pdf("../output/simulation.mean.sd.of.ddcq.pdf", height = 7, width = 7)
 
   plot(1, type = "n", main = "", ylim = c(0.3, 1), axes = FALSE,
        xlim = range(dilutions), xlab = "Dilutions",
@@ -309,11 +308,11 @@ pdf("output/simulation.mean.sd.of.ddcq.pdf", height = 7, width = 7)
   axis(2); axis(1, at = dilutions); grid(); box()
   for (i in 1:nrow(sim.tmp)) {
     lines(dilutions, sim.tmp[i, ],
-          col = jet.colours(nrow(sim.tmp))[i])
+          col = jet.colors(nrow(sim.tmp))[i])
     lines(dilutions, sim.tmp.va[i, ],
-          col = jet.colours(nrow(sim.tmp))[i], lty = 2)
+          col = jet.colors(nrow(sim.tmp))[i], lty = 2)
   }
-  legend("topright", col = jet.colours(nrow(sim.tmp)),
+  legend("topright", col = jet.colors(nrow(sim.tmp)),
          legend = gsub("sample([0-9]+)", "\\1 samples", rownames(sim.tmp)),
          lty = 1, bty = "n", inset = 0.025)
   legend("bottomleft", lty = c(1,2), legend = c("EC", "EC & VA"),

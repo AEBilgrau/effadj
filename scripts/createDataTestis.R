@@ -10,20 +10,20 @@
 ################################################################################
 
 # Read metadata for testis dataset
-testisMetadata <- read.csv(file = "Extern/Lymphoma/testesMetadata.csv",
+testisMetadata <- read.csv(file = "../data/Lymphoma/testesMetadata.csv",
                            header = TRUE, sep  = ",")
 
 # Read file names for testis dataset and exclude Yuan et al. data
 # and combine in one large datafile
-
-files <- dir("Extern/Lymphoma")
-files <- files[dir("Extern/Lymphoma") != "testesMetadata.csv"]
+files <- list.files(path = "../data/Lymphoma/", pattern = "rnu|mir",
+                    full.names = TRUE)
 
 plate.number <- 1
-for (f in files) {
-  this.plate               <- read.csv(file = file.path("Extern/Lymphoma", f))
-  this.plate$geneName      <- gsub("\\.", "", substr(f, 1, 7))
-  this.plate$cDNASynthesis <- substr(gsub("\\.", "", substr(f, 8, 100)), 1, 1)
+for (file in files) {
+  this.plate               <- read.csv(file = file)
+  this.plate$geneName      <- gsub("\\.", "", substr(basename(file), 1, 7))
+  this.plate$cDNASynthesis <-
+    substr(gsub("\\.", "", substr(basename(file), 8, 100)), 1, 1)
   this.plate$cDNAMix       <- this.plate$cDNASynthesis
   this.plate$plate.number  <- plate.number
 
@@ -31,11 +31,11 @@ for (f in files) {
   this.plate$Well.Type[this.plate$Well.Type == "Unknown"]  <- "sample"
   this.plate$Well.Type[this.plate$Well.Type == "Standard"] <- "standard"
 
-  this.plate$Quantity..copies. <- 
-    suppressWarnings(as.numeric(as.character(this.plate$Quantity..copies.))) 
+  this.plate$Quantity..copies. <-
+    suppressWarnings(as.numeric(as.character(this.plate$Quantity..copies.)))
   this.plate$Quantity..copies.[this.plate$Well.Type=="sample"]  <- 0
   this.plate$Quantity..copies.[this.plate$Quantity..copies.==0] <- 1
-  
+
   if (plate.number == 1) {
     testis <- this.plate
   } else {
@@ -47,7 +47,7 @@ for (f in files) {
 # Rename column-names in testis and testisMetadata
 
 colnames(testis) <- c("wellName", "sampleName", "wellType", "threshold",
-                      "Cq", "copyNumber", "geneName", "cDNAMix", 
+                      "Cq", "copyNumber", "geneName", "cDNAMix",
                       "cDNASynthesis", "plate.number")
 testis <- merge(testis, testisMetadata)
 
@@ -89,8 +89,4 @@ testis$l2con <- round(testis$l2con)
 # Making the data.frame into a data.qPCR class object
 names(testis) <- gsub("replicateNumber", "replicate", names(testis))
 class(testis) <- c("data.qPCR", "data.frame")
-attr(testis, "std.curve") <- TRUE 
-
-# Saving data frame
-
-save(testis, file = "Data/testis.Rdata")
+attr(testis, "std.curve") <- TRUE

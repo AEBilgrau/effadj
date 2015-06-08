@@ -324,7 +324,7 @@ The research is supported by MSCNET, a translational program studying cancer ste
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.7\textwidth]{allgenes.pdf}
+\includegraphics[width=0.7\textwidth]{powercurve.pdf}
 \end{center}
 \caption{Power as function of sample size for an increasing number of dilutions in the dilution curve of a two-sided test 5\%-level test for non-vanishing $\Delta\Delta C_q$-value.}
 \label{fig:powercurve}
@@ -332,11 +332,20 @@ The research is supported by MSCNET, a translational program studying cancer ste
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.7\textwidth]{standard.pdf}
+\includegraphics[width=0.7\textwidth]{allgenes.pdf}
 \end{center}
 \caption{A: $C_q$-values: Raw $C_q$-values for each gene and sample type. B: Dilution curves: Dilution curves for ACTB, GAPDH, MGST1, and FGFR3 }
 \label{fig:cqCIC}
 \end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{standard.pdf}
+\end{center}
+\caption{Dilution curves for ACTB, GAPDH, MGST1, and FGFR3 }
+\label{fig:cqCIC2}
+\end{figure}
+
 
 
 \end{document}

@@ -38,7 +38,7 @@ accepted for publication November 1, 2010}
 
 % Title of paper
 \title{Variance approximation of efficiency adjusted
-$\Delta\Delta \mbox{C}_q$-values in qPCR experiments}
+       $\Delta\Delta \mbox{C}_q$-values in qPCR experiments}
 
 
 % List of authors, with corresponding author marked by asterisk

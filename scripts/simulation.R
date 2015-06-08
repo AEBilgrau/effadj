@@ -16,7 +16,7 @@ alpha.ref      <- 0.80   # Amp. efficiency of refence gene
 ddcq           <- 10/9   # True effect size Delta-Delta-C_q
 tech.sd        <- 1      # Technical standard deviation
 sample.sd      <- 1.3    # Sample standrad deviation
-n.sims         <- 10000  # Number of simulations
+n.sims         <- 1000   # Number of simulations
 n.replicates   <- 1      # Number of technical replicates
 
 start.sample   <- 3      # Smallest number of samples

@@ -110,15 +110,13 @@ qPCRfit <- function(data, ...) {
 
   if (std.curve(data)) {
 
-    fit <- lmer(Cq ~ -1 + sampleType:geneType
-                + l2con:geneType
-                + (1 | sampleType/sampleName),
+    fit <- lmer(Cq ~ -1 + sampleType:geneType + l2con:geneType +
+                  (1 | sampleType/sampleName),
                 data = data, REML = FALSE, ...)
 
   } else {
 
-    fit <- lmer(Cq ~ -1 + sampleType:geneType
-                + (1 | sampleType/sampleName),
+    fit <- lmer(Cq ~ -1 + sampleType:geneType + (1 | sampleType/sampleName),
                 data = data, REML = FALSE, ...)
 
   }

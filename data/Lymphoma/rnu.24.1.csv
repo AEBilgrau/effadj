@@ -1,0 +1,97 @@
+Well,Well Name,Well Type,Threshold (dRn),Ct (dRn),Quantity (copies)
+A1,H221,Unknown,0.296,27.94,2.28
+A2,H221,Unknown,0.296,27.96,2.25
+A3,H221,Unknown,0.296,27.86,2.41
+A4,H251 2,Unknown,0.296,28.8,1.3
+A5,H251 2,Unknown,0.296,28.74,1.35
+A6,H251 2,Unknown,0.296,28.93,1.19
+A7,Total cDNA ,Standard,0.296,28.94,0.00E+00
+A8,Total cDNA ,Standard,0.296,29,0.00E+00
+A9,Total cDNA ,Standard,0.296,29.01,0.00E+00
+A10,RNU24 REF,Unknown,0.296,No Ct,No Ct
+A11,RNU24 REF,Unknown,0.296,27.18,3.76
+A12,RNU 24 Plade Normalisator,Unknown,0.296,27.98,2.23
+B1,H239,Unknown,0.296,28.77,1.32
+B2,H239,Unknown,0.296,28.72,1.37
+B3,H239,Unknown,0.296,28.67,1.41
+B4,H400,Unknown,0.296,28.21,1.91
+B5,H400,Unknown,0.296,28.34,1.76
+B6,H400,Unknown,0.296,28.39,1.69
+B7,Total cDNA ,Standard,0.296,30.27,5.00E-01
+B8,Total cDNA ,Standard,0.296,30.35,5.00E-01
+B9,Total cDNA ,Standard,0.296,30.39,5.00E-01
+B10,RNU24 REF,Unknown,0.296,No Ct,No Ct
+B11,RNU24 REF,Unknown,0.296,27.18,3.77
+B12,RNU 24 Plade Normalisator,Unknown,0.296,27.86,2.41
+C1,H241,Unknown,0.296,28.67,1.41
+C2,H241,Unknown,0.296,28.72,1.37
+C3,H241,Unknown,0.296,28.63,1.44
+C4,H404,Unknown,0.296,30.28,4.86E-01
+C5,H404,Unknown,0.296,30.45,4.35E-01
+C6,H404,Unknown,0.296,30.64,3.83E-01
+C7,Total cDNA ,Standard,0.296,31.35,2.50E-01
+C8,Total cDNA ,Standard,0.296,31.21,2.50E-01
+C9,Total cDNA ,Standard,0.296,31.43,2.50E-01
+C10,RNU24 REF,Unknown,0.296,26.93,4.44
+C11,RNU24 REF,Unknown,0.296,27.04,4.14
+C12,RNU 24 Plade Normalisator,Unknown,0.296,27.79,2.52
+D1,H249 1,Unknown,0.296,28.35,1.74
+D2,H249 1,Unknown,0.296,28.47,1.61
+D3,H249 1,Unknown,0.296,28.47,1.61
+D4,H411,Unknown,0.296,27.68,2.7
+D5,H411,Unknown,0.296,27.6,2.86
+D6,H411,Unknown,0.296,27.75,2.59
+D7,Total cDNA ,Standard,0.296,32.49,1.25E-01
+D8,Total cDNA ,Standard,0.296,32.44,1.25E-01
+D9,Total cDNA ,Standard,0.296,32.55,1.25E-01
+D10,RNU24 REF,No RT,0.296,No Ct,No Ct
+D11,RNU24 REF,No RT,0.296,No Ct,No Ct
+D12,---,Not in Use,0.296,,1.19E+08
+E1,H250 1,Unknown,0.296,28.4,1.68
+E2,H250 1,Unknown,0.296,28.45,1.63
+E3,H250 1,Unknown,0.296,28.53,1.54
+E4,H420,Unknown,0.296,29.9,6.26E-01
+E5,H420,Unknown,0.296,29.7,7.14E-01
+E6,H420,Unknown,0.296,29.66,7.31E-01
+E7,Total cDNA ,Standard,0.296,33.47,6.25E-02
+E8,Total cDNA ,Standard,0.296,33.5,6.25E-02
+E9,Total cDNA ,Standard,0.296,33.39,6.25E-02
+E10,RNU24 REF,NTC,0.296,No Ct,No Ct
+E11,RNU24 REF,NTC,0.296,No Ct,No Ct
+E12,---,Not in Use,0.296,,1.19E+08
+F1,H256 a,Unknown,0.296,28.4,1.69
+F2,H256 a,Unknown,0.296,28.4,1.68
+F3,H256 a,Unknown,0.296,28.41,1.68
+F4,H425,Unknown,0.296,31.2,2.65E-01
+F5,H425,Unknown,0.296,31.27,2.54E-01
+F6,H425,Unknown,0.296,31.4,2.33E-01
+F7,Total cDNA ,Standard,0.296,34.51,3.13E-02
+F8,Total cDNA ,Standard,0.296,34.45,3.13E-02
+F9,Total cDNA ,Standard,0.296,34.53,3.13E-02
+F10,---,Not in Use,0.296,,1.19E+08
+F11,---,Not in Use,0.296,,1.19E+08
+F12,---,Not in Use,0.296,,1.19E+08
+G1,H395,Unknown,0.296,28.52,1.56
+G2,H395,Unknown,0.296,28.56,1.51
+G3,H395,Unknown,0.296,28.67,1.41
+G4,H427,Unknown,0.296,29.58,7.71E-01
+G5,H427,Unknown,0.296,31.32,2.45E-01
+G6,H427,Unknown,0.296,29.69,7.20E-01
+G7,Total cDNA ,Standard,0.296,35.06,1.57E-02
+G8,Total cDNA ,Standard,0.296,35.32,1.57E-02
+G9,Total cDNA ,Standard,0.296,35.54,1.57E-02
+G10,---,Not in Use,0.296,,1.19E+08
+G11,---,Not in Use,0.296,,1.19E+08
+G12,---,Not in Use,0.296,,1.19E+08
+H1,H406,Unknown,0.296,27.94,2.28
+H2,H406,Unknown,0.296,28,2.19
+H3,H406,Unknown,0.296,27.91,2.33
+H4,H434,Unknown,0.296,28.13,2.01
+H5,H434,Unknown,0.296,28.12,2.03
+H6,H434,Unknown,0.296,28.09,2.07
+H7,---,Not in Use,0.296,,1.19E+08
+H8,---,Not in Use,0.296,,1.19E+08
+H9,---,Not in Use,0.296,,1.19E+08
+H10,---,Not in Use,0.296,,1.19E+08
+H11,---,Not in Use,0.296,,1.19E+08
+H12,---,Not in Use,0.296,,1.19E+08

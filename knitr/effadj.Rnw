@@ -17,15 +17,15 @@
 
 
 % Run analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-<<test, results='hide', echo=FALSE>>=
-getwd()
-@
-
-<<run_master, echo=FALSE, results='hide', message=FALSE>>=
-source("../scripts/master.R")
-@
-
+%'
+%' <<test, results='hide', echo=FALSE>>=
+%' getwd()
+%' @
+%'
+%' <<run_master, echo=FALSE, results='hide', message=FALSE>>=
+%' source("../scripts/master.R")
+%' @
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -42,17 +42,17 @@ accepted for publication November 1, 2010}
 
 
 % List of authors, with corresponding author marked by asterisk
-\author{A.E. BILGRAU, S. FALGREEN, A. PETERSEN, M.K. KJELDSEN,\\
-J.S. B\O{}DKER,  H.E. JOHNSEN, K. DYBK\AE{}R, M. B\O{}GSTED$^\ast$\\[4pt]
+\author{A.E. BILGRAU$^\ast$, S. FALGREEN, A. PETERSEN, M.K. KJELDSEN,\\
+J.S. B\O{}DKER,  H.E. JOHNSEN, K. DYBK\AE{}R, M. B\O{}GSTED\\[4pt]
 % Author addresses
 \textit{Department of Haematology, Aalborg University Hospital,
-Aalborg, Denmark  %Sdr. Skovvej 15, 9000 Aalborg, Denmark
+Aalborg, Denmark \\ %Sdr. Skovvej 15, 9000 Aalborg, Denmark
 Department of Mathematical Sciences, Aalborg University,
 Aalborg \O{}, Denmark %Fredrik Bajers Vej 7G, 9220 Aalborg \O{}, Denmark
 }
 \\[2pt]
 % E-mail address for correspondence
-{mboegsted@rn.dk}}
+{abilgrau@math.aau.dk}}
 
 
 % Running headers of paper:
@@ -69,7 +69,15 @@ Aalborg \O{}, Denmark %Fredrik Bajers Vej 7G, 9220 Aalborg \O{}, Denmark
 \footnotetext{To whom correspondence should be addressed.}
 
 \begin{abstract}
-{Accurate estimation of the amplification efficiency (AE) is an important prerequisite for quantification of gene expression by quantitative polymerase chain reaction (qPCR). The most commonly used correction strategy is to estimate the AE by dilution experiments. However, in recent years, it has become clear that determining the AE with high precision can require tedious laboratory work and a vast amount of biological material, which is often a scarce resource in e.g.\ molecular studies of cancer biology. It is therefore of great importance to assess the accuracy of the efficiency estimate to achieve the desired statistical power and significance level of statistical tests. We outline a novel method to obtain variance approximations of the efficiency adjusted $\Delta\Delta\mbox{C}_q$-value, which can be utilized to obtain reliable power calculations, confidence intervals, and test statistics for the detection of differentially expressed genes by qPCR experiments. The method is founded in a statistical model that enables the estimation of the AE and an approximation of the variance of efficiency adjusted $\Delta\Delta \mbox{C}_q$-values. We used the method to validate, in our own lab, two recent findings, that MGST1 is differentially expressed between multiple myeloma cell lines with high and low numbers of culture initiating cells and that miRNA-127 is differentially expressed between testicular and nodal diffuse large B-cell lymphoma (DLBCL). The presented method can be applied to evaluate the uncertainty from efficiency estimation by dilution curves and allow more reliable statistical inference based on qPCR data.}
+{Accurate estimation of the amplification efficiency (AE) is an important prerequisite for quantification of gene expression by quantitative polymerase chain reaction (qPCR).
+The most commonly used correction strategy is to estimate the AE by dilution experiments.
+However, in recent years, it has become clear that determining the AE with high precision can require tedious laboratory work and a vast amount of biological material, which is often a scarce resource in e.g.\ molecular studies of cancer biology.
+Furthermore, the usual and currenlty recommended analysis strategy do not account for the variance inherent to the estimate of the AE.
+It is therefore of great importance to estimate and account for the accuracy of the AE estimate to achieve the desired significance level and statistical power.
+We outline a novel method to obtain variance approximations of the efficiency adjusted $\Delta\Delta\mbox{C}_q$-value, which can be utilized to obtain reliable power calculations, confidence intervals, and test statistics for the detection of differentially expressed genes by qPCR experiments.
+The method is founded on a statistical model that enables the estimation of the AE and an approximation of the variance of efficiency adjusted $\Delta\Delta \mbox{C}_q$-values.
+We used the method to validate, in our own lab, two recent findings, that MGST1 is differentially expressed between multiple myeloma cell lines with high and low numbers of culture initiating cells and that miRNA-127 is differentially expressed between testicular and nodal diffuse large B-cell lymphoma (DLBCL).
+The presented method can be applied to evaluate the uncertainty from efficiency estimation by dilution curves and allow more reliable statistical inference based on qPCR data.}
 % Keywords
 {qPCR; amplification efficiency; efficiency adjusted $\Delta\Delta\mbox{C}_q$; sample size calculations.}
 \end{abstract}
@@ -80,20 +88,31 @@ Aalborg \O{}, Denmark %Fredrik Bajers Vej 7G, 9220 Aalborg \O{}, Denmark
 % Craft this section carefully, setting up your argument in logical order.
 % Answer the question "what is the problem and why is it important?"
 
-Despite being an aging technique, quantitative polymerase chain reaction (qPCR), "one of the most significant biotech discoveries in our time" \citep{Rainbow1996}, is used in molecular biology to amplify and quantify nucleic acids such as DNA or mRNA molecules.
-In life sciences, qPCR is typically applied to rapidly detect gene transcripts that are biomarkers of diagnostic, prognostic, and even predictive value of, for example, infectious diseases, cancer, and genetic abnormalities.
+Despite being an aging technique quantitative polymerase chain reaction (qPCR), ``one of the most significant biotech discoveries in our time'' \citep{Rainbow1996}, is still heavily used in molecular biology to amplify and quantify nucleic acids such as DNA or mRNA molecules.
+In life sciences, qPCR is typically applied to rapidly detect gene transcripts that are biomarkers of diagnostic, prognostic, and even predictive value of e.g.\ infectious diseases, cancer, and genetic abnormalities.
 
-Despite the tremendous success of qPCR,   "statistical inference considerations are still not accorded high enough priority" \citep{Bustin2009,Bustin2010}. This is in particular true for the amplification efficiency.
+Despite the tremendous success of qPCR, ``statistical inference considerations are still not accorded high enough priority'' \citep{Bustin2009,Bustin2010}.
+This is in particular true for the estimation of the amplification efficiency.
 
 % Relevant  Refer to relevant ideas/theories and related research by other authors
 
 Although, efficiency calibration has been extensively treated by \cite{Pfaffl2001} or the more generalized model presented by \cite{Yuan2008},
-there still seems to lack a systematic study of the unavoidable influence of uncertainty in the efficiency amplification estimate on the conclusions of qPCR experiments based on formal statistical inference. Statistical inference is based on the formulation of a statistical model for the phenomenon under study. The model includes a set of parameters to be estimated including the effects of interest. The inferential tools allows for achieving parameter estimates, assessing their uncertainty,  and formulating as well as testing scientific hypotheses. In this paper we build the statistical inference on mixed effects models, which allows for an appropriate handling of the technical and sample errors.
+there still seems to lack a systematic study of the unavoidable influence of uncertainty in the efficiency amplification estimate on the conclusions of qPCR experiments based on formal statistical inference.
+% Statistical inference is based on the formulation of a statistical model for the phenomenon under study.
+% The model includes a set of parameters to be estimated including the effects of interest.
+% The inferential tools allows for achieving parameter estimates, assessing their uncertainty,  and formulating as well as testing scientific hypotheses.
+In this paper we describe the estimation of the uncertainty of the efficiency amplification estimate by mixed effects models, which also allows for an appropriate handling of the technical and sample errors.
 
-The idea of using mixed effects models for qPCR experiments is not new and has been used by e.g. \cite{fu2006} to formulate generalized estimation equations to handle within group variation. \cite{andersen2004} and \cite{abruzzo2005} have used mixed effects modeling to identify candidate normalizing genes. However, the idea of using the statistical $\Delta$-method to handle uncertainty in efficiency estimates seems to be novel and provides an extension of \cite{Yuan2008}.
+The idea of using mixed effects models for qPCR experiments is not new and has been used by e.g. \cite{fu2006} to formulate generalized estimation equations to handle within group variation.
+\cite{andersen2004} and \cite{abruzzo2005} have used mixed effects modeling to identify candidate normalizing genes.
+However, our idea of using the statistical $\Delta$-method to handle uncertainty stemming from the efficiency estimation seems to be novel and provides an extension of \cite{Yuan2008}.
 
 % Precise aims of the paper
-The aim of the paper is to formulate a mathematical model which allows us to draw formal statistical inference about qPCR experiments with non-efficient amplifications. This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation.The approach is used demonstrates that multiple myeloma cancer cell lines differentially express the MGST1 gene depending on the frequency of culture initiating cells. We also used the approach  to design a study which results turned out to support the hypothesis of \cite{Robertus2009} that miRNA-127 is differentially expressed between testicular and nodal DLBCL
+The aim of the paper is to formulate a mathematical model which allows us to draw formal statistical inference about qPCR experiments with non-efficient amplifications.
+This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation.
+The approach is used demonstrate that multiple myeloma cancer cell lines differentially express the MGST1 gene depending on the frequency of culture initiating cells. We also used the approach  to design a study which results turned out to support the hypothesis of \cite{Robertus2009} that miRNA-127 is differentially expressed between testicular and nodal DLBCL
+
+
 \section{Methods}
 
 \subsection{The observational model}
@@ -295,7 +314,7 @@ The research is supported by MSCNET, a translational program studying cancer ste
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.7\textwidth]{../output/Figure1.pdf}
+\includegraphics[width=0.7\textwidth]{allgenes.pdf}
 \end{center}
 \caption{Power as function of sample size for an increasing number of dilutions in the dilution curve of a two-sided test 5\%-level test for non-vanishing $\Delta\Delta C_q$-value.}
 \label{fig:powercurve}
@@ -303,7 +322,7 @@ The research is supported by MSCNET, a translational program studying cancer ste
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.7\textwidth]{../output/Figure2.cic.pdf}
+\includegraphics[width=0.7\textwidth]{standard.pdf}
 \end{center}
 \caption{A: $C_q$-values: Raw $C_q$-values for each gene and sample type. B: Dilution curves: Dilution curves for ACTB, GAPDH, MGST1, and FGFR3 }
 \label{fig:cqCIC}

@@ -288,7 +288,8 @@ The research is supported by MSCNET, a translational program studying cancer ste
 
 \newpage
 
-\input{TableOfResults.tex}
+\input{../output/Table1.tex}
+\input{../output/Table2.tex}
 
 \newpage
 

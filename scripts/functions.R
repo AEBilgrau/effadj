@@ -494,3 +494,21 @@ sn <- function(x, digits) {
   }
   return(paste("$", y, "$", sep = ""))
 }
+
+
+
+#
+# Add to .RData file
+#
+
+resave <- function(..., list = character(), file) {
+  if (!file.exists(file)) { # If file does not exists resave functions as save
+    save(..., list = list, file = file)
+  }
+  previous  <- load(file)  # Returns the loaded object names
+  var.names <- c(list, as.character(substitute(list(...)))[-1L])
+  for (var in var.names) {
+    assign(var, get(var, envir = parent.frame()))
+  }
+  save(list = unique(c(previous, var.names)), file = file)
+}

@@ -303,19 +303,12 @@ The research is supported by MSCNET, a translational program studying cancer ste
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.7\textwidth]{allgenes.pdf}
+\includegraphics[width=0.7\textwidth]{../output/Figure2.cic.pdf}
 \end{center}
-\caption{$C_q$-values: Raw $C_q$-values for each gene and sample type.}
+\caption{A: $C_q$-values: Raw $C_q$-values for each gene and sample type. B: Dilution curves: Dilution curves for ACTB, GAPDH, MGST1, and FGFR3 }
 \label{fig:cqCIC}
 \end{figure}
 
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.7\textwidth]{standard.pdf}
-\end{center}
-\caption{Dilution curves: Dilution curves for ACTB, GAPDH, MGST1, and FGFR3 }
-\label{fig:powercurveCIC}
-\end{figure}
 
 \end{document}
 

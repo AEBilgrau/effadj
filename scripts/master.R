@@ -18,7 +18,7 @@
 rm(list = ls())
 set.seed(987654321)
 
-recompute <- TRUE  # Recompute heavy computations if TRUE
+recompute <- FALSE  # Recompute heavy computations if TRUE
 
 # library("Bmisc")   # Resave function and more http://github.com/AEBilgrau/Bmisc
 library("lattice") # For plots
@@ -49,5 +49,4 @@ source("../scripts/createDataTestis.R")
 # 4. Analyse data sets and create output
 source("../scripts/createOutputCIC.R", local = new.env())
 source("../scripts/createOutputTestis.R", local = new.env())
-
 

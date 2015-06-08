@@ -81,7 +81,7 @@ for(i in 1:length(t.pow.res)){
 pow.res     <- dilution.power.results
 without.res <- no.dilution.power.results
 
-pdf("../output/Figure1.pdf")
+jpeg("../output/Figure1.jpg")
   plot(1, type = "n",
        xlab = "Number of samples per group",
        xlim = c(start.sample, end.sample),

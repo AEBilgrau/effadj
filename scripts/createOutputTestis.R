@@ -13,7 +13,8 @@
 #testis <- testis[!(testis$geneName %in% c("mir143", "rnu24")), ]
 
 # Trellis plot of all data miR-127, miR-143, miR-6b, miR-24 data
-pdf("../output/Figure3.testis.pdf", width = 7*2, height = 4)
+jpeg("../output/Figure3.testis.jpg", width = 7*2, height = 4, units = "in",
+     res = 300)
   trellis.par.set(strip.background=list(col="lightgrey"))
 
   fig3a <- dotplot(sampleName ~ Cq | geneType:sampleType,

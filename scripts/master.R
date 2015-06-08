@@ -14,7 +14,7 @@
 
 
 # Initalizing and loading required packages
-# setwd("./knitr")
+if (!grepl("knitr", getwd())) setwd("./knitr")
 rm(list = ls())
 set.seed(987654321)
 

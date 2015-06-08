@@ -7,7 +7,8 @@
 ################################################################################
 
 # Trellis plot of all data
-pdf("../output/Figure2.cic.pdf", width = 7*2, height = 4)
+jpeg("../output/Figure2.cic.jpg", width = 7*2, height = 4, units = "in",
+     res = 300)
   trellis.par.set(strip.background=list(col="lightgrey"))
 
   fig2a <- dotplot(sampleName ~ Cq | geneType:sampleType,

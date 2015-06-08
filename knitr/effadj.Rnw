@@ -118,17 +118,19 @@ The approach is used demonstrate that multiple myeloma cancer cell lines differe
 \subsection{The observational model}
 
 In order to approximate the standard deviation of the efficiency adjusted
-$\Delta\Delta\textrm{C}_q$-value we formulate the amplification process
+$\Delta\Delta\textrm{C}_q$-value we model the amplification process
 in the following way
-\[
+\begin{equation}
+  \label{eq:fluorescencemodel}
   F_{C_q} = \kappa \sigma N_0 (2^{\alpha})^{C_q},
-\]
+\end{equation}
 where $F_{C_q}$ is the fluorescence measurement at the $C_q$'th cycle,
 $\kappa$ is a proportionality constant, $N_0$ is the copy number of
 interest in the
 initial template, $\sigma$ is the sample specific handling error and
-$\alpha$ is the percentage of the $\log_2$-AE. We rearrange terms
-and notice that $C_q$ can be expressed as
+$\alpha$ is the percentage of the $\log_2$-AE.
+In practice, the transcript abundance level is determined by the cycle $C_q$ for which given fluorescence measurement $F_{C_q}$ is reached.
+We rearrange \eqref{eq:fluorescencemodel} and notice that $C_q$ can be expressed as
 \[
   C_q = \frac{1}{\alpha}
         \left(\log_2 F_{C_q} - \log_2 \kappa \sigma N_0 \right).
@@ -136,30 +138,29 @@ and notice that $C_q$ can be expressed as
 In order to estimate the relative amount of transcripts between case
 and control samples for the target gene template, we assume
 the amount of the reference gene template is the same in both the case
-and the control, i.e.
-$N_{0,\rref,\case}=N_{0,\rref,\ctrl}$
-and the AE only vary between the target and reference gene. We then
-arrive at the following expression for the log-fold change of
+and the control, denoted by
+$N_{0,\rref,\case}=N_{0,\rref,\ctrl}$,
+and that the AE only vary between the target and reference gene. We then
+arrive at the following expression for the $\log_2$-fold change of
 the target gene template between case and controls:
 \begin{align*}
-  \log_{ 2} \!\left(\slfrac{N_{ 0,\tgt,\case}}{N_{ 0,\tgt,\ctrl}}\right)
-  = {} & - \log_{ 2} \kappa \sigma_{ \case} N_{ 0,\tgt,\case}
-         + \log_{ 2} \kappa \sigma_{ \case} N_{ 0,\rref,\ctrl} \\
-       & + \log_{ 2} \kappa \sigma_{\ctrl} N_{ 0,\tgt,\ctrl}
-         - \log_{ 2} \kappa \sigma_{\ctrl} N_{0,\rref,\case}  \\
-  = {} & - \big[\alpha_{\tgt}  C_{ q,\tgt,\case}
-         -      \alpha_{\rref} C_{ q,\rref,\case}  \\
-       & -     (\alpha_{\tgt}  C_{ q,\tgt,\ctrl}
-         -      \alpha_{\rref} C_{ q,\rref,\ctrl})\big].
+  \log_2\Bigl(\frac{N_{ 0,\tgt,\case}}{N_{ 0,\tgt,\ctrl}}\Bigr)
+  &= \log_2 \kappa \sigma_{ \case} N_{ 0,\tgt,\case}
+    -\log_2 \kappa \sigma_{ \case} N_{ 0,\rref,\case} \\
+  &\quad  - \log_2 \kappa \sigma_{\ctrl} N_{ 0,\tgt,\ctrl}
+       + \log_2 \kappa \sigma_{\ctrl} N_{0,\rref,\ctrl}  \\
+  &=   - \bigl\{(\alpha_{\tgt}  C_{ q,\tgt,\case}
+       -  \alpha_{\rref} C_{ q,\rref,\case})
+       - (\alpha_{\tgt}  C_{ q,\tgt,\ctrl}
+       - \alpha_{\rref} C_{ q,\rref,\ctrl})\bigr\},
 \end{align*}
-This method of estimating the log relative abundance between case and controls is often referred to as
-the $\Delta\Delta\textrm{C}_q$-method \cite{Livak2001}, after the
-double difference appearing in the expression:
+assuming that the $C_q$-values have been determiend by a common flouresence level $F_{C_q}$.
+This method of estimating the log relative abundance between case and controls is often referred to as the $\Delta\Delta\textrm{C}_q$-method \citep{Livak2001}, after the double difference appearing in the expression:
 \begin{align}
+  \label{eq:deltadelta}
   \Delta\Delta\textrm{C}_q :=
     (\alpha_{ \tgt}C_{ q,\tgt,\case} - \alpha_{ \rref}C_{ q,\rref,\case})
       - (\alpha_{ \tgt}C_{ q,\tgt,\ctrl} - \alpha_{ \rref}C_{ q,\rref,\ctrl}).
-\label{eq:deltadelta}
 \end{align}
 
 
@@ -172,50 +173,51 @@ and $C_{q,i,j}$.
 A popular way of estimating $\alpha_{i}$ is by dilution curves,
 i.e.\ by regressing $C_{q,i,j}$ against a series of decreasing
 $N_{0,i,j}$-values, denoted by $N_{0,i,j,k}=N_{0,i,j,1}2^{-x_k}$, where
-$0=x_1<\cdots<x_n<\infty$. This can be formulated as a linear mixed effects model \citep{Pinheiro2000a}
-\[
+$0=x_1<\cdots<x_K<\infty$.
+This can be formulated as a linear mixed effects model \citep{Pinheiro2000a},
+\begin{equation*}
   C_{q,i,j,s,k} = \mu_{i,j} + A_{j/s} + \gamma_{i} x_k + \epsilon_{i,j,s,k},
-\]
+\end{equation*}
 where $A_{j/s}$ is a random effect from sample $s$ nested under the $j$'th sample type,
 $\gamma_{i} = \alpha_{i}^{-1}$ and
 $\mu_{i,j} = \alpha_{i}^{-1}(\log_2 F_{C_q} - \log_2 \kappa \sigma_{j}
-N_{0,i,j})$. The random effects $A_{j/s}$'s is $N(0,\sigma_S^2)$-distributed and the
+N_{0,i,j})$. The random effects $A_{j/s}$'s are $N(0,\sigma_S^2)$-distributed and the
 $\epsilon_{i,j,s,k}$'s are independent and $N(0,\sigma^2)$-distributed.
 
 
 \subsection{Hypothesis test and confidence intervals for $\Delta\Delta\textrm{C}_q$-values}
 
 Let the maximum likelihood estimates of the fixed effects
-\[
+\begin{equation*}
   \theta = (\mu_{\tgt,\case},  \mu_{\tgt,\ctrl},
       \gamma_{\tgt},    \mu_{\rref,\case},
-            \mu_{\rref,\ctrl}, \gamma_{\rref}).
-\]
+            \mu_{\rref,\ctrl}, \gamma_{\rref})
+\end{equation*}
 be denoted by
-\[
+\begin{equation*}
   \hat{\theta} = (\hat{\mu}_{\tgt,\case},  \hat{\mu}_{\tgt,\ctrl},
                   \hat{\gamma}_{\tgt},    \hat{\mu}_{\rref,\case},
                   \hat{\mu}_{\rref,\ctrl}, \hat{\gamma}_{\rref}).
-\]
+\end{equation*}
 Suppose that we wish to test the hypothesis
-\[
+\begin{equation*}
   H_0 : c(\theta) = 0,
-\]
-where $c$ is the continuously differentiable functional mapping of the
+\end{equation*}
+where $c$ is the continuously differentiable function of the
 fixed effects to the $\Delta\Delta\textrm{C}_q$-value given by
-\begin{align}
+\begin{equation}
+  \label{eq:deltadelta2}
   c(\theta)
-    =      \big[  \mu_{\tgt,\case}  \gamma_{ \tgt}^{-1}
-               -  \mu_{\rref,\case} \gamma_{ \rref}^{-1}
+    =      \big\{ (\mu_{\tgt,\case}  \gamma_{ \tgt}^{-1}
+               -  \mu_{\rref,\case} \gamma_{ \rref}^{-1})
                - (\mu_{\tgt,\ctrl}  \gamma_{ \tgt}^{-1}
-               -  \mu_{\rref,\ctrl} \gamma_{ \rref}^{-1})\big].
-  \label{eq:deltadelta}
-\end{align}
+               -  \mu_{\rref,\ctrl} \gamma_{ \rref}^{-1})\bigr\}.
+\end{equation}
 Then a statistic for testing $H_0$, is given by
-\[
+\begin{equation*}
   t = \frac{c(\hat{\theta})}
            {\sqrt{\Var\!\big[c(\hat{\theta})\big]}}
-\]
+\end{equation*}
 which according to a first order Taylor series expansion of $c$ can be
 approximated by
 \begin{equation}
@@ -230,16 +232,18 @@ approximated by
   \label{eq:tstat}
 \end{equation}
 According to \citet[Section 2.4.2]{Pinheiro2000a}, $t$ is approximately
-$t$-distributed with $\eta = S_{\case}+S_{\ctrl} -5$ degrees
-of freedom. On the basis of (\ref{eq:tstat}), an approximate $(1- \alpha) 100\%$ confidence interval of $c(\theta)$ is then given by
+$t$-distributed with $\eta = S_{\case}+S_{\ctrl} -5$ degrees of freedom.
+On the basis of (\ref{eq:tstat}), an approximate $(1- \alpha) 100\%$ confidence interval of $c(\theta)$ is then given by
 \begin{equation*}
      c(\hat{\theta}) \pm  t_{\alpha/2,\eta}\sqrt{\nabla c(\hat{\theta})^{\top}\Var[\hat{\theta}]\nabla c(\hat{\theta})}.
 \end{equation*}
-Both maximum likelihood (ML) and restricted maximum likelihood estimation (REML) of mixed linear model has been implemented by the R-package \texttt{lme4} based on the \texttt{nlme} package of  \cite{Pinheiro2000a}. Based on this package scripts have been constructed to compute the  estimates $\hat{\theta}$ and $\textrm{Var}(\hat{\theta})$ which are used in the construction of test and confidence intervals for the $\Delta\Delta\textrm{C}_q$-values as described above.
+Both maximum likelihood (ML) and restricted maximum likelihood estimation (REML) of mixed linear model have been implemented by the R-package \texttt{lme4} based on the \texttt{nlme} package of  \cite{Pinheiro2000a}.
+Based on this package we compute the estimates $\hat{\theta}$ and $\textrm{Var}(\hat{\theta})$ and use these in the construction of test and confidence intervals for the $\Delta\Delta\textrm{C}_q$-values as described above.
+
 
 \subsection{Power calculations}
 
-In order to properly design an experimental study one needs to have some idea of whether the proposed experimental conditions are sufficient to provide reasonable expection that the hypothesized effects will be detectable over experimental error. The power of a statistical test is the probability that the test will correctly correctly declare a result statistically significant given an effect size or difference of $\delta = c(\theta)$ between case and controls. Hence for qPCR-experiments the power is given by
+In order to properly design an experimental study one needs to have some idea of whether the proposed experimental conditions are sufficient to provide reasonable expection that the hypothesized effects will be detectable over experimental error. The power of a statistical test is the probability that the test will correctly declare a result statistically significant given an effect size or difference of $\delta = c(\theta)$ between case and controls. Hence for qPCR-experiments the power is given by
 \[
   \pi =
     P\big(t > t_{\alpha/2,\eta} \big| c(\theta) = \delta\big).
@@ -249,9 +253,15 @@ A straightforward way to obtain the power is to simulate a number of $t$-values 
   \hat{\pi} =
     \frac{1}{n}\sum_{i=1}^n \bbOne \!\big[ t_i >  t_{\alpha/2,\eta} \big],
 \]
-i.e.\ the fraction of correctly significantly declared tests.
+i.e.\ the fraction of tests correctly declared significant.
 
-Based on the above statistical model, we scripted \textsf{R} to compute the power given sample size, person and experimental variations, and effect size. For the purpose of illustration, we present a hypothetical example of a two-sided 5\%-level test for non-vanishing $\Delta\Delta C_q$-value in which a varying number subjects are divided into two groups (a case group and a control group).  The effect size was set to $\delta = 10/9$, the person and experimental variation  was set to $\sigma_{S}^2 = 1$ and $\sigma^2 = 1$, respectively. Finally, the AE was set to 0.9. Figure \ref{fig:powercurve} shows the estimated power as a function of sample size. The full-drawn lines shows the power for various number of dilutions steps. The black dashed line shows the power if a t-test is applied directly after AE-correction. The grey dahsed line shows the power for the "optima situation" of perfect AE.
+Based on the above statistical model, we computed the power for a given sample size, sample and experimental variation, and effect size.
+We present a simulation example of a two-sided test for the null hypothesis of a vanishing $\Delta\Delta C_q$-value at $5\%$ significance level.
+The test was performed varying the number subjects divided into the case and control groups.
+The effect size was set to $\delta = 10/9$, the sample and experimental variation  was set to $\sigma_{S}^2 = 1$ and $\sigma^2 = 1$, respectively.
+Finally, the AE was set to 0.9. Figure \ref{fig:powercurve} shows the estimated power as a function of sample size.
+The full-drawn lines shows the power for various number of dilutions steps.
+The black dashed line shows the power if a t-test is applied directly after AE-correction. The grey dahsed line shows the power for the "optima situation" of perfect AE.
 
 \subsection{Sample and data preparation}
 

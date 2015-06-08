@@ -20,7 +20,7 @@ set.seed(987654321)
 
 recompute <- TRUE  # Recompute heavy computations if TRUE
 
-library("Bmisc")   # Resave function and more http://github.com/AEBilgrau/Bmisc
+# library("Bmisc")   # Resave function and more http://github.com/AEBilgrau/Bmisc
 library("lattice") # For plots
 library("lme4")    # For mixed effects models
 library("Hmisc")   # For LaTeX tables

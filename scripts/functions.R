@@ -209,10 +209,12 @@ DDCq.test <- function (data,
       message("eff.cor was coerced to TRUE as var.adj is TRUE.")
     }
   }
-  if (!missing(subset.cols))
+  if (!missing(subset.cols)) {
     data <- data[, subset.cols]
-  if (!missing(subset.rows))
+  }
+  if (!missing(subset.rows)) {
     data <- data[subset.rows, ]
+  }
 
   if (method == "Naive") {    # Naive method
 
@@ -224,7 +226,8 @@ DDCq.test <- function (data,
     colnames(wmean) <- gsub("Cq.", "", colnames(wmean))
 
     t <- t.test(tgt - ref ~ sampleType, var.equal = TRUE, data = wmean)
-    result <- c(-diff(t$estimate), NA, t$statistic, t$parameter, t$p.value)
+    est <- -diff(t$estimate)
+    result <- c(est, est/t$statistic, t$statistic, t$parameter, t$p.value)
     names(result) <- c("Estimate", "Std. Error", "t value", "df", "Pr(>|t|)")
     return(result)
 
@@ -376,6 +379,84 @@ Bootstrap.qPCR <- function(data,               # A data.qPCR object
   names(res) <- paste("dilutions =", 1:n.dilutions + start.dilution - 1)
   return(res)
 }
+
+
+bootstrapSample <- function(data) {
+  # Function to get one bootstrap sample
+  # data should be aggregated
+
+  data$Cq_old <- data$Cq
+  std <- data$sampleType == "Standard"
+
+  # Bootstrap the standard dilution curve data
+  residualBootstrap <- function(data) {
+    lin.fit <- lm(Cq ~ l2con, data = data)
+    return(fitted(lin.fit) + sample(resid(lin.fit), replace = TRUE))
+  }
+
+  if (is.null(unique(data$geneName))) warning("no geneName col present in data")
+
+  for (gname in unique(data$geneName)) {
+    for (gtype in unique(data$geneType)) {
+      get <- with(data, std & geneType == gtype & geneName == gname)
+      if (sum(get) > 0) {
+        data$Cq[get] <- residualBootstrap(data[get, ])
+      }
+    }
+  }
+
+  # Bootstrap the case/ctrl data
+  data$sampleName <- as.character(data$sampleName)
+  for (stype in setdiff(unique(data$sampleType), "Standard")) {
+    get <- !std & data$sampleType == stype
+    nms <- sample(unique(data$sampleName[get]), replace = TRUE)
+    nms <- paste0(nms, "_BSS", seq_along(nms))
+
+    ind <- numeric()
+    new.sampleName <- character()
+    for (nm in nms) {
+      i <- which(get & data$sampleName == gsub("_BSS[0-9]+$", "", nm))
+      ind <- c(ind, i)
+      new.sampleName <- c(new.sampleName, rep(nm, length(i)))
+    }
+    data[get, ] <- data[ind, ]
+    data$sampleName[get] <- new.sampleName
+  }
+  data$sampleName <- as.factor(data$sampleName)
+
+  return(data)
+}
+
+twoSideP <- function(bdist){
+  # From
+  #  http://stats.stackexchange.com/questions/83012/
+  #   how-to-obtain-p-values-of-coefficients-from-bootstrap-regression
+  p1 <- sum(bdist > 0)/length(bdist)
+  p2 <- sum(bdist < 0)/length(bdist)
+  p <- 2*min(p1, p2)
+  return(p)
+}
+
+bootstrapEstimate <- function(data, n.boots = 100) {
+  # Aggregate data
+  data <- aggregate(Cq ~ sampleName + geneType + sampleType +
+                      geneType + l2con + copyNumber + geneName,
+                    data = data, FUN = mean)
+
+  # Create bootstrap samples
+  bs.samples <- replicate(n.boots, bootstrapSample(data), simplify = FALSE)
+
+  # Apply DDCq estimate
+  res <- sapply(bs.samples, DDCq.test, eff.cor = TRUE, var.adj = FALSE)
+
+  # Compute the statistics
+  ddcq <- res["Estimate", ]
+
+  ans <- c("Estimate" = mean(ddcq), "Std. Error" = sd(ddcq),
+           "t value" = NA, "df" = NA, "Pr(>|t|)" =   twoSideP(ddcq))
+  return(ans)
+}
+
 
 #
 # Function to coerce data.frame into data.qPCR object

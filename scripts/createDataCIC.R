@@ -36,6 +36,16 @@ cic <- cic[, !grepl("wellType", names(cic))]  # wellType is now redundant
 cic       <- cic[!is.na(cic$Cq), ]
 cic$l2con <- round(cic$l2con)  # Should we round?
 
+# Make data balanced by removing references with no paired target
+cic <- subset(cic, !(cic$sampleName == "KAS-6-1" & cic$geneName == "GAPDH"))
+cic <- subset(cic, !(cic$sampleName == "U-266" & cic$geneName == "GAPDH"))
+
+cic <- subset(cic, !(cic$sampleName == "KAS-6-1" & cic$geneName == "ACTB"))
+cic <- subset(cic, !(cic$sampleName == "U-266" & cic$geneName == "ACTB"))
+
+cic <- subset(cic, !(cic$sampleName == "KAS-6-1" & cic$geneName == "MMSET"))
+cic <- subset(cic, !(cic$sampleName == "U-266" & cic$geneName == "MMSET"))
+
 #
 # Converting cic into an object of class "data.qPCR";
 # e.g. see the description of the "data.qPCR"-class in "Functions.R"

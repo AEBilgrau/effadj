@@ -70,16 +70,18 @@ Aalborg \O{}, Denmark %Fredrik Bajers Vej 7G, 9220 Aalborg \O{}, Denmark
 
 \begin{abstract}
 {Accurate estimation of the amplification efficiency (AE) is an important prerequisite for quantification of gene expression by quantitative polymerase chain reaction (qPCR).
-The most commonly used correction strategy is to estimate the AE by dilution experiments.
-However, in recent years, it has become clear that determining the AE with high precision can require tedious laboratory work and a vast amount of biological material, which is often a scarce resource in e.g.\ molecular studies of cancer biology.
-Furthermore, the usual and currenlty recommended analysis strategy do not account for the variance inherent to the estimate of the AE.
-It is therefore of great importance to estimate and account for the accuracy of the AE estimate to achieve the desired significance level and statistical power.
-We outline a novel method to obtain variance approximations of the efficiency adjusted $\Delta\Delta\mbox{C}_q$-value, which can be utilized to obtain reliable power calculations, confidence intervals, and test statistics for the detection of differentially expressed genes by qPCR experiments.
-The method is founded on a statistical model that enables the estimation of the AE and an approximation of the variance of efficiency adjusted $\Delta\Delta \mbox{C}_q$-values.
-We used the method to validate, in our own lab, two recent findings, that MGST1 is differentially expressed between multiple myeloma cell lines with high and low numbers of culture initiating cells and that miRNA-127 is differentially expressed between testicular and nodal diffuse large B-cell lymphoma (DLBCL).
+The most commonly used correction strategy is to estimate the AE by dilution experiments and use it as a plug-in when efficiency correcting the   $\Delta\Delta\mbox{C}_q$-value.
+In recent years it has been recommended to determine the AE with high precision as the plug-in approach do not account for its uncertainty.
+In other words the method assumes an infinite precision of the AE estimate.
+It has become clear, however, that determining the AE with such a high precision can require tedious laboratory work and a vast amount of biological material, which is often a scarce resource in e.g.\ molecular studies of cancer biology.
+It is therefore of great importance to estimate and account for the accuracy of the AE estimate to bound the type I error and achieve the desired significance level.
+We outline novel procedures to obtain variance approximations of the efficiency adjusted $\Delta\Delta\mbox{C}_q$-value based on statistical modelling in combination with either bootstrapping or the statistical $\Delta$-method.
+These procedures can be utilized to obtain reliable power calculations, confidence intervals, and test statistics for the detection of differentially expressed genes by qPCR experiments.
+The method is founded on a statistical model that enables the estimation of the AE and an approximations based on  of the variance of efficiency adjusted $\Delta\Delta \mbox{C}_q$-values.
+We used the method to validate two recent findings, which suggested that MGST1 is differentially expressed between multiple myeloma cell lines with high and low numbers of culture initiating cells and that miRNA-127 is differentially expressed between testicular and nodal diffuse large B-cell lymphoma (DLBCL).
 The presented method can be applied to evaluate the uncertainty from efficiency estimation by dilution curves and allow more reliable statistical inference based on qPCR data.}
 % Keywords
-{qPCR; amplification efficiency; efficiency adjusted $\Delta\Delta\mbox{C}_q$; sample size calculations.}
+{qPCR; amplification efficiency; efficiency adjusted $\Delta\Delta\mbox{C}_q$; bootstrapping, the statistical $\Delta$-method, sample size calculations.}
 \end{abstract}
 
 
@@ -89,7 +91,7 @@ The presented method can be applied to evaluate the uncertainty from efficiency 
 % Answer the question "what is the problem and why is it important?"
 
 Despite being an aging technique quantitative polymerase chain reaction (qPCR), ``one of the most significant biotech discoveries in our time'' \citep{Rainbow1996}, is still heavily used in molecular biology to amplify and quantify nucleic acids such as DNA or mRNA molecules.
-In life sciences, qPCR is typically applied to rapidly detect gene transcripts that are biomarkers of diagnostic, prognostic, and even predictive value of e.g.\ infectious diseases, cancer, and genetic abnormalities.
+In life sciences, qPCR is typically applied to detect and validate candidate gene transcripts that are biomarkers of diagnostic, prognostic, and even predictive value of e.g.\ infectious diseases, cancer, and genetic abnormalities.
 
 Despite the tremendous success of qPCR, ``statistical inference considerations are still not accorded high enough priority'' \citep{Bustin2009,Bustin2010}.
 This is in particular true for the estimation of the amplification efficiency.
@@ -101,11 +103,11 @@ there still seems to lack a systematic study of the unavoidable influence of unc
 % Statistical inference is based on the formulation of a statistical model for the phenomenon under study.
 % The model includes a set of parameters to be estimated including the effects of interest.
 % The inferential tools allows for achieving parameter estimates, assessing their uncertainty,  and formulating as well as testing scientific hypotheses.
-In this paper we describe the estimation of the uncertainty of the efficiency amplification estimate by mixed effects models, which also allows for an appropriate handling of the technical and sample errors.
+In this paper we describe the estimation of the uncertainty of the efficiency amplification estimate by mixed effects models, which also allows for an appropriate handling of the technical and sample errors by either bootrapping or the statistical $\Delta$-method.
 
 The idea of using mixed effects models for qPCR experiments is not new and has been used by e.g. \cite{fu2006} to formulate generalized estimation equations to handle within group variation.
 \cite{andersen2004} and \cite{abruzzo2005} have used mixed effects modeling to identify candidate normalizing genes.
-However, our idea of using the statistical $\Delta$-method to handle uncertainty stemming from the efficiency estimation seems to be novel and provides an extension of \cite{Yuan2008}.
+However, our idea of using bootstrapping or the statistical $\Delta$-method to handle uncertainty stemming from the efficiency estimation seems to be novel and provides an extension of \cite{Yuan2008}.
 
 % Precise aims of the paper
 The aim of the paper is to formulate a mathematical model which allows us to draw formal statistical inference about qPCR experiments with non-efficient amplifications.
@@ -185,7 +187,7 @@ N_{0,i,j})$. The random effects $A_{j/s}$'s are $N(0,\sigma_S^2)$-distributed an
 $\epsilon_{i,j,s,k}$'s are independent and $N(0,\sigma^2)$-distributed.
 
 
-\subsection{Hypothesis test and confidence intervals for $\Delta\Delta\textrm{C}_q$-values}
+\subsection{Hypothesis test and confidence intervals for $\Delta\Delta\textrm{C}_q$-values by the statistical $\Delta$-method}
 
 Let the maximum likelihood estimates of the fixed effects
 \begin{equation*}
@@ -240,55 +242,83 @@ On the basis of (\ref{eq:tstat}), an approximate $(1- \alpha) 100\%$ confidence 
 Both maximum likelihood (ML) and restricted maximum likelihood estimation (REML) of mixed linear model have been implemented by the R-package \texttt{lme4} based on the \texttt{nlme} package of  \cite{Pinheiro2000a}.
 Based on this package we compute the estimates $\hat{\theta}$ and $\textrm{Var}(\hat{\theta})$ and use these in the construction of test and confidence intervals for the $\Delta\Delta\textrm{C}_q$-values as described above.
 
+\subsection{Hypothesis test and confidence intervals for $\Delta\Delta\textrm{C}_q$-values by bootstrapping}
 
-\subsection{Power calculations}
+A simple alternative to the statistical $\Delta$-method, which avoids calculating gradients and often performing better in small sample situations, is to bootstrap.
 
-In order to properly design an experimental study one needs to have some idea of whether the proposed experimental conditions are sufficient to provide reasonable expection that the hypothesized effects will be detectable over experimental error. The power of a statistical test is the probability that the test will correctly declare a result statistically significant given an effect size or difference of $\delta = c(\theta)$ between case and controls. Hence for qPCR-experiments the power is given by
+The basic idea of bootstrapping is that inference about the $\Delta\Delta\textrm{C}_q$-values can be can conducted by resampling the sample data and performing inference on the resampled data.
+
+Nonparamtric block bootstrap samples for the case-control data are generated by sampling matched pairs of target/reference genes with replacement for cases and controls, respectively.
+However, as we have only got a sinlge observation for each dilution step we chose to resample residuals from the fitted simple regression model and subsequently adding the residuals to the fitted values from the linear regression.
+
+Hende the bootstrapped data set consists of the resampled mathced pairs and the bootstrapped standard curve. For each data set the $\Delta\Delta\textrm{C}_q$-value is calculated. For the analysis of the CIC and Testis data we draw 5000 bootstrap samples and used them to carry out statistcal inference.
+
+First, standard errors of $\Delta\Delta\textrm{C}_q$-value is calculated by the empirical standard error of the bootstrapped samples.
+Secondly, the P-value for the test for the null hypothesis of a vanishing $\Delta\Delta C_q$-value is calculated as the minimum of two times the percentile and two times one minus the percentile of 0 in the bootstrapped sample.
+
+\subsection{Simulation of the false positive and true positive rate}
+
+In order to properly study a statistical test procedure one needs to have an idea of the false positive rate (FPR), or specificity or type I error rate,  and the true positive rate (TPR), or  sensitivity or power.
+
+The TPR of a statistical test is the probability that the test will correctly declare a result statistically significant given an effect size or difference of $\delta = c(\theta)$ between case and controls. Hence for qPCR-experiments the TPR is given by
 \[
-  \pi =
+  \mbox{TPR} =
     P\big(t > t_{\alpha/2,\eta} \big| c(\theta) = \delta\big).
 \]
-A straightforward way to obtain the power is to simulate a number of $t$-values $t_1,\dots,t_n$ under the alternative hypothesis of $c(\theta) = \delta$ and then estimate the power by
+A straightforward way to obtain the TPR is to simulate a number of $t$-values $t_1,\dots,t_n$ under the alternative hypothesis of $c(\theta) = \delta$ and then estimate the TPR by
 \[
-  \hat{\pi} =
+  \widehat{\mbox{TPR}} =
     \frac{1}{n}\sum_{i=1}^n \bbOne \!\big[ t_i >  t_{\alpha/2,\eta} \big],
 \]
 i.e.\ the fraction of tests correctly declared significant.
 
-Based on the above statistical model, we computed the power for a given sample size, sample and experimental variation, and effect size.
-We present a simulation example of a two-sided test for the null hypothesis of a vanishing $\Delta\Delta C_q$-value at $5\%$ significance level.
-The test was performed varying the number subjects divided into the case and control groups.
-The effect size was set to $\delta = 10/9$, the sample and experimental variation  was set to $\sigma_{S}^2 = 1$ and $\sigma^2 = 1$, respectively.
-Finally, the AE was set to 0.9. Figure \ref{fig:powercurve} shows the estimated power as a function of sample size.
-The full-drawn lines shows the power for various number of dilutions steps.
-The black dashed line shows the power if a t-test is applied directly after AE-correction. The grey dahsed line shows the power for the "optima situation" of perfect AE.
+On the other hand the FPR of a statistical test is the probability that the test incorrectly will declare a result statistically significant given a vanishing effect size or difference of $ c(\theta) = 0$ between case and controls. Hence for qPCR-experiments the FPR is given by
+\[
+  \mbox{FPR} =
+    P\big(t > t_{\alpha/2,\eta} \big| c(\theta) = 0\big).
+\]
+A straightforward way to obtain the FPR is to simulate a number of $t$-values $t_1,\dots,t_n$ under the null hypothesis of $c(\theta) = 0$ and then estimate the FPR by
+\[
+  \widehat{\mbox{FPR}} =
+    \frac{1}{n}\sum_{i=1}^n \bbOne \!\big[ t_i >  t_{\alpha/2,\eta} \big],
+\]
+i.e.\ the fraction of tests incorrectly declared significant.
+
+Based on the above statistical model, we computed the FPR and the TPR for a given sample sizes, sample and experimental variations, and effect sizes.
 
 \subsection{Sample and data preparation}
 
 \subsubsection{CIC data}
 
-For this study 8 multiple myeloma (MM) cell lines with $>$10\% culture initiating cells (AMO-1, KMM-1, KMS-11, KMS12-PE, KMS12-BM, MOLP8, L-363, RPMI-8226), and 8 MM cell lines with $<$1\% culture initiating cells (ANBL-1, KAS-6-1, LP-1, MOLP-2, NCI-H929, OPM-2, SK-MM-2, U-266) were used. The fraction of culture initiating cells was determined by the limiting dilution method, see \cite{Lefkovits1999}
- Total RNA was isolated from frozen cell culture pellets, using a combined method of Trizol (invitrogen) and Mirvana spin columns (Ambion). Isolated RNA was used in complementary DNA (cDNA) synthesis using SuperScript III First-Strand Synthesis Supermix (Invitrogen). 250ng of total RNA was used as input into the cDNA synthesis. Equal amounts of random hexamers and oligo(dT) were used as primers. Quantitative real-time reverse transcriptase-polymerase chain reaction (qPCR) was performed on a Mx3000p QPCR system (Agilent Technologies/Stratgene) using the TaqMan UniversalPCR Master Mi, No AmpErase UNG, and TaqMan gene expression Assays (Applied Biosystems). The following TaqMan Gene Expression Assays were used (Assay ID numbers in parentheses): MGST1 (Hs00220393\_m1), FGFR3 (Hs00179829\_m1), WHSC1 (Hs00983716\_m1). The Two reference genes beta actin (ACTB) and GAPDH were used as endogenous controls, assay IDs  4333762-0912030 and 4333764-1111036, respectively.
+For this study 8 multiple myeloma (MM) cell lines with $>$10\% culture initiating cells (AMO-1, KMM-1, KMS-11, KMS12-PE, KMS12-BM, MOLP8, L-363, RPMI-8226), and 8 MM cell lines with $<$1\% culture initiating cells (ANBL-1, KAS-6-1, LP-1, MOLP-2, NCI-H929, OPM-2, SK-MM-2, U-266) were used. The fraction of culture initiating cells was determined by the limiting dilution method, see \cite{Lefkovits1999}.
+ Total RNA was isolated from frozen cell culture pellets, using a combined method of Trizol (invitrogen) and Mirvana spin columns (Ambion). Isolated RNA was used in complementary DNA (cDNA) synthesis using SuperScript III First-Strand Synthesis Supermix (Invitrogen). As input into the total cDNA synthesis 250ng of total RNA was used. Equal amounts of random hexamers and oligo(dT) were used as primers. Quantitative real-time reverse transcriptase-polymerase chain reaction (qPCR) was performed on a Mx3000p QPCR system (Agilent Technologies/Stratgene) using the TaqMan UniversalPCR Master Mi, No AmpErase UNG, and TaqMan gene expression Assays (Applied Biosystems). The following TaqMan Gene Expression Assays were used (Assay ID numbers in parentheses): MGST1 (Hs00220393\_m1), FGFR3 (Hs00179829\_m1), WHSC1 (Hs00983716\_m1). The Two reference genes beta actin (ACTB) and GAPDH were used as endogenous controls, assay IDs  4333762-0912030 and 4333764-1111036, respectively. For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of material from the AMO-1.
 
 \subsubsection{DLBCL data}
 
-DLBCL samples were collected from 8 testicular and 8 nodal parafin embedded lymphomas at Aalborg Hospital. Total RNA was isolated  using a combined method of  Trizol (Invitrogen) and Mirvana spin columns (Ambion). 10ng total
+DLBCL samples were collected from 8 testicular and 8 nodal parafin embedded lymphomas at Aalborg Hospital. Total RNA was isolated  using a combined method of  Trizol (Invitrogen) and Mirvana spin columns (Ambion). An amount of 10ng total
 RNA was synthesized into first strand cDNA in a 15$\mu$L reaction using
 TaqMan MicroRNA Reverse Transcription Kit (Applied Biosystems)
-according to the manufactures instruction. An amount of 1.33$\mu$L cDNA was used as
-template in the real time PCR amplification performed in  MX-3000P
-(Stratagene) with sequence specific TaqMan primers (Applied Biosystems). The two microRNAs, hsa-miR-127 and  hsa-miR-143, were chosen for validation of differential expression between testicular and nodal manifestation of diffuse large B-cell lymphoma. As reference  transcripts we chose RNU-6B and RNU-24, which were less variable and equally expressed across nodal and extranodal samples.For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference samples consisting of a pooled material from all 16 lymphomas.
+according to the manufactures instruction. In total 1.33$\mu$L cDNA was used as
+template in the real time PCR amplification performed by Mx3000p QPCR system (Agilent Technologies/Stratgene) with sequence specific TaqMan primers (Applied Biosystems). The two microRNAs, hsa-miR-127 and  hsa-miR-143, were chosen for validation of differential expression between testicular and nodal manifestation of diffuse large B-cell lymphoma. As reference  transcripts we chose RNU-6B and RNU-24, which were less variable and equally expressed across nodal and extranodal samples among a larger list of candidate reference genes. For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of a pooled material from all 16 lymphomas.
 
 For both experiments $\rm{C}_q$ values were extracted for both the reference and target transcripts with automatic baseline and threshold selection \citep{Mx300P2013}.
 
 \section{Results}
 
-\subsection{Power calculation}
-
 \subsection{CIC experiment}
 The raw $C_q$-values and dilution curves are depicted in Figure \ref{fig:cqCIC} and Figure \ref{fig:powercurveCIC}, respectively. The differences in gene expressions in case genes, MGST1 and MMSNET, compared to control genes were estimated using four different methods: Naive $t$-test, regular $\Delta \Delta C_q$ estimate, and efficiency corrected estimates with and without a variance correction. These results are seen in Table \ref{tab:results}.
 
 \subsection{DLBCL experiment}
+
+
+\subsection{Simulation of FPR and TPR}
+
+We present a simulation example of a two-sided test for the null hypothesis of a vanishing $\Delta\Delta C_q$-value at $5\%$ significance level.
+The test was performed varying the number subjects divided into the case and control groups.
+The effect size was set to $\delta = 10/9$, the sample and experimental variation  was set to $\sigma_{S}^2 = 1$ and $\sigma^2 = 1$, respectively.
+Finally, the AE was set to 0.9. Figure \ref{fig:powercurve} shows the estimated TPR as a function of sample size.
+The full-drawn lines shows the TPR for various number of dilutions steps.
+The black dashed line shows the TPR if a t-test is applied directly after AE-correction. The grey dahsed line shows the TPR for the "optima situation" of perfect AE.
 
 \section{Discussion}
 % Main message

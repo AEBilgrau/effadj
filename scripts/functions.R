@@ -192,11 +192,12 @@ DDCq <- function (data, var.adj) {
 #
 
 DDCq.test <- function (data,
-                       method = c("LMM", "Naive"),
+                       method = c("LMM", "Naive", "Bootstrap"),
                        eff.cor,
                        var.adj,
                        subset.cols,
-                       subset.rows) {
+                       subset.rows,
+                       n.boots = 100) {
   # method; character, either "Naive" (i.e a simple t-test) or "LMM"
   # eff.cor; logical, Should the data be efficiency corrected?
   # var.adj; logical, Should the eff. corrected estimate be variace corrected?
@@ -249,6 +250,9 @@ DDCq.test <- function (data,
                         data = data, FUN = mean)  # Mean over replicates
       return(DDCq(as.data.qPCR(data), var.adj = var.adj))
     }
+  } else if (method == "Bootstrap") {    # Booststrap
+
+    return(bootstrapEstimate(data, n.boots))
 
   } else {
     stop("No usable method found")
@@ -291,7 +295,6 @@ PowerSim <-
             "dilutions and", start.sample + i - 1, "samples.\n")
         flush.console()
         for (j in seq_len(n.sims)) {
-          #i <- j <- k <- 1
           sim.data <- SimqPCRData(std.curve   = std.curve,
                                   n.samples   = start.sample   + i - 1,
                                   n.dilutions = start.dilution + k - 1,
@@ -394,11 +397,14 @@ bootstrapSample <- function(data) {
     return(fitted(lin.fit) + sample(resid(lin.fit), replace = TRUE))
   }
 
-  if (is.null(unique(data$geneName))) warning("no geneName col present in data")
-
+  # if (is.null(unique(data$geneName))) warning("no geneName col present in data")
   for (gname in unique(data$geneName)) {
     for (gtype in unique(data$geneType)) {
-      get <- with(data, std & geneType == gtype & geneName == gname)
+      if (is.null(gname)) {
+        get <- with(data, std & geneType == gtype)
+      } else {
+        get <- with(data, std & geneType == gtype & geneName == gname)
+      }
       if (sum(get) > 0) {
         data$Cq[get] <- residualBootstrap(data[get, ])
       }
@@ -437,11 +443,17 @@ twoSideP <- function(bdist){
   return(p)
 }
 
-bootstrapEstimate <- function(data, n.boots = 100) {
+bootstrapEstimate <- function(data, n.boots) {
   # Aggregate data
-  data <- aggregate(Cq ~ sampleName + geneType + sampleType +
-                      geneType + l2con + copyNumber + geneName,
-                    data = data, FUN = mean)
+  if (is.null(data$geneName)) {
+    data <- aggregate(Cq ~ sampleName + geneType + sampleType +
+                        geneType + l2con + copyNumber,
+                      data = data, FUN = mean)
+  } else {
+    data <- aggregate(Cq ~ sampleName + geneType + sampleType +
+                        geneType + l2con + copyNumber + geneName,
+                      data = data, FUN = mean)
+  }
 
   # Create bootstrap samples
   bs.samples <- replicate(n.boots, bootstrapSample(data), simplify = FALSE)
@@ -480,8 +492,9 @@ as.data.qPCR <- function (data) {
     data$geneType   <- as.factor(as.character(data$geneType))
     data$sampleType <- as.factor(as.character(data$sampleType))
     data$sampleName <- as.factor(as.character(data$sampleName))
-    if ("geneName" %in% names(data))
+    if ("geneName" %in% names(data)) {
       data$geneName   <- as.factor(as.character(data$nameName))
+    }
   }
   return(data)
 }

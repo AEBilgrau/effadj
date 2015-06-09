@@ -14,126 +14,43 @@ mu.ref         <- 25     # Mean of reference gene
 alpha.tgt      <- 0.75   # Amp. efficiency of target gene
 alpha.ref      <- 0.80   # Amp. efficiency of refence gene
 ddcq           <- 10/9   # True effect size Delta-Delta-C_q
-tech.sd        <- 1      # Technical standard deviation
-sample.sd      <- 1.3    # Sample standrad deviation
-n.sims         <- 1000   # Number of simulations
+tech.sd        <- 0.5    # Technical standard deviation
+sample.sd      <- 1      # Sample standard deviation
 n.replicates   <- 1      # Number of technical replicates
-
-start.sample   <- 3      # Smallest number of samples
-n.samples      <- 10     # Total number of samples
-end.sample     <- start.sample + n.samples - 1 # Max number of samples
-start.dilution <- 3      # Smallest number of dilutions
-n.dilutions    <- 12     # Total number of dilutions
+n.boot.sim     <- 100
 
 
 #
-# Power calculations
+# Perform simulations
 #
-
-# Power calculation with standard curves
-if (!exists("dilution.power.results") | recompute) {
-  dilution.power.results <-
-    PowerSim(n.sims         = n.sims,
-             start.sample   = start.sample,
-             n.samples      = n.samples,
-             start.dilution = start.dilution,
-             n.dilutions    = n.dilutions,
-             ddcq           = ddcq,
-             alpha.tgt = alpha.tgt, alpha.ref = alpha.ref,
-             mu.tgt = mu.tgt, mu.ref = mu.ref, tech.sd = tech.sd,
-             n.replicates = n.replicates)
-  resave(dilution.power.results, file = save.file)
-}
-
-# Power calculations without standard curves
-if (!exists("no.dilution.power.results") | recompute) {
-  no.dilution.power.results <-
-    PowerSim(std.curve      = FALSE,
-             n.sims         = 2, #n.sims,
-             start.sample   = start.sample,
-             n.samples      = n.samples,
-             start.dilution = 1,        # These are equivalent
-             n.dilutions    = 1,        # to std.curve = FALSE
-             ddcq           = ddcq,
-             alpha.tgt = alpha.tgt, alpha.ref = alpha.ref,
-             mu.tgt = mu.tgt, mu.ref = mu.ref, tech.sd = tech.sd,
-             n.replicates = n.replicates)
-  resave(no.dilution.power.results, file = save.file)
-}
-
-
-
-# Theoretical power curve, with perfect efficiency
-t.pow.res <- rep(NA, n.samples)
-for(i in 1:length(t.pow.res)){
-  t.pow.res[i] <- power.t.test(n           = start.sample + i - 1,
-                               delta       = ddcq,
-                               sd          = sample.sd,
-                               sig.level   = 0.05,
-                               power       = NULL,
-                               type        = c("two.sample"),
-                               alternative = c("two.sided"),
-                               strict      = FALSE)$power
-}
-
-# Plotting power curves
-
-pow.res     <- dilution.power.results
-without.res <- no.dilution.power.results
-
-jpeg("../output/Figure1.jpg")
-  plot(1, type = "n",
-       xlab = "Number of samples per group",
-       xlim = c(start.sample, end.sample),
-       ylab = "Power",
-       ylim = c(min(pow.res,t.pow.res, without.res),
-                max(pow.res,t.pow.res, without.res)))
-  grid()
-  for (i in 1:nrow(pow.res)) {
-    lines(cenvelope(cbind(start.sample:end.sample, pow.res[i, ])),
-          type = "b", col = jet.colors(5)[i], lwd = 1.5, cex = 0.6)
-  }
-  lines(start.sample:end.sample, without.res[1,],
-        type = "b", col = "grey", lwd = 1.5, lty = 2, cex = 0.6)
-  lines(start.sample:end.sample, t.pow.res,
-        type = "b", col = "black", lwd = 1.5, lty = 2, cex = 0.6)
-
-
-  legend("bottomright",
-         legend = c(rownames(pow.res), "No dilution", "t-test approach"),
-         lty = c(rep(1, nrow(pow.res)), 2, 2), lwd = 2, bty = "n",
-         col = c(jet.colors(nrow(pow.res)), "grey", "black"), inset = 0.0)
-  legend("right", legend = bquote(Delta*Delta*C[q] == .(round(ddcq,3))),
-         bty = "n", inset = 0.05)
-dev.off()
-
-
-#
-# More simulations
-#
-
 
 SimTemp <- function (nd, ns, ddcq = 10/9) {
-  data <- list()
+  data <- vector("list", 2)
   for (i in 1:2) {
     data[[i]] <-
       SimqPCRData(std.curve = TRUE, mu.tgt = mu.tgt, mu.ref = mu.ref,
                   n.samples = ns, n.replicates = n.replicates, n.dilutions = nd,
                   tech.sd = tech.sd, alpha.tgt = alpha.tgt,
                   alpha.ref = alpha.ref, sample.sd = sample.sd,
-                  ddcq = ifelse(i==1, 0, ddcq))
+                  ddcq = (i==1)*ddcq)
   }
   res <- as.data.frame(
     rbind(DDCq.test(data[[1]], method = "LMM", eff.cor=FALSE, var.adj=FALSE),
           DDCq.test(data[[1]], method = "LMM", eff.cor=TRUE,  var.adj=FALSE),
           DDCq.test(data[[1]], method = "LMM", eff.cor=TRUE,  var.adj=TRUE),
+          DDCq.test(data[[1]], method = "Bootstrap", n.boot.sim),
           DDCq.test(data[[2]], method = "LMM", eff.cor=FALSE, var.adj=FALSE),
           DDCq.test(data[[2]], method = "LMM", eff.cor=TRUE,  var.adj=FALSE),
-          DDCq.test(data[[2]], method = "LMM", eff.cor=TRUE,  var.adj=TRUE)))
-  rownames(res) <- paste(rep(c("H0:", "H1:"), each = 3),
-                         rep(c("LMM", "LMM.EC", "LMM.EC.VA"), 2), sep = "")
+          DDCq.test(data[[2]], method = "LMM", eff.cor=TRUE,  var.adj=TRUE),
+          DDCq.test(data[[2]], method = "Bootstrap", n.boot.sim)))
+
+    rownames(res) <- paste0(rep(c("H0:", "H1:"), each = 4),
+                            rep(c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot"), 2))
   return(res)
 }
+
+SimTemp(nd = 4, ns = 4)
+
 
 
 # Parameters controling the number of samples and dilutions to be simulated
@@ -320,3 +237,95 @@ pdf("../output/simulation.mean.sd.of.ddcq.pdf", height = 7, width = 7)
 dev.off()
 
 
+
+#
+#
+#
+#
+#
+#
+#
+#
+#
+# #
+# # Power calculations
+# #
+#
+# # Power calculation with standard curves
+# if (!exists("dilution.power.results") | recompute) {
+#   dilution.power.results <-
+#     PowerSim(n.sims         = n.sims,
+#              start.sample   = start.sample,
+#              n.samples      = n.samples,
+#              start.dilution = start.dilution,
+#              n.dilutions    = n.dilutions,
+#              ddcq           = ddcq,
+#              alpha.tgt = alpha.tgt, alpha.ref = alpha.ref,
+#              mu.tgt = mu.tgt, mu.ref = mu.ref, tech.sd = tech.sd,
+#              n.replicates = n.replicates)
+#   resave(dilution.power.results, file = save.file)
+# }
+#
+# # Power calculations without standard curves
+# if (!exists("no.dilution.power.results") | recompute) {
+#   no.dilution.power.results <-
+#     PowerSim(std.curve      = FALSE,
+#              n.sims         = 2, #n.sims,
+#              start.sample   = start.sample,
+#              n.samples      = n.samples,
+#              start.dilution = 1,        # These are equivalent
+#              n.dilutions    = 1,        # to std.curve = FALSE
+#              ddcq           = ddcq,
+#              alpha.tgt = alpha.tgt, alpha.ref = alpha.ref,
+#              mu.tgt = mu.tgt, mu.ref = mu.ref, tech.sd = tech.sd,
+#              n.replicates = n.replicates)
+#   resave(no.dilution.power.results, file = save.file)
+# }
+#
+#
+#
+# # Theoretical power curve, with perfect efficiency
+# t.pow.res <- rep(NA, n.samples)
+# for(i in 1:length(t.pow.res)){
+#   t.pow.res[i] <- power.t.test(n           = start.sample + i - 1,
+#                                delta       = ddcq,
+#                                sd          = sample.sd,
+#                                sig.level   = 0.05,
+#                                power       = NULL,
+#                                type        = c("two.sample"),
+#                                alternative = c("two.sided"),
+#                                strict      = FALSE)$power
+# }
+#
+# # Plotting power curves
+#
+# pow.res     <- dilution.power.results
+# without.res <- no.dilution.power.results
+#
+# jpeg("../output/Figure1.jpg")
+# plot(1, type = "n",
+#      xlab = "Number of samples per group",
+#      xlim = c(start.sample, end.sample),
+#      ylab = "Power",
+#      ylim = c(min(pow.res,t.pow.res, without.res),
+#               max(pow.res,t.pow.res, without.res)))
+# grid()
+# for (i in 1:nrow(pow.res)) {
+#   lines(cenvelope(cbind(start.sample:end.sample, pow.res[i, ])),
+#         type = "b", col = jet.colors(5)[i], lwd = 1.5, cex = 0.6)
+# }
+# lines(start.sample:end.sample, without.res[1,],
+#       type = "b", col = "grey", lwd = 1.5, lty = 2, cex = 0.6)
+# lines(start.sample:end.sample, t.pow.res,
+#       type = "b", col = "black", lwd = 1.5, lty = 2, cex = 0.6)
+#
+#
+# legend("bottomright",
+#        legend = c(rownames(pow.res), "No dilution", "t-test approach"),
+#        lty = c(rep(1, nrow(pow.res)), 2, 2), lwd = 2, bty = "n",
+#        col = c(jet.colors(nrow(pow.res)), "grey", "black"), inset = 0.0)
+# legend("right", legend = bquote(Delta*Delta*C[q] == .(round(ddcq,3))),
+#        bty = "n", inset = 0.05)
+# dev.off()
+#
+#

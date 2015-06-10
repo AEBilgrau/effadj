@@ -1,8 +1,14 @@
-\documentclass[oupdraft]{bio}
+\documentclass{bio} %[oupdraft]
+
 \usepackage[colorlinks=true,urlcolor=citecolor,linkcolor=citecolor,citecolor=citecolor]{hyperref}
-\usepackage{graphicx}
+% \usepackage{geometry}
 
 % Our preamble %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\graphicspath{{../output/}}
+\DeclareGraphicsExtensions{.eps}
+\usepackage[outdir=./]{epstopdf}
+
 \newcommand{\tgt}{\textrm{tgt}}
 \newcommand{\rref}{\textrm{ref}}
 \newcommand{\case}{\textrm{case}}
@@ -34,6 +40,8 @@
 \history{Received August 1, 2010;
 revised October 1, 2010;
 accepted for publication November 1, 2010}
+
+
 
 \begin{document}
 
@@ -362,10 +370,6 @@ An R-package with all data and scripts leading to the results of the present pap
 The research is supported by MSCNET, a translational program studying cancer stem cells in multiple myeloma supported by the EU FP6, and CHEPRE, a program studying chemosensitivity in malignant lymphoma by genomic signatures supported by The Danish Agency for Science, Technology and Innovation, as well as Karen Elise Jensen Fonden. The funders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.\\
 {\it Conflict of Interest}: None declared.
 
-
-\bibliographystyle{biorefs}
-\bibliography{references}
-
 \newpage
 
 \input{../output/Table1.tex}
@@ -374,47 +378,45 @@ The research is supported by MSCNET, a translational program studying cancer ste
 
 \newpage
 
-%\begin{figure}
-%\begin{center}
-%\includegraphics[width=0.7\textwidth]{../output/Figure1.cicv1.3.pdf}
-%\end{center}
-%\caption{A: $C_q$-values: Raw $C_q$-values for each gene and sample type. B: %Dilution curves: Dilution curves for ACTB, GAPDH, MGST1, and MMSET }
-%\label{fig:cqCIC}
-%\end{figure}
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{fig1}
+\end{center}
+\caption{
+  Overview of CIC experiment data.
+  A: Raw $C_q$-values for different cell lines for each gene type and sample type.
+  The individual genes are not differentiated.
+  B: Dilution data for reference genes (ACTB, GAPDH) and target genes (MGST1, MMSET).
+}
+\label{fig:cqCIC}
+\end{figure}
 
-%\begin{figure}
-%\begin{center}
-%\includegraphics[width=0.7\textwidth]{../output/Figure1.cicv1.3.pdf}
-%\end{center}
-%\caption{A: $C_q$-values: Raw $C_q$-values for each gene and sample type. B: %Dilution curves: Dilution curves for rnu6b, rnu24, mir127, and mir 143}
-%\label{fig:cqTestis}
-%\end{figure}
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{fig2}
+\end{center}
+\caption{
+  Overview of testis experiment data.
+  A: Raw $C_q$-values for different cell lines for each gene type and sample type.
+  The individual genes are not differentiated.
+  B: Dilution data for reference genes (rnu24, rnu6b) and target genes (mir127, mir142).
+}
+\label{fig:cqTestis}
+\end{figure}
 
+\begin{figure}
+\begin{center}
+\includegraphics{fig3}
+\end{center}
+\caption{
+  Plot of the false postive rates (FPR) and true positive rates (TPR) achived by each method at various $p$-value cut-offs (0.05, 0.01, 0.1) by simulation experiments.
+  The rates are plotted for each combination of 4 or 8 samples with 4 or 8 fold dilution curves.
+}
+\label{fig:simstudy}
+\end{figure}
 
-%\begin{figure}
-%\begin{center}
-%\includegraphics[width=0.7\textwidth]{powercurve.pdf}
-%\end{center}
-%\caption{Power as function of sample size for an increasing number of dilutions in the dilution curve of a two-sided test 5\%-level test for non-vanishing $\Delta\Delta C_q$-value.}
-%\label{fig:powercurve}
-%\end{figure}
-
-%\begin{figure}
-%\begin{center}
-%\includegraphics[width=0.7\textwidth]{allgenes.pdf}
-%\end{center}
-%\caption{A: $C_q$-values: Raw $C_q$-values for each gene and sample type. B: Dilution curves: Dilution curves for ACTB, GAPDH, MGST1, and FGFR3 }
-%\label{fig:cqCIC}
-%\end{figure}
-
-%\begin{figure}
-%\begin{center}
-%\includegraphics[width=0.7\textwidth]{standard.pdf}
-%\end{center}
-%\caption{Dilution curves for ACTB, GAPDH, MGST1, and FGFR3 }
-%\label{fig:cqCIC2}
-%\end{figure}
-
+\bibliographystyle{biorefs}
+\bibliography{references}
 
 
 \end{document}

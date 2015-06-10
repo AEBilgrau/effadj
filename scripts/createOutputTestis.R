@@ -11,29 +11,28 @@
 #
 
 # Trellis plot of all data
-jpeg("../output/Figure1.testis.jpg", width = 1.5*7, height = 7, units = "in",
-     res = 300)
+fig2a <- dotplot(sampleName ~ Cq | geneType:sampleType,
+                 data = subset(testis, sampleType != "Standard"),
+                 main = "", col = "tomato",
+                 xlab = expression(C[q]),
+                 key = list(text=list(title="A"),
+                            corner = c(-0.1,1.1),
+                            cex = 1.5, font = "bold"))
+
+fig2b <- xyplot(Cq ~ l2con | geneName, pch = 16,
+                data = subset(testis, sampleType == "Standard"),
+                xlab = as.expression(bquote(-log[2]*N["0,i,j,k"])),
+                ylab = expression(C[q]),
+                main = "", col = "tomato",
+                key = list(text=list(title="B"),
+                           corner = c(-0.1,1.1),
+                           cex = 1.5, font = "bold"))
+
+setEPS()
+postscript("../output/fig2.eps", width = 1.5*7, height = 0.75*7)
   trellis.par.set(strip.background=list(col="lightgrey"))
-
-  fig3a <- dotplot(sampleName ~ Cq | geneType:sampleType,
-                   data = subset(testis, sampleType != "Standard"),
-                   main = "", col = "tomato",
-                   xlab = expression(C[q]),
-                   key = list(text=list(title="A"),
-                              corner = c(-0.1,1.1),
-                              cex = 1.5, font = "bold"))
-
-  fig3b <- xyplot(Cq ~ l2con | geneType:geneName, pch = 16,
-                  data = subset(testis, sampleType == "Standard"),
-                  xlab = as.expression(bquote(-log[2]*N["0,i,j,k"])),
-                  ylab = expression(C[q]),
-                  main = "", col = "tomato",
-                  key = list(text=list(title="B"),
-                             corner = c(-0.1,1.1),
-                             cex = 1.5, font = "bold"))
-
-  print(fig3a, position=c(0, 0, 0.5, 1), more = TRUE)
-  print(fig3b, position=c(0.5, 0, 1, 1))
+  print(fig2a, position=c(0, 0, 0.5, 1), more = TRUE)
+  print(fig2b, position=c(0.5, 0, 1, 1))
 dev.off()
 
 

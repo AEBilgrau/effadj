@@ -1,7 +1,5 @@
 \documentclass{bio} %[oupdraft]
-
 \usepackage[colorlinks=true,urlcolor=citecolor,linkcolor=citecolor,citecolor=citecolor]{hyperref}
-% \usepackage{geometry}
 
 % Our preamble %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -18,21 +16,15 @@
 \newcommand{\slfrac}[2]{\left.#1\middle/#2\right.}
 
 \usepackage{dsfont}
-% \usepackage{pdfpages}
-% \usepackage{url}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Run analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%'
-%' <<test, results='hide', echo=FALSE>>=
-%' getwd()
-%' @
-%'
-%' <<run_master, echo=FALSE, results='hide', message=FALSE>>=
-%' source("../scripts/master.R")
-%' @
-%
+
+<<run_master, echo=FALSE, results='hide', message=FALSE>>=
+source("../scripts/master.R")  # Simply runs the master script
+@
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -364,11 +356,15 @@ Despite the recent success of qPCR  much more statistical methodologcial researh
 All statistical analysis were done with R \citep{R2004} version 3.0.1 and the contributed lme4 package \citep{Pinheiro2000a} was applied for random effects modelling.
 
 \section*{Supplementary Material}
-An R-package with all data and scripts leading to the results of the present paper is available at \url{http://www.r-project.org}
+All data, R code, and LaTeX to produce this presnet paper and the results herein is freely available at \url{http://www.github.org/AEBilgrau/effadj/} and upon request.
+The paper is generated using \texttt{knitr} (an improvement of Sweave) \citep{}.
 
 \section*{Acknowledgments}
 The research is supported by MSCNET, a translational program studying cancer stem cells in multiple myeloma supported by the EU FP6, and CHEPRE, a program studying chemosensitivity in malignant lymphoma by genomic signatures supported by The Danish Agency for Science, Technology and Innovation, as well as Karen Elise Jensen Fonden. The funders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.\\
 {\it Conflict of Interest}: None declared.
+
+\bibliographystyle{biorefs}
+\bibliography{references}
 
 \newpage
 
@@ -406,17 +402,16 @@ The research is supported by MSCNET, a translational program studying cancer ste
 
 \begin{figure}
 \begin{center}
-\includegraphics{fig3}
+\includegraphics[width=\textwidth]{fig3}
 \end{center}
 \caption{
-  Plot of the false postive rates (FPR) and true positive rates (TPR) achived by each method at various $p$-value cut-offs (0.05, 0.01, 0.1) by simulation experiments.
+  Plot of the false postive rates (FPR) and true positive rates (TPR) and 95 \% confidence intervals achived by each method at various $p$-value cut-offs (0.05, 0.01, 0.1) by simulation experiments.
+  Computed from tables similar to Table \ref{tab:simexample}.
   The rates are plotted for each combination of 4 or 8 samples with 4 or 8 fold dilution curves.
 }
 \label{fig:simstudy}
 \end{figure}
 
-\bibliographystyle{biorefs}
-\bibliography{references}
 
 
 \end{document}

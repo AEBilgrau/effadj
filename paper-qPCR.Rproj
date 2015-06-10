@@ -11,6 +11,7 @@ Encoding: UTF-8
 
 RnwWeave: knitr
 LaTeX: pdfLaTeX
+RootDocument: knitr/effadj.Rnw
 
 AutoAppendNewline: Yes
 StripTrailingWhitespace: Yes

@@ -9,20 +9,24 @@
 #
 # Perform a simulation
 #
+# a <- formals(SimTemp)
+# for (i in seq_along(a)) assign(names(a)[i], a[[i]])
+SimTemp <- function (
+  nd,                      # Number of dilutions
+  ns,                      # Number of samples
+  # Parameters of simulation
+  mu.tgt         = 30,     # Mean of target gene
+  mu.ref         = 25,     # Mean of reference gene
+  alpha.tgt      = 0.75,   # Amp. efficiency of target gene
+  alpha.ref      = 0.90,   # Amp. efficiency of refence gene
+  ddcq           = 10/9,   # True effect size Delta-Delta-C_q
+  tech.sd        = 1,      # Technical standard deviation
+  sample.sd      = 1,      # Sample standard deviation
+  n.replicates   = 1,      # Number of technical replicates
+  n.boot.sim     = 200      # Number of bootstrap samples
+  ) {
 
-SimTemp <- function (nd, ns, ddcq = 10/9) {
-  # Initalization / parameters of simulation
-  mu.tgt         <- 30     # Mean of target gene
-  mu.ref         <- 25     # Mean of reference gene
-  alpha.tgt      <- 0.75   # Amp. efficiency of target gene
-  alpha.ref      <- 0.90   # Amp. efficiency of refence gene
-  ddcq           <- 10/9   # True effect size Delta-Delta-C_q
-  tech.sd        <- 1      # Technical standard deviation
-  sample.sd      <- 1      # Sample standard deviation
-  n.replicates   <- 1      # Number of technical replicates
-  n.boot.sim     <- 150    # Number of bootstrap samples
-
-  data <- vector("list", 2)
+  data <- structure(vector("list", 2), names = c("H0", "HA"))
   for (i in 1:2) {
     data[[i]] <-
       SimqPCRData(std.curve = TRUE, mu.tgt = mu.tgt, mu.ref = mu.ref,
@@ -32,14 +36,14 @@ SimTemp <- function (nd, ns, ddcq = 10/9) {
                   ddcq = ifelse(i==1, 0, ddcq))
   }
   res <- as.data.frame(
-    rbind(DDCq.test(data[[1]], method = "LMM", eff.cor=FALSE, var.adj=FALSE),
-          DDCq.test(data[[1]], method = "LMM", eff.cor=TRUE,  var.adj=FALSE),
-          DDCq.test(data[[1]], method = "LMM", eff.cor=TRUE,  var.adj=TRUE),
-          DDCq.test(data[[1]], method = "Bootstrap", n.boot.sim),
-          DDCq.test(data[[2]], method = "LMM", eff.cor=FALSE, var.adj=FALSE),
-          DDCq.test(data[[2]], method = "LMM", eff.cor=TRUE,  var.adj=FALSE),
-          DDCq.test(data[[2]], method = "LMM", eff.cor=TRUE,  var.adj=TRUE),
-          DDCq.test(data[[2]], method = "Bootstrap", n.boot.sim)))
+    rbind(DDCq.test(data$H0, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
+          DDCq.test(data$H0, method = "LMM", eff.cor=TRUE,  var.adj=FALSE),
+          DDCq.test(data$H0, method = "LMM", eff.cor=TRUE,  var.adj=TRUE),
+          DDCq.test(data$H0, method = "Bootstrap", n.boots = n.boot.sim),
+          DDCq.test(data$HA, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
+          DDCq.test(data$HA, method = "LMM", eff.cor=TRUE,  var.adj=FALSE),
+          DDCq.test(data$HA, method = "LMM", eff.cor=TRUE,  var.adj=TRUE),
+          DDCq.test(data$HA, method = "Bootstrap", n.boots = n.boot.sim)))
 
   # Sanity checks:
   stopifnot(all.equal(res$Estimate[c(2,6)], res$Estimate[c(2,6)+1]))
@@ -138,29 +142,30 @@ get.2by2.table <-  function(subdata, estimator = "LMM.EC", p.cut = 0.05) {
   return(table("Truth" = hyp, "Decision" = dec))
 }
 
-get.performance <- function(subdata, estimator){
-  x <- get.p.info(subdata, estimator)
-  pred <- prediction(predictions = x[, "p"], labels = x[, "hypothesis"])
-  tpr <- performance(pred, "tpr", "cutoff")
-  fpr <- performance(pred, "fpr", "cutoff")
-  return(list("tpr" = tpr, "fpr" = fpr))
-}
-
-
 
 # Create LaTeX table for simulation EXAMPLE
-tab <- matrix(NA, 2, 0)
+ex.tab <- matrix(NA, 0, 8)
 est <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot")
-for (nm in est) {
-  subtab <- t(get.2by2.table(res.ex, estimator = nm, p.cut = 0.05))[2:1, ]
-  tab <- cbind(tab, subtab)
+p.cuts <- c(0.01, 0.05)
+for (i in seq_along(p.cuts)) {
+  tab <- matrix(NA, 2, 0)
+  for (nm in est) {
+    subtab <- get.2by2.table(res.ex, estimator = nm, p.cut = p.cuts[i])
+    tab <- cbind(tab, t(subtab)[2:1, 2:1])
+  }
+  ex.tab <- rbind(ex.tab, tab)
 }
-colnames(tab) <- gsub("H0", "$H_0$", gsub("H1", "$H_A$", colnames(tab)))
-tmp.caption <- "Contingency tables for the different estimators for a $p$-value
-  cutoff of 0.05."
-w <- latex(tab, file = "../output/Table3.tex", title = "",
-           cgroup = c("LMM", "EC", "EC.VA", "Bootstrap"),
-           rgroup = "Decision",
+colnames(ex.tab) <- gsub("H0", "$H_0$", gsub("H1", "$H_A$", colnames(tab)))
+# tmp <- rownames(ex.tab)
+# rownames(ex.tab) <- ifelse(grepl("<", tmp), "Significant", "Non-significant")
+
+tmp.caption <- "Contingency tables for the different estimators for at
+  two different $p$-value thresholds. The used estimators are the naive linear
+  mixed effect model (LMM), the LMM with efficiency correction (EC), the LMM
+  with EC and variance adjustment (EC\\&VA), and the bootstrapped LMM approach."
+w <- latex(ex.tab, file = "../output/Table3.tex", title = "",
+           cgroup = c("LMM", "EC", "EC\\&VA", "Bootstrap"),
+           rgroup = c("Significance", "Significance"),
            caption = tmp.caption,
            label = "tab:simexample")
 
@@ -172,13 +177,13 @@ w <- latex(tab, file = "../output/Table3.tex", title = "",
 setEPS()
 postscript("../output/fig3.eps", width = 2*7/1.5, height = 2*7/1.5)
 
-par(mar = c(0, 0, 0, 0) + 0.5, mfrow = c(2, 2), oma = c(4.5,5.5,2,0), xpd=TRUE)
-
+par(mar = c(0, 0, 0, 0), mfrow = c(2, 2), oma = c(5,5.5,2,4),xpd=TRUE)
+h <- 1
 for (i in seq_along(dilutions)) {
   for (j in seq_along(samples)) {
     dil <- dilutions[i]
     samp <- samples[j]
-    dat <- sim.results[[1]][[2]]
+    dat <- sim.results[[i]][[j]]
 
     # Organize data for i and j
     methods <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot")
@@ -199,6 +204,10 @@ for (i in seq_along(dilutions)) {
     # FPR
     x.fpr <- 1:nrow(fpr) - 0.01
     plot.default(x.fpr, type = "n", axes = FALSE, ylab="", xlab="", ylim = 0:1)
+    rect(0.5, 0, 4.5, 1, col = "grey99", border = NA, xpd = TRUE)
+    rect(4.5, 0, 8.5, 1, col = "grey95", border = NA, xpd = TRUE)
+    rect(8.5, 0, 12.5, 1, col = "grey90", border = NA, xpd = TRUE)
+
     segments(x.fpr, fpr$upper, y1 = fpr$lower)
     points(x.fpr, fpr$upper, pch = "-")
     points(x.fpr, fpr$lower, pch = "-")
@@ -212,29 +221,48 @@ for (i in seq_along(dilutions)) {
     points(x.tpr, tpr$lower, pch = "-",   col = col)
     points(x.tpr, tpr$rate,  pch = 15:18, col = col)
 
+    # Panel letter
+    text(1, 0.95, LETTERS[h], cex = 1.5, font = 2)
+
+    # Axes
     if (j == 1) {
-      axis(2)
-      mtext("FPR             ", side = 2, line = 2)
-      mtext("             TPR", side = 2, line = 2, col = col)
+      axis(2, las = 2, at = p.cuts, col = "red", col.axis = "red")
+      tks <- as.character(axTicks(2))
+      tks[tks == "0"] <- ""
+      axis(2, las = 2, at = axTicks(2),  label = tks)
+
+      mtext("FPR             ", side = 2, line = 2.5)
+      mtext("             TPR", side = 2, line = 2.5, col = col)
       mtext(sprintf("%d dilutions", dil), side = 2, font = 2, line = 4)
+    } else {
+      axis(4, las = 2, at = p.cuts, col = "red", col.axis = "red")
+      tks <- as.character(axTicks(4))
+      tks[tks == "0"] <- ""
+      axis(4, las = 2, at = axTicks(4),  label = tks)
+
     }
     if (i == 1) {
       mtext(sprintf("%d samples", samp), side = 3, font = 2, line = 0)
     }
 
     lab <- gsub("0.[0-9]+ : ", "", gsub("LMM\\.", "", tpr$est))
+    lab <- gsub("\\.", "&", lab)
+    lab <- gsub("boot", "Boostrap", lab)
     for (d in 1:3) {
       ind <- 4*(d-1) + 1:4
-      if (i == 1) {lab <- ""}
-      axis(1, at = ind, labels = lab[ind], las = 2)
-      tw <- 0.1
+      if (i != 1) {
+        # lab[] <- ""
+        axis(1, at = ind, labels = lab[ind], las = 2, font = 2)
+      }
+
 
       # Significance thresholds
-      segments(ind[1]-tw, c(0.01, 0.05, 0.1)[d], rev(ind)[1]+tw,
-               col = "red", lwd = 2)
+      tw <- 0.2
+      segments(ind[1]-tw, p.cuts[d], rev(ind)[1]+tw, col = "red", lwd = 1.5)
     }
 
     # title(main = sprintf("n.samples = %d   n.dilutions = %d", samp, dil))
+    h <- h + 1
   }
 }
 dev.off()

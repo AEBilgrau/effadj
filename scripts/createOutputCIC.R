@@ -29,7 +29,7 @@ fig1b <- xyplot(Cq ~ l2con | as.factor(geneName), pch = 16,
                            cex = 1.5, font = "bold"))
 
 setEPS()
-postscript("../output/fig1.eps", width = 1.5*7, height = 0.75*7)
+postscript("../output/fig1.eps", width = 1.5*7, height = 0.5*7)
   trellis.par.set(strip.background=list(col="lightgrey"))
   print(fig1a, position=c(0, 0, 0.5, 1), more = TRUE)
   print(fig1b, position=c(0.5, 0, 1, 1))
@@ -46,6 +46,7 @@ dev.off()
 #
 
 n.boots.cic <- n.boots
+
 grps.list <- list(c("MGST1", "GAPDH"),
                   c("MGST1", "ACTB"),
                   c("MGST1", "ACTB", "GAPDH"),

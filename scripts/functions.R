@@ -193,8 +193,8 @@ DDCq <- function (data, var.adj) {
 
 DDCq.test <- function (data,
                        method = c("LMM", "Naive", "Bootstrap"),
-                       eff.cor,
-                       var.adj,
+                       eff.cor = TRUE,
+                       var.adj = eff.cor,
                        subset.cols,
                        subset.rows,
                        n.boots = 100) {
@@ -204,15 +204,19 @@ DDCq.test <- function (data,
   # subset.cols and subset.rows can be used to subset the rows and columns
   method <- match.arg(method)
 
-  if (!missing(var.adj) & !missing(var.adj)) {
-    if (var.adj == TRUE & eff.cor == FALSE) {
+  if (method == "LMM") {
+    if (eff.cor == FALSE && var.adj == TRUE) {
       eff.cor <- TRUE
       message("eff.cor was coerced to TRUE as var.adj is TRUE.")
     }
+    stopifnot(is.logical(eff.cor))
+    stopifnot(is.logical(var.adj))
   }
+
   if (!missing(subset.cols)) {
     data <- data[, subset.cols]
   }
+
   if (!missing(subset.rows)) {
     data <- data[subset.rows, ]
   }
@@ -277,6 +281,7 @@ PowerSim <-
             eff.cor        = TRUE,
             var.adj        = TRUE,
             ... ) {   # ... passed to SimqPCRData function
+    warning("NOT USED")
     st <- proc.time()
     if (std.curve == FALSE) {
       start.dilution <- 1

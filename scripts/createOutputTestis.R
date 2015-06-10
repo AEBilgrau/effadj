@@ -1,7 +1,7 @@
 
 ################################################################################
 # Analysis of testis data                                                      #
-# Written by                                                                   #
+# Written by:                                                                  #
 #   Anders Ellern Bilgrau, Steffen Falgreen, and Martin Boegsted               #
 # Last revision: 11th of June, 2015                                            #
 ################################################################################
@@ -29,7 +29,7 @@ fig2b <- xyplot(Cq ~ l2con | geneName, pch = 16,
                            cex = 1.5, font = "bold"))
 
 setEPS()
-postscript("../output/fig2.eps", width = 1.5*7, height = 0.75*7)
+postscript("../output/fig2.eps", width = 1.5*7, height = 0.5*7)
   trellis.par.set(strip.background=list(col="lightgrey"))
   print(fig2a, position=c(0, 0, 0.5, 1), more = TRUE)
   print(fig2b, position=c(0.5, 0, 1, 1))
@@ -47,6 +47,7 @@ dev.off()
 #
 
 n.boots.testis <- n.boots
+
 grps.list <- list(c("mir127", "rnu6b"),
                   c("mir127", "rnu24"),
                   c("mir127", "rnu6b", "rnu24"),

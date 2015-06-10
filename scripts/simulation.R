@@ -1,30 +1,27 @@
 
 ################################################################################
-# Simulations
-# By: Anders Ellern Bilgrau, Steffen Falgreen, and Martin Boegsted
+# Simulation example and experiment
+# Written by
+#   Anders Ellern Bilgrau, Steffen Falgreen, and Martin Boegsted
 # Last revision: 10th of June, 2013
 ################################################################################
 
 #
-# Initalization
-#
-
-mu.tgt         <- 30     # Mean of target gene
-mu.ref         <- 25     # Mean of reference gene
-alpha.tgt      <- 0.75   # Amp. efficiency of target gene
-alpha.ref      <- 0.80   # Amp. efficiency of refence gene
-ddcq           <- 10/9   # True effect size Delta-Delta-C_q
-tech.sd        <- 0.5    # Technical standard deviation
-sample.sd      <- 1      # Sample standard deviation
-n.replicates   <- 1      # Number of technical replicates
-n.boot.sim     <- 100
-
-
-#
-# Perform simulations
+# Perform a simulation
 #
 
 SimTemp <- function (nd, ns, ddcq = 10/9) {
+  # Initalization / parameters of simulation
+  mu.tgt         <- 30     # Mean of target gene
+  mu.ref         <- 25     # Mean of reference gene
+  alpha.tgt      <- 0.75   # Amp. efficiency of target gene
+  alpha.ref      <- 0.90   # Amp. efficiency of refence gene
+  ddcq           <- 10/9   # True effect size Delta-Delta-C_q
+  tech.sd        <- 1      # Technical standard deviation
+  sample.sd      <- 1      # Sample standard deviation
+  n.replicates   <- 1      # Number of technical replicates
+  n.boot.sim     <- 150    # Number of bootstrap samples
+
   data <- vector("list", 2)
   for (i in 1:2) {
     data[[i]] <-
@@ -32,7 +29,7 @@ SimTemp <- function (nd, ns, ddcq = 10/9) {
                   n.samples = ns, n.replicates = n.replicates, n.dilutions = nd,
                   tech.sd = tech.sd, alpha.tgt = alpha.tgt,
                   alpha.ref = alpha.ref, sample.sd = sample.sd,
-                  ddcq = (i==1)*ddcq)
+                  ddcq = ifelse(i==1, 0, ddcq))
   }
   res <- as.data.frame(
     rbind(DDCq.test(data[[1]], method = "LMM", eff.cor=FALSE, var.adj=FALSE),
@@ -44,288 +41,201 @@ SimTemp <- function (nd, ns, ddcq = 10/9) {
           DDCq.test(data[[2]], method = "LMM", eff.cor=TRUE,  var.adj=TRUE),
           DDCq.test(data[[2]], method = "Bootstrap", n.boot.sim)))
 
-    rownames(res) <- paste0(rep(c("H0:", "H1:"), each = 4),
-                            rep(c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot"), 2))
+  # Sanity checks:
+  stopifnot(all.equal(res$Estimate[c(2,6)], res$Estimate[c(2,6)+1]))
+  if (!all(res$"Std. Error"[c(2,6)] <= res$"Std. Error"[c(2,6)+1])) {
+    stop("The standard error in EC+VA is not increased!")
+  }
+  if (!all(res[c(2,6), 5] <= res[c(2,6)+1, 5])) {
+    stop("The p-values in EC+VA has not increased!")
+  }
+
+  rownames(res) <-
+    paste0(rep(c("H0:", "H1:"), each = 4),
+           rep(c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot"), 2))
   return(res)
 }
 
-SimTemp(nd = 4, ns = 4)
+#
+# Perform simulation example
+#  - Simulation for 6 samples, 6 dilutions
+#
 
+if (!exists("res.ex") || recompute) {
+  ex <- SimTemp(nd = 3, ns = 3)  # Just used to get dimnames hereof
+  res.ex <- array(NA, c(8, 5, n.sims))
+  dimnames(res.ex) <- c(dimnames(ex), list(paste0("Sim", seq_len(n.sims))))
+  for (k in seq_len(n.sims)) {
+    res.ex[, , k] <- as.matrix(SimTemp(nd = 6, ns = 6))
+    cat(sprintf("sim = %d\n", k))
+  }
+  resave(res.ex, file = save.file)
+}
 
+#
+# Perform simulation study
+#  - Simulations for combinations of samples and dilutions
+#
 
-# Parameters controling the number of samples and dilutions to be simulated
-from.samp <- 4
-to.samp   <- 11
-from.dil  <- 4
-to.dil    <- 12
+samples <- c(4, 8)
+dilutions <- c(4, 8)
 
 if (!exists("sim.results") | recompute) {
-
+  ex <- SimTemp(nd = 3, ns = 3)  # Just used to get dimnames hereof
+  set.seed(36)
   st <- proc.time()
-  sim.results        <- vector("list", to.dil - from.dil + 1)
-  names(sim.results) <- paste("dilution", from.dil:to.dil, sep = "")
 
-  for (i in seq_along(sim.results)) {
-    samp        <- vector("list", to.samp - from.samp + 1)
-    names(samp) <- paste("sample", from.samp:to.samp, sep = "")
+  sim.results        <- vector("list", length(dilutions))
+  names(sim.results) <- paste0("n.dilutions", dilutions)
+  for (i in seq_along(dilutions)) {
+    samp        <- vector("list", length(samples))
+    names(samp) <- paste0("n.samples", samples)
+    for (j in seq_along(samples)) {
+      res <- array(NA, c(8, 5, n.sims))
+      dimnames(res) <- c(dimnames(ex), list(paste0("Sim", seq_len(n.sims))))
 
-    for (j in seq_along(samp)) {
-      res <- array(NA, c(6, 5, n.sims))
-      cat("Iteration:")
       for (k in seq_len(n.sims)) {
-        res[, , k] <-
-          as.matrix(SimTemp(seq(from.dil, to.dil)[i],
-                            seq(from.samp, to.samp)[j]))
+        res[, , k] <- as.matrix(SimTemp(nd = dilutions[i], ns = samples[j]))
 
-        if (k%%100==0) cat(k, " "); flush.console()
-        if (k%%1000==0) cat("\n")
+        tm <- (proc.time() - st)/60
+        cat(sprintf("dil = %-2d, samp = %-2d, sim = %-3d, ellapsed: %d mins.\n",
+                    i, j, k, round(tm[3])))
       }
-      samp[[j]] <- res;
-      cat("Samples:", j+from.samp-1, "done.\n")
-      cat("Dilutions:", i+from.dil-1, "done.\n"); flush.console()
+      samp[[j]] <- res
     }
     sim.results[[i]]  <- samp
   }
-  resave(sim.results,  file = save.file)
+
   run.time <- proc.time() - st
+  attr(sim.results, "time") <- run.time[3]
+  resave(sim.results,  file = save.file)
 }
 
 #
-# Plot results
+# Plot and write results
 #
 
-get.EC   <- function(data) {
-  cbind(rep(0:1, each = dim(data)[3]), c(data[2,5, ], data[5,5, ]))
+get.p.info   <- function(subdata, estimator = "LMM.EC") {
+  x0 <- cbind(hypothesis = 0, p = subdata[paste0("H0:", estimator), 5, ])
+  x1 <- cbind(hypothesis = 1, p = subdata[paste0("H1:", estimator), 5, ])
+  return(rbind(x0, x1))
 }
 
-get.ECVA <- function(data) {
-  cbind(rep(0:1, each = dim(data)[3]), c(data[3,5, ], data[6,5, ]))
+# Sanity check (again)
+for (i in seq_along(dilutions)) {
+  for (j in seq_along(samples)) {
+    A <- get.p.info(sim.results[[i]][[j]], estimator = "LMM.EC")
+    B <- get.p.info(sim.results[[i]][[j]], estimator = "LMM.EC.VA")
+    stopifnot(all(A[,2] < B[,2]))
+  }
+}
+
+get.2by2.table <-  function(subdata, estimator = "LMM.EC", p.cut = 0.05) {
+  x <- get.p.info(subdata, estimator)
+  hyp <- ifelse(x[,"hypothesis"], "H1", "H0")
+  sig <- x[,"p"] < p.cut
+  dec <- sprintf(ifelse(sig, "$p < %.2f$", "$p \\geq %.2f$"), p.cut)
+  return(table("Truth" = hyp, "Decision" = dec))
+}
+
+get.performance <- function(subdata, estimator){
+  x <- get.p.info(subdata, estimator)
+  pred <- prediction(predictions = x[, "p"], labels = x[, "hypothesis"])
+  tpr <- performance(pred, "tpr", "cutoff")
+  fpr <- performance(pred, "fpr", "cutoff")
+  return(list("tpr" = tpr, "fpr" = fpr))
 }
 
 
-#
-# Plotting ROC curves
-#
 
-get.roc <- function(x){
-  pred <- prediction(-x[,2], x[,1])
-  perf <- performance(pred, "tpr", "fpr")
+# Create LaTeX table for simulation EXAMPLE
+tab <- matrix(NA, 2, 0)
+est <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot")
+for (nm in est) {
+  subtab <- t(get.2by2.table(res.ex, estimator = nm, p.cut = 0.05))[2:1, ]
+  tab <- cbind(tab, subtab)
 }
-
-get.auc <- function(x) {
-  pred <- prediction(-x[,2], x[,1])
-  unlist(slot(performance(pred, "auc"), "y.values"))
-}
-
-roc.ec <- lapply(sim.results, function(x) {lapply(x, get.EC)})
-aucs.ec <- sapply(roc.ec, function(x) {sapply(x, get.auc)})
-roc.ec <- lapply(roc.ec, function(x) {lapply(x, get.roc)})
-
-roc.ecva <- lapply(sim.results, function(x) {lapply(x, get.ECVA)})
-aucs.ecva <- sapply(roc.ecva, function(x) {sapply(x, get.auc)})
-roc.ecva <- lapply(roc.ecva, function(x) {lapply(x, get.roc)})
+colnames(tab) <- gsub("H0", "$H_0$", gsub("H1", "$H_A$", colnames(tab)))
+tmp.caption <- "Contingency tables for the different estimators for a $p$-value
+  cutoff of 0.05."
+w <- latex(tab, file = "../output/Table3.tex", title = "",
+           cgroup = c("LMM", "EC", "EC.VA", "Bootstrap"),
+           rgroup = "Decision",
+           caption = tmp.caption,
+           label = "tab:simexample")
 
 
 #
-# All ROC curves
+# Plot the results
 #
 
-png("../output/simulation.roc.curves.png", height = 1.5*7, width = 1.5*7,
-    units = "in", res = 300)
-par(mfrow=c(3,3))
-for (i in 1:length(roc.ec)) {
-  for (j in 1:length(roc.ec[[1]])) {
+setEPS()
+postscript("../output/fig3.eps", width = 2*7/1.5, height = 2*7/1.5)
 
-    plot(roc.ec[[i]][[j]], add = ifelse(j==1, FALSE, TRUE),
-         col = "red", lwd = 1, lty = 1, main = names(roc.ec)[i])
-    plot(roc.ecva[[i]][[j]], add = TRUE,
-         col = "blue", lwd = 1, lty = 2)
-    if (j==1) {
-      abline(0, 1, col = "grey", lty = 2)
-      legend("bottomright", inset = 0.02, bty = "n", lty = c(1,2), lwd = 2,
-             legend = c("EC", "EC + VA"),
-             col = c("red", "blue"))
+par(mar = c(0, 0, 0, 0) + 0.5, mfrow = c(2, 2), oma = c(4.5,5.5,2,0), xpd=TRUE)
+
+for (i in seq_along(dilutions)) {
+  for (j in seq_along(samples)) {
+    dil <- dilutions[i]
+    samp <- samples[j]
+    dat <- sim.results[[1]][[2]]
+
+    # Organize data for i and j
+    methods <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot")
+    p.cuts <- c(0.01, 0.05, 0.1)
+    fpr <- tpr <- as.data.frame(matrix(NA, length(methods)*length(p.cuts), 5))
+    names(fpr) <- names(tpr) <- c("p.cut", "est", "rate", "upper", "lower")
+    k <- 1
+    for (p.cut in p.cuts) {
+      for (method in methods) {
+        twoByTwo <- get.2by2.table(dat, estimator = method, p.cut)
+        summ.stats <- summary(epi.tests(t(twoByTwo)[2:1, 2:1]))
+        fpr[k, ] <- c(p.cut, method, 1 - summ.stats["sp", ])
+        tpr[k, ] <- c(p.cut, method, summ.stats["se", ])
+        k <- k + 1
+      }
     }
-  }
-}
-dev.off()
 
-#
-# AUC ratios between EC+VA and EC
-#
+    # FPR
+    x.fpr <- 1:nrow(fpr) - 0.01
+    plot.default(x.fpr, type = "n", axes = FALSE, ylab="", xlab="", ylim = 0:1)
+    segments(x.fpr, fpr$upper, y1 = fpr$lower)
+    points(x.fpr, fpr$upper, pch = "-")
+    points(x.fpr, fpr$lower, pch = "-")
+    points(x.fpr, fpr$rate,  pch = 15:18)
 
-pdf("../output/simulation.auc.ratio.pdf")
-  heatmap.2(aucs.ecva/aucs.ec, dendrogram  = "non", keysize = 1,
-            density.info = "none", main = "AUC(EC+VA) / AUC(EC)",
-            trace = "none", Rowv = FALSE, Colv = FALSE)
-dev.off()
+    # TPR
+    x.tpr <- 1:nrow(tpr) + 0.02
+    col <- "darkgrey"
+    segments(x.tpr, tpr$upper, y1 = tpr$lower, lty = 2, col = col)
+    points(x.tpr, tpr$upper, pch = "-",   col = col)
+    points(x.tpr, tpr$lower, pch = "-",   col = col)
+    points(x.tpr, tpr$rate,  pch = 15:18, col = col)
 
-#
-# Threshold against FPR and TPR
-#
-
-png("../output/simulation.threshold.vs.FPR.TPR.png", width = 14, height = 7,
-    units = "in", res = 300)
-  plot(1, type = "n", axes = FALSE, xlab = "", ylab = "")
-  split.screen(c(1,2))
-  for (i in 1:length(roc.ec)) {
-    for (j in 1:length(roc.ec[[1]])) {
-
-      roc.ec.tmp   <- roc.ec[[i]][[j]]
-      roc.ecva.tmp <- roc.ecva[[i]][[j]]
-
-      l <- i == 1 & j == 1
-      screen(1)
-      plot(1, type = "n", xlim = 0:1, ylim = 0:1,
-           xlab = ifelse(l, expression(alpha), ""), ylab = ifelse(l, "FPR", ""),
-           axes = l)
-      lines(-roc.ec.tmp@alpha.values[[1]], roc.ec.tmp@x.values[[1]],
-            type = "s", col = "red", lty = 1)
-      lines(-roc.ecva.tmp@alpha.values[[1]], roc.ecva.tmp@x.values[[1]],
-            type = "s", col = "blue", lty = 2)
-
-      screen(2)
-      plot(1, type = "n", xlim = 0:1, ylim = 0:1,
-           xlab = ifelse(l, expression(alpha), ""), ylab = ifelse(l, "TPR", ""),
-           axes = l)
-      lines(-roc.ec.tmp@alpha.values[[1]], roc.ec.tmp@y.values[[1]],
-            type = "s", col = "red", lty = 1)
-      lines(-roc.ecva.tmp@alpha.values[[1]], roc.ecva.tmp@y.values[[1]],
-            type = "s", col = "blue", lty = 2)
-
+    if (j == 1) {
+      axis(2)
+      mtext("FPR             ", side = 2, line = 2)
+      mtext("             TPR", side = 2, line = 2, col = col)
+      mtext(sprintf("%d dilutions", dil), side = 2, font = 2, line = 4)
     }
+    if (i == 1) {
+      mtext(sprintf("%d samples", samp), side = 3, font = 2, line = 0)
+    }
+
+    lab <- gsub("0.[0-9]+ : ", "", gsub("LMM\\.", "", tpr$est))
+    for (d in 1:3) {
+      ind <- 4*(d-1) + 1:4
+      if (i == 1) {lab <- ""}
+      axis(1, at = ind, labels = lab[ind], las = 2)
+      tw <- 0.1
+
+      # Significance thresholds
+      segments(ind[1]-tw, c(0.01, 0.05, 0.1)[d], rev(ind)[1]+tw,
+               col = "red", lwd = 2)
+    }
+
+    # title(main = sprintf("n.samples = %d   n.dilutions = %d", samp, dil))
   }
-  legend("bottomright", inset = 0.02, bty = "n", lty = c(1,2), lwd = 2,
-         legend = c("EC", "EC + VA"),
-         col = c("Red", "Blue"))
-dev.off()
-
-#
-# Plotting more
-#
-
-matrixMeans <- function(data) {
-  apply(data, c(1,2), mean)
 }
-
-sim.tmp <- lapply(sim.results, function(x) lapply(x, matrixMeans))
-sim.tmp <- as.data.frame(lapply(sim.tmp, function(x) sapply(x,"[",5,2)))
-
-sim.tmp.va <- lapply(sim.results, function(x) lapply(x, matrixMeans))
-sim.tmp.va <- as.data.frame(lapply(sim.tmp.va, function(x) sapply(x,"[",6,2)))
-
-samples   <- as.numeric(gsub("sample([0-9]+)",   "\\1", rownames(sim.tmp)))
-dilutions <- as.numeric(gsub("dilution([0-9]+)", "\\1", colnames(sim.tmp)))
-
-pdf("../output/simulation.mean.sd.of.ddcq.pdf", height = 7, width = 7)
-
-  plot(1, type = "n", main = "", ylim = c(0.3, 1), axes = FALSE,
-       xlim = range(dilutions), xlab = "Dilutions",
-       ylab = expression(paste("Mean SD of ", Delta*Delta*C[q])))
-  axis(2); axis(1, at = dilutions); grid(); box()
-  for (i in 1:nrow(sim.tmp)) {
-    lines(dilutions, sim.tmp[i, ],
-          col = jet.colors(nrow(sim.tmp))[i])
-    lines(dilutions, sim.tmp.va[i, ],
-          col = jet.colors(nrow(sim.tmp))[i], lty = 2)
-  }
-  legend("topright", col = jet.colors(nrow(sim.tmp)),
-         legend = gsub("sample([0-9]+)", "\\1 samples", rownames(sim.tmp)),
-         lty = 1, bty = "n", inset = 0.025)
-  legend("bottomleft", lty = c(1,2), legend = c("EC", "EC & VA"),
-         bty = "n", inset = 0.025)
 dev.off()
 
-
-
-#
-#
-#
-#
-#
-#
-#
-#
-#
-# #
-# # Power calculations
-# #
-#
-# # Power calculation with standard curves
-# if (!exists("dilution.power.results") | recompute) {
-#   dilution.power.results <-
-#     PowerSim(n.sims         = n.sims,
-#              start.sample   = start.sample,
-#              n.samples      = n.samples,
-#              start.dilution = start.dilution,
-#              n.dilutions    = n.dilutions,
-#              ddcq           = ddcq,
-#              alpha.tgt = alpha.tgt, alpha.ref = alpha.ref,
-#              mu.tgt = mu.tgt, mu.ref = mu.ref, tech.sd = tech.sd,
-#              n.replicates = n.replicates)
-#   resave(dilution.power.results, file = save.file)
-# }
-#
-# # Power calculations without standard curves
-# if (!exists("no.dilution.power.results") | recompute) {
-#   no.dilution.power.results <-
-#     PowerSim(std.curve      = FALSE,
-#              n.sims         = 2, #n.sims,
-#              start.sample   = start.sample,
-#              n.samples      = n.samples,
-#              start.dilution = 1,        # These are equivalent
-#              n.dilutions    = 1,        # to std.curve = FALSE
-#              ddcq           = ddcq,
-#              alpha.tgt = alpha.tgt, alpha.ref = alpha.ref,
-#              mu.tgt = mu.tgt, mu.ref = mu.ref, tech.sd = tech.sd,
-#              n.replicates = n.replicates)
-#   resave(no.dilution.power.results, file = save.file)
-# }
-#
-#
-#
-# # Theoretical power curve, with perfect efficiency
-# t.pow.res <- rep(NA, n.samples)
-# for(i in 1:length(t.pow.res)){
-#   t.pow.res[i] <- power.t.test(n           = start.sample + i - 1,
-#                                delta       = ddcq,
-#                                sd          = sample.sd,
-#                                sig.level   = 0.05,
-#                                power       = NULL,
-#                                type        = c("two.sample"),
-#                                alternative = c("two.sided"),
-#                                strict      = FALSE)$power
-# }
-#
-# # Plotting power curves
-#
-# pow.res     <- dilution.power.results
-# without.res <- no.dilution.power.results
-#
-# jpeg("../output/Figure1.jpg")
-# plot(1, type = "n",
-#      xlab = "Number of samples per group",
-#      xlim = c(start.sample, end.sample),
-#      ylab = "Power",
-#      ylim = c(min(pow.res,t.pow.res, without.res),
-#               max(pow.res,t.pow.res, without.res)))
-# grid()
-# for (i in 1:nrow(pow.res)) {
-#   lines(cenvelope(cbind(start.sample:end.sample, pow.res[i, ])),
-#         type = "b", col = jet.colors(5)[i], lwd = 1.5, cex = 0.6)
-# }
-# lines(start.sample:end.sample, without.res[1,],
-#       type = "b", col = "grey", lwd = 1.5, lty = 2, cex = 0.6)
-# lines(start.sample:end.sample, t.pow.res,
-#       type = "b", col = "black", lwd = 1.5, lty = 2, cex = 0.6)
-#
-#
-# legend("bottomright",
-#        legend = c(rownames(pow.res), "No dilution", "t-test approach"),
-#        lty = c(rep(1, nrow(pow.res)), 2, 2), lwd = 2, bty = "n",
-#        col = c(jet.colors(nrow(pow.res)), "grey", "black"), inset = 0.0)
-# legend("right", legend = bquote(Delta*Delta*C[q] == .(round(ddcq,3))),
-#        bty = "n", inset = 0.05)
-# dev.off()
-#
-#

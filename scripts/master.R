@@ -17,7 +17,9 @@
 if (!grepl("knitr", getwd())) setwd("./knitr")
 rm(list = ls())
 set.seed(987654321)
-n.boots <- 500
+n.boots <- 1000 # Bootstrap samples in data analysis
+n.sims  <- 100  # Simulation replications
+
 recompute <- FALSE  # Recompute heavy computations if TRUE
 
 # library("Bmisc")   # Resave function and more http://github.com/AEBilgrau/Bmisc
@@ -25,6 +27,8 @@ library("lattice") # For plots
 library("lme4")    # For mixed effects models
 library("Hmisc")   # For LaTeX tables
 library("ROCR")    # For ROC curves
+library("epiR")    # For other performance measures
+
 
 # Saved R binary output
 save.file <- "../output/saved.RData"
@@ -45,8 +49,8 @@ source("../scripts/createDataCIC.R")
 source("../scripts/createDataTestis.R")
 
 # 3. Analyse data sets and create output
-system.time(source("../scripts/createOutputCIC.R"))
-system.time(source("../scripts/createOutputTestis.R"))
+source("../scripts/createOutputCIC.R")
+source("../scripts/createOutputTestis.R")
 
 # 4. Run simulation experiment
 source("../scripts/simulation.R")

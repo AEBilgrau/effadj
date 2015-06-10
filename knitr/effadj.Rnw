@@ -1,5 +1,6 @@
 \documentclass[oupdraft]{bio}
 \usepackage[colorlinks=true,urlcolor=citecolor,linkcolor=citecolor,citecolor=citecolor]{hyperref}
+\usepackage{graphicx}
 
 % Our preamble %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\tgt}{\textrm{tgt}}
@@ -91,7 +92,7 @@ The presented method can be applied to evaluate the uncertainty from efficiency 
 % Answer the question "what is the problem and why is it important?"
 
 Despite being an aging technique quantitative polymerase chain reaction (qPCR), ``one of the most significant biotech discoveries in our time'' \citep{Rainbow1996}, is still heavily used in molecular biology to amplify and quantify nucleic acids such as DNA or mRNA molecules.
-In life sciences, qPCR is typically applied to detect and validate candidate gene transcripts that are biomarkers of diagnostic, prognostic, and even predictive value of e.g.\ infectious diseases, cancer, and genetic abnormalities.
+In life sciences, qPCR is typically applied to detect candidate gene transcripts that are biomarkers of diagnostic, prognostic, and even predictive value of e.g.\ infectious diseases, cancer, and genetic abnormalities. Another very important application of qPCR is to validate results from high-throughput screening studies like microarrays and next generation RNA and DNA sequencing. In the latter case the ability to control the false positive rate seems highly relevant.
 
 Despite the tremendous success of qPCR, ``statistical inference considerations are still not accorded high enough priority'' \citep{Bustin2009,Bustin2010}.
 This is in particular true for the estimation of the amplification efficiency.
@@ -111,7 +112,7 @@ However, our idea of using bootstrapping or the statistical $\Delta$-method to h
 
 % Precise aims of the paper
 The aim of the paper is to formulate a mathematical model which allows us to draw formal statistical inference about qPCR experiments with non-efficient amplifications.
-This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation.
+This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation, with special emphasis on true positive rates.
 The approach is used demonstrate that multiple myeloma cancer cell lines differentially express the MGST1 gene depending on the frequency of culture initiating cells. We also used the approach  to design a study which results turned out to support the hypothesis of \cite{Robertus2009} that miRNA-127 is differentially expressed between testicular and nodal DLBCL
 
 
@@ -176,7 +177,7 @@ A popular way of estimating $\alpha_{i}$ is by dilution curves,
 i.e.\ by regressing $C_{q,i,j}$ against a series of decreasing
 $N_{0,i,j}$-values, denoted by $N_{0,i,j,k}=N_{0,i,j,1}2^{-x_k}$, where
 $0=x_1<\cdots<x_K<\infty$.
-This can be formulated as a linear mixed effects model \citep{Pinheiro2000a},
+This can be formulated as a linear mixed effects model (LMEM) \citep{Pinheiro2000a},
 \begin{equation*}
   C_{q,i,j,s,k} = \mu_{i,j} + A_{j/s} + \gamma_{i} x_k + \epsilon_{i,j,s,k},
 \end{equation*}
@@ -290,6 +291,7 @@ Based on the above statistical model, we computed the FPR and the TPR for a give
 
 \subsubsection{CIC data}
 
+[Skriv noget om microarray-studiet]
 For this study 8 multiple myeloma (MM) cell lines with $>$10\% culture initiating cells (AMO-1, KMM-1, KMS-11, KMS12-PE, KMS12-BM, MOLP8, L-363, RPMI-8226), and 8 MM cell lines with $<$1\% culture initiating cells (ANBL-1, KAS-6-1, LP-1, MOLP-2, NCI-H929, OPM-2, SK-MM-2, U-266) were used. The fraction of culture initiating cells was determined by the limiting dilution method, see \cite{Lefkovits1999}.
  Total RNA was isolated from frozen cell culture pellets, using a combined method of Trizol (invitrogen) and Mirvana spin columns (Ambion). Isolated RNA was used in complementary DNA (cDNA) synthesis using SuperScript III First-Strand Synthesis Supermix (Invitrogen). As input into the total cDNA synthesis 250ng of total RNA was used. Equal amounts of random hexamers and oligo(dT) were used as primers. Quantitative real-time reverse transcriptase-polymerase chain reaction (qPCR) was performed on a Mx3000p QPCR system (Agilent Technologies/Stratgene) using the TaqMan UniversalPCR Master Mi, No AmpErase UNG, and TaqMan gene expression Assays (Applied Biosystems). The following TaqMan Gene Expression Assays were used (Assay ID numbers in parentheses): MGST1 (Hs00220393\_m1), FGFR3 (Hs00179829\_m1), WHSC1 (Hs00983716\_m1). The Two reference genes beta actin (ACTB) and GAPDH were used as endogenous controls, assay IDs  4333762-0912030 and 4333764-1111036, respectively. For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of material from the AMO-1.
 
@@ -306,19 +308,38 @@ For both experiments $\rm{C}_q$ values were extracted for both the reference and
 \section{Results}
 
 \subsection{CIC experiment}
-The raw $C_q$-values and dilution curves are depicted in Figure \ref{fig:cqCIC} and Figure \ref{fig:powercurveCIC}, respectively. The differences in gene expressions in case genes, MGST1 and MMSNET, compared to control genes were estimated using four different methods: Naive $t$-test, regular $\Delta \Delta C_q$ estimate, and efficiency corrected estimates with and without a variance correction. These results are seen in Table \ref{tab:results}.
+The raw $C_q$-values and dilution curves are depicted in panel A and B of Figure \ref{fig:cqCIC}, respectively.
+
+The differences in gene expressions assessed by the $\Delta \Delta C_q$-values for the target genes MGST1 and MMSNET and each reference GAPDH and ACTB gene as well the combination of the reference genes, were estimated using four different methods: Paired $t$-tests and regular $\Delta \Delta C_q$ estimates without efficiency correction, efficiency corrected estimates with and without a variance correction by the statistical $\Delta$-method, and the mean of 5000 bootstrapped samples. These results are seen in Table \ref{table:cic}.
+
+We notice for the paired t-test and LMEM without efficiency correction that the estimates are equal, but the standard error estimate is lower for the LMEM model due to improved efficiency in an ubalanced case-ctrl set-up. For all combinations of reference genes the MGST1 estimate is significantly different from zero  and the MMSET estimate is not significantly different from zero.
+
+The efficiency corrected estimates are equal for both the variance unadjusted and adjusted, but the standard deviation of the estimate and the P-values are higher for the adjusted values. Leading to a more conservative assessment of the difference in gene expression. The results, however, remain significant for the MGST1 gene and non-significant for the MMSET gene.
+
+The bootstrap provides a standard deviation slightly less that the $\Delta$-method for the MGST1 gene and slightly larger for the the MMSET gene. The P-value is zero, probably due to the resolution provided by 500 bootstrapped samples for the MGST1 gene and slightly higher for MMSET gene.
 
 \subsection{DLBCL experiment}
 
+The raw $C_q$-values and dilution curves are depicted in panel A and B of Figure \ref{fig:cqTestis}, respectively.
+
+The differences in gene expressions assessed by the $\Delta \Delta C_q$-values for the target genes mir127 and mir143 and each reference rnu6b and rnu24 gene as well the combination of the reference genes, were estimated using four different methods: Paired $t$-tests and regular $\Delta \Delta C_q$ estimates without efficiency correction, efficiency corrected estimates with and without a variance correction by the statistical $\Delta$-method, and the mean of 5000 bootstrapped samples. These results are seen in Table \ref{table:tesits}.
+
+We notice for the paired t-test and LMEM without efficiency correction that the estimates are equal, but the standard error estimate is lower for the LMEM model due to improved efficiency in an ubalanced case-ctrl set-up. For all combinations of reference genes the mir127 estimate is significantly different from zero  and the mir143 estimate is not significantly different from zero.
+
+The efficiency corrected estimates are equal for both the variance unadjusted and adjusted, but the standard deviation of the estimate and the P-values are higher for the adjusted values. Leading to a more conservative assessment of the difference in gene expression. The results, however, remain significant for the mir127 gene and non-significant for the mir143 gene.
+
+The bootstrap provides a standard deviation slightly higher than the $\Delta$-method for both mir127 and mir143. The P-value is zero for mir127 normalised with rnu6b, probably due to the resolution provided by 500 bootstrapped samples and slightly higer for the remaining scenarios.
 
 \subsection{Simulation of FPR and TPR}
 
 We present a simulation example of a two-sided test for the null hypothesis of a vanishing $\Delta\Delta C_q$-value at $5\%$ significance level.
-The test was performed varying the number subjects divided into the case and control groups.
-The effect size was set to $\delta = 10/9$, the sample and experimental variation  was set to $\sigma_{S}^2 = 1$ and $\sigma^2 = 1$, respectively.
-Finally, the AE was set to 0.9. Figure \ref{fig:powercurve} shows the estimated TPR as a function of sample size.
-The full-drawn lines shows the TPR for various number of dilutions steps.
-The black dashed line shows the TPR if a t-test is applied directly after AE-correction. The grey dahsed line shows the TPR for the "optima situation" of perfect AE.
+The test was performed by 6 samples in each case and control groups and 8 dilution.
+The effect size was set to $\delta = 10/9$, the sample and experimental variation  was set to $\sigma_{S}^2 = 1$ and $\sigma^2 = 0.25$, respectively.
+Finally, the AE was set to 0.9.
+The results are summarized in \ref{table:cic}. We notice the FPR/TPR are xx/xx, xx/xx, xx/xx, and xx/xx for the LMEM, efficiceny corrected without and with variance adjustment $\Delta$-method, and bootstrap method, respectively. This means the variance adjusted and bootstrapped methods controls the FPR much better than the methods without variance ajustment. This comes, however with cost of a lower true positive rate.
+
+In Figure \ref{fig:xxx} the performance of the FPR and TPR is shown for sample size equal to 4 and 8 in each case and control group and the number of dilution steps varying between 4 and 8. In each panel the P-value cut-off is varyied between 0.01, 0.05 and 0.1.
+
 
 \section{Discussion}
 % Main message
@@ -349,32 +370,50 @@ The research is supported by MSCNET, a translational program studying cancer ste
 
 \input{../output/Table1.tex}
 \input{../output/Table2.tex}
+\input{../output/Table3.tex}
 
 \newpage
 
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.7\textwidth]{powercurve.pdf}
-\end{center}
-\caption{Power as function of sample size for an increasing number of dilutions in the dilution curve of a two-sided test 5\%-level test for non-vanishing $\Delta\Delta C_q$-value.}
-\label{fig:powercurve}
-\end{figure}
+%\begin{figure}
+%\begin{center}
+%\includegraphics[width=0.7\textwidth]{../output/Figure1.cicv1.3.pdf}
+%\end{center}
+%\caption{A: $C_q$-values: Raw $C_q$-values for each gene and sample type. B: %Dilution curves: Dilution curves for ACTB, GAPDH, MGST1, and MMSET }
+%\label{fig:cqCIC}
+%\end{figure}
 
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.7\textwidth]{allgenes.pdf}
-\end{center}
-\caption{A: $C_q$-values: Raw $C_q$-values for each gene and sample type. B: Dilution curves: Dilution curves for ACTB, GAPDH, MGST1, and FGFR3 }
-\label{fig:cqCIC}
-\end{figure}
+%\begin{figure}
+%\begin{center}
+%\includegraphics[width=0.7\textwidth]{../output/Figure1.cicv1.3.pdf}
+%\end{center}
+%\caption{A: $C_q$-values: Raw $C_q$-values for each gene and sample type. B: %Dilution curves: Dilution curves for rnu6b, rnu24, mir127, and mir 143}
+%\label{fig:cqTestis}
+%\end{figure}
 
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.7\textwidth]{standard.pdf}
-\end{center}
-\caption{Dilution curves for ACTB, GAPDH, MGST1, and FGFR3 }
-\label{fig:cqCIC2}
-\end{figure}
+
+%\begin{figure}
+%\begin{center}
+%\includegraphics[width=0.7\textwidth]{powercurve.pdf}
+%\end{center}
+%\caption{Power as function of sample size for an increasing number of dilutions in the dilution curve of a two-sided test 5\%-level test for non-vanishing $\Delta\Delta C_q$-value.}
+%\label{fig:powercurve}
+%\end{figure}
+
+%\begin{figure}
+%\begin{center}
+%\includegraphics[width=0.7\textwidth]{allgenes.pdf}
+%\end{center}
+%\caption{A: $C_q$-values: Raw $C_q$-values for each gene and sample type. B: Dilution curves: Dilution curves for ACTB, GAPDH, MGST1, and FGFR3 }
+%\label{fig:cqCIC}
+%\end{figure}
+
+%\begin{figure}
+%\begin{center}
+%\includegraphics[width=0.7\textwidth]{standard.pdf}
+%\end{center}
+%\caption{Dilution curves for ACTB, GAPDH, MGST1, and FGFR3 }
+%\label{fig:cqCIC2}
+%\end{figure}
 
 
 

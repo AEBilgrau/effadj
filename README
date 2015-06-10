@@ -14,16 +14,19 @@ qPCR experiments.
 ## How to compile the paper ##
 
 The paper is written in using the R-package knitr (`.Rnw`) document. The results
-of the paper and the pdf document can be generated in two ways:
+of the paper and the pdf document can be generated in multiple ways:
 
-(1) From within `R` run:
+(1) If you use Rstudio, open the `paper-qPCR-Rproj` and press compile document.
+
+(2) From within `R` run:
 
     install.packages("knitr")
     knitr::knit('effadj.Rnw')
 
-and afterwards compile the generated `.tex` file using `pdflatex`.
+and afterwards compile the generated `.tex` file using `pdflatex` either via
+your favorite TeX editor or the command line.
 
-(2) From the terminal run:
+(3) From the terminal run:
 
     cd path/to/effadj/knitr
     Rscript -e "knitr::knit('effadj.Rnw')"

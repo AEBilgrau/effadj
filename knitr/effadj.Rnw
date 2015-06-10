@@ -352,12 +352,10 @@ variance approximation was introduced, leading to a change of significance for t
 % Conclusions
 Despite the recent success of qPCR  much more statistical methodologcial researh is needed, in our opinion,  in order to firmly establish qPCR as a reliable quantitative method to assess the amount of nucleic acids.
 
-\section*{Software}
-All statistical analysis were done with R \citep{R2004} version 3.0.1 and the contributed lme4 package \citep{Pinheiro2000a} was applied for random effects modelling.
-
-\section*{Supplementary Material}
-All data, R code, and LaTeX to produce this presnet paper and the results herein is freely available at \url{http://www.github.org/AEBilgrau/effadj/} and upon request.
-The paper is generated using \texttt{knitr} (an improvement of Sweave) \citep{}.
+\section*{Software and supplementary Material}
+All statistical analysis were done with R \citep{Rproj} version 3.1.3 and the contributed \texttt{lme4}-package \citep{Pinheiro2000a} was applied for random effects modelling.
+All data, R code, LaTeX, and instructions to produce present paper and results within is freely available at \url{http://www.github.org/AEBilgrau/effadj/} or upon personal request.
+The paper is generated using \texttt{knitr} (an improvement of Sweave) \citep{Xie2013, Leisch2002}.
 
 \section*{Acknowledgments}
 The research is supported by MSCNET, a translational program studying cancer stem cells in multiple myeloma supported by the EU FP6, and CHEPRE, a program studying chemosensitivity in malignant lymphoma by genomic signatures supported by The Danish Agency for Science, Technology and Innovation, as well as Karen Elise Jensen Fonden. The funders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.\\
@@ -381,7 +379,7 @@ The research is supported by MSCNET, a translational program studying cancer ste
 \caption{
   Overview of CIC experiment data.
   A: Raw $C_q$-values for different cell lines for each gene type and sample type.
-  The individual genes are not differentiated.
+  The individual genes are not visually differentiated.
   B: Dilution data for reference genes (ACTB, GAPDH) and target genes (MGST1, MMSET).
 }
 \label{fig:cqCIC}
@@ -393,8 +391,8 @@ The research is supported by MSCNET, a translational program studying cancer ste
 \end{center}
 \caption{
   Overview of testis experiment data.
-  A: Raw $C_q$-values for different cell lines for each gene type and sample type.
-  The individual genes are not differentiated.
+  A: Raw $C_q$-values for different patient samples for each gene type and sample type.
+  The individual genes are not visually differentiated here.
   B: Dilution data for reference genes (rnu24, rnu6b) and target genes (mir127, mir142).
 }
 \label{fig:cqTestis}

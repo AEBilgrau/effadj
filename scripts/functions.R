@@ -32,12 +32,12 @@ SimqPCRData <-
   function(std.curve    = TRUE,      # Logical; simulate standard curves or not
            mu.tgt       = 30,        # Mean of target gene
            mu.ref       = 25,        # Mean of referece gene
-           n.samples    = 8,         # Number of samples
-           n.replicates = 3,         # Number of replicates
-           n.dilutions  = 5,         # Number of dilutions
+           n.samples    = 3,         # Number of samples
+           n.replicates = 5,         # Number of replicates
+           n.dilutions  = 4,         # Number of dilutions
            tech.sd      = 1/2,       # Variance of technical replicates
-           alpha.tgt    = 0.9,       # Efficiency of target gene
-           alpha.ref    = 0.9,       # Efficiency of reference gene
+           alpha.tgt    = 0.90,      # Efficiency of target gene
+           alpha.ref    = 0.95,      # Efficiency of reference gene
            sample.sd    = 1,         # Sample standard deviation
            ddcq         = 1) {       # Delta Delta Cq value / effectsize delta
 
@@ -48,7 +48,9 @@ SimqPCRData <-
   m <- n.replicates
   n <- n.samples
 
-  if (n.dilutions == 0 | n.dilutions == 1) {
+  if (std.curve && (n.dilutions == 0 || n.dilutions == 1)) {
+    warning("n.dilutions need to be strictly larger than 1 for meaningful ",
+            "standard curves")
     std.curve <- FALSE
   }
   sim.data  <-
@@ -62,14 +64,14 @@ SimqPCRData <-
   rnd.eff  <- rep(rnorm(2*n, 0, sample.sd), each = m, times = 2)
 
   sim.data$Cq <-
-    rep(c(alpha.tgt, alpha.ref), each = 2*n*m)^-1*
-    (mus.gene + mus.type) + rnd.eff + error
+    1/rep(c(alpha.tgt, alpha.ref), each = 2*n*m)*(mus.gene + mus.type) +
+    rnd.eff + error
 
   if (std.curve) {
     # Simulating standard curve data
     sim.data$copyNumber <- rep(1, 4*n*m)
     sim.data$l2con      <- -log2(sim.data$copyNumber)
-    dilution.series     <- 2^((1-l):0)
+    dilution.series     <- 2^rev(-seq_len(l) + 1)
 
     std.data <-
       data.frame(sampleName = rep("D001", 2*m*l),
@@ -80,7 +82,7 @@ SimqPCRData <-
                  l2con      = -log2(rep(dilution.series, each = m, times = 2)))
     error       <- rnorm(2*m*l, mean = 0, sd = tech.sd)
     std.data$Cq <-
-      rep(c(alpha.tgt, alpha.ref), each = l*m)^-1*
+      1/rep(c(alpha.tgt, alpha.ref), each = l*m)*
       (rep(mu.gene, each = l*m) + std.data$l2con) + error
 
     sim.data <- rbind(sim.data, std.data)
@@ -122,6 +124,7 @@ qPCRfit <- function(data, ...) {
   }
   return(fit)
 }
+
 
 #
 # Delta delta Cq analysis method
@@ -281,7 +284,7 @@ PowerSim <-
             eff.cor        = TRUE,
             var.adj        = TRUE,
             ... ) {   # ... passed to SimqPCRData function
-    warning("NOT USED")
+
     st <- proc.time()
     if (std.curve == FALSE) {
       start.dilution <- 1
@@ -520,7 +523,7 @@ std.curve <- function (data) {
   attr(data, "std.curve")
 }
 
-"std.curve<-" <- function (value, data) {
+`std.curve<-` <- function (value, data) {
   if (!is.data.qPCR(data))
     stop("data is not a data.qPCR object.")
   data <- structure(data, std.curve = value)
@@ -593,8 +596,6 @@ sn <- function(x, digits) {
   }
   return(paste("$", y, "$", sep = ""))
 }
-
-
 
 #
 # Add to .RData file

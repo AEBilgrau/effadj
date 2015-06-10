@@ -9,8 +9,10 @@
 #
 # Perform a simulation
 #
+
 # a <- formals(SimTemp)
 # for (i in seq_along(a)) assign(names(a)[i], a[[i]])
+
 SimTemp <- function (
   nd,                      # Number of dilutions
   ns,                      # Number of samples
@@ -84,7 +86,7 @@ if (!exists("res.ex") || recompute) {
 samples <- c(4, 8)
 dilutions <- c(4, 8)
 
-if (!exists("sim.results") | recompute) {
+if (!exists("sim.results") || recompute || TRUE) {
   ex <- SimTemp(nd = 3, ns = 3)  # Just used to get dimnames hereof
   set.seed(36)
   st <- proc.time()

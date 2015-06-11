@@ -133,7 +133,8 @@ qPCRfit <- function(data, ...) {
 # Delta delta Cq analysis method
 #
 
-DDCq <- function (data, var.adj) {
+DDCq <- function(data, var.adj) {
+  # data can also be a fit from lmer
   # Function to calculate efficiency corrected with or without
   # adjusted variance DDCq values in qPCR experiments
   # data is a qPCR.data object
@@ -146,7 +147,7 @@ DDCq <- function (data, var.adj) {
     names(e) <- gsub("sample|gene|Type", "", names(e))
     eff <- e[c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref")]
 
-    if (std.curve(data)) {
+    if (std.data) {
       gam <- e[rep(c("tgt:l2con","ref:l2con"), 2)]
     } else {
       gam <- rep(1, length(eff))
@@ -160,7 +161,7 @@ DDCq <- function (data, var.adj) {
     names(e) <- gsub("sample|gene|Type", "", names(e))
     eff <- e[c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref")]
 
-    if (std.curve(data)) {
+    if (std.data) {
       gam <- e[rep(c("tgt:l2con","ref:l2con"), 2)]
       D <- c(gam^-1*c(1, -1, -1, 1),
              (gam^-2*eff) %*% cbind(c(-1, 0, 1, 0), c(0, 1, 0, -1))*(var.adj))
@@ -178,13 +179,22 @@ DDCq <- function (data, var.adj) {
     rownames(v) <- colnames(v) <- names(e)
 
     get <- c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref",
-             if (std.curve(data)) {c("tgt:l2con", "ref:l2con")})
+             if (std.data) {c("tgt:l2con", "ref:l2con")})
     grad <- DcHyp(fit, var.adj)
     return(as.numeric(t(grad)%*%v[get, get]%*%grad))
   }
 
   # Perform t test using above functions
-  fit     <- qPCRfit(data)
+  if (inherits(data, "lmerMod")) {
+    fit <- data
+    std.data <- any(grepl("Standard", names(fixef(fit))))
+  } else if (is.data.qPCR(data)) {
+    fit <- qPCRfit(data)
+    std.data <- std.curve(data)
+  } else {
+    stop("data should be a data.qPCR dataset or a lmer fit.")
+  }
+
   con     <- cHyp(fit)
   var.con <- Var.cHyp(fit, var.adj)
   t       <- con/sqrt(var.con)

@@ -32,11 +32,11 @@ SimqPCRData <-
   function(std.curve    = TRUE,      # Logical; simulate standard curves or not
            mu.tgt       = 30,        # Mean of target gene
            mu.ref       = 25,        # Mean of referece gene
-           n.samples    = 3,         # Number of samples
-           n.replicates = 5,         # Number of replicates
-           n.dilutions  = 4,         # Number of dilutions
-           tech.sd      = 1/2,       # Variance of technical replicates
-           alpha.tgt    = 0.90,      # Efficiency of target gene
+           n.samples    = 4,         # Number of samples
+           n.replicates = 3,         # Number of replicates
+           n.dilutions  = 5,         # Number of dilutions
+           tech.sd      = 0.5,       # Variance of technical replicates
+           alpha.tgt    = 0.80,      # Efficiency of target gene
            alpha.ref    = 0.95,      # Efficiency of reference gene
            sample.sd    = 1,         # Sample standard deviation
            ddcq         = 1) {       # Delta Delta Cq value / effectsize delta
@@ -54,7 +54,7 @@ SimqPCRData <-
     std.curve <- FALSE
   }
   sim.data  <-
-    data.frame(sampleName = sprintf("S%03d", rep(rep(1:n, 4), each = m)),
+    data.frame(sampleName = sprintf("S%03d", rep(rep(1:(2*n), 2), each = m)),
                geneType   = rep(genes, each = 2*n*m),
                sampleType = rep(types, each = n*m, times = 2),
                replicate  = as.character(rep(1:m, 4*n)))
@@ -62,10 +62,11 @@ SimqPCRData <-
   mus.type <- c(rep(c(ddcq, 0), each = n*m),  rep(0, 2*n*m))
   error    <- rnorm(4*n*m, mean = 0, sd = tech.sd)
   rnd.eff  <- rep(rnorm(2*n, 0, sample.sd), each = m, times = 2)
+  effi     <- rep(c(alpha.tgt, alpha.ref), each = 2*n*m)
 
-  sim.data$Cq <-
-    1/rep(c(alpha.tgt, alpha.ref), each = 2*n*m)*(mus.gene + mus.type) +
-    rnd.eff + error
+  # cbind(sim.data, mus.gene, mus.type, rnd.eff, error, effi)
+
+  sim.data$Cq <- (mus.gene + mus.type)/effi + rnd.eff + error
 
   if (std.curve) {
     # Simulating standard curve data
@@ -80,10 +81,9 @@ SimqPCRData <-
                  replicate  = as.character(rep(1:m, 2*l)),
                  copyNumber = rep(dilution.series, each = m, times = 2),
                  l2con      = -log2(rep(dilution.series, each = m, times = 2)))
-    error       <- rnorm(2*m*l, mean = 0, sd = tech.sd)
-    std.data$Cq <-
-      1/rep(c(alpha.tgt, alpha.ref), each = l*m)*
-      (rep(mu.gene, each = l*m) + std.data$l2con) + error
+    error <- rnorm(2*m*l, mean = 0, sd = tech.sd)
+    effi <- rep(c(alpha.tgt, alpha.ref), each = l*m)
+    std.data$Cq <- 1/effi*(rep(mu.gene, each = l*m) + std.data$l2con) + error
 
     sim.data <- rbind(sim.data, std.data)
     attr(sim.data, "std.curve") <- TRUE
@@ -113,17 +113,20 @@ qPCRfit <- function(data, ...) {
   if (std.curve(data)) {
 
     fit <- lmer(Cq ~ -1 + sampleType:geneType + l2con:geneType +
-                  (1 | sampleType/sampleName),
-                data = data, REML = FALSE, ...)
+                  (1 | sampleType:sampleName),
+                data = data, REML = FALSE)
 
-  } else {
+      } else {
 
-    fit <- lmer(Cq ~ -1 + sampleType:geneType + (1 | sampleType/sampleName),
+    fit <- lmer(Cq ~ -1 + sampleType:geneType + (1 | sampleType:sampleName),
                 data = data, REML = FALSE, ...)
 
   }
   return(fit)
 }
+
+
+
 
 
 #
@@ -148,7 +151,7 @@ DDCq <- function (data, var.adj) {
     } else {
       gam <- rep(1, length(eff))
     }
-    return(sum(eff*gam^-1*c(1, -1, -1, 1)))
+    return(sum(gam^-1*eff*c(1, -1, -1, 1)))
   }
 
   DcHyp <- function (fit, var.adj) {
@@ -156,6 +159,7 @@ DDCq <- function (data, var.adj) {
     e <- fixef(fit)
     names(e) <- gsub("sample|gene|Type", "", names(e))
     eff <- e[c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref")]
+
     if (std.curve(data)) {
       gam <- e[rep(c("tgt:l2con","ref:l2con"), 2)]
       D <- c(gam^-1*c(1, -1, -1, 1),
@@ -172,6 +176,7 @@ DDCq <- function (data, var.adj) {
     names(e) <- gsub("sample|gene|Type", "", names(e))
     v <- vcov(fit)
     rownames(v) <- colnames(v) <- names(e)
+
     get <- c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref",
              if (std.curve(data)) {c("tgt:l2con", "ref:l2con")})
     grad <- DcHyp(fit, var.adj)
@@ -183,7 +188,7 @@ DDCq <- function (data, var.adj) {
   con     <- cHyp(fit)
   var.con <- Var.cHyp(fit, var.adj)
   t       <- con/sqrt(var.con)
-  df      <- getME(fit, "q") - 2 - 2 - 2*std.curve(data)
+  df      <- getME(fit, "n") - getME(fit, "p") - getME(fit, "n_rtrms") - 1
   p.val   <- 2*(1 - pt(abs(t), df))
   result  <- c("Estimate" = con, "Std. Error" = sqrt(var.con),
                "t value" = t, "df" = round(df), "Pr(>|t|)" = p.val)
@@ -244,18 +249,20 @@ DDCq.test <- function (data,
     if (eff.cor == FALSE) {
       # Simple DDCq method
       data <- data[data$sampleType != "Standard", ]  # Ignoring dilution data
-      data <- aggregate(Cq ~ sampleName + geneType + sampleType +
-                          l2con + copyNumber,
-                        data = data, FUN = mean)
-      # Note, the use of var.adj has no impact here!
-      return(DDCq(as.data.qPCR(data)))
+      # Average over replicates
+      data <-  aggregate(Cq ~ sampleName + geneType + sampleType +
+                           copyNumber + l2con, data = data, FUN = mean)
+
+      return(DDCq(as.data.qPCR(data))) # Note, the use var.adj has no impact
+
     } else {
-      # LMM DDCq method. efficiency corrected and
-      # variance adjusted if var.adj == TRUE
+      # LMM DDCq method efficiency corr + variance adj. if var.adj == TRUE
+      # Average over replicates
       data <- aggregate(Cq ~ sampleName + geneType + sampleType +
-                          l2con + copyNumber,
-                        data = data, FUN = mean)  # Mean over replicates
+                          copyNumber + l2con, data = data, FUN = mean)
+
       return(DDCq(as.data.qPCR(data), var.adj = var.adj))
+
     }
   } else if (method == "Bootstrap") {    # Booststrap
 

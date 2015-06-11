@@ -609,6 +609,7 @@ sn <- function(x, digits) {
 #
 
 resave <- function(..., list = character(), file) {
+  # Resave function from http://github.com/AEBilgrau/Bmisc
   if (!file.exists(file)) { # If file does not exists resave functions as save
     save(..., list = list, file = file)
   }

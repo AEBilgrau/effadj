@@ -46,8 +46,6 @@ dev.off()
 #   mir143 vs rnu6b,      mir143 vs rnu24,     mir143 vs rnu6b + rnu24
 #
 
-n.boots.testis <- n.boots
-
 grps.list <- list(c("mir127", "rnu6b"),
                   c("mir127", "rnu24"),
                   c("mir127", "rnu6b", "rnu24"),
@@ -63,7 +61,7 @@ if (!exists("testis.boot") || recompute) {
     testis.tmp <- subset(testis, geneName %in% grps.list[[i]])
 
     # Compute bootstrap estimate and results
-    testis.boot[[i]] <- bootstrapEstimate(testis.tmp, n.boots = n.boots.testis)
+    testis.boot[[i]] <- bootstrapEstimate(testis.tmp, n.boots = n.boots)
   }
   resave(testis.boot, file = save.file)
 }
@@ -112,7 +110,7 @@ w <- latex(toTeX,
            file    = "../output/Table2.tex",
            title   = "",
            label   = "table:tesits",
-           caption = sprintf(caption.txt, n.boots.testis),
+           caption = sprintf(caption.txt, n.boots),
            caption.loc = "top",
            rgroup  = grps,
            center  = "center",

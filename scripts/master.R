@@ -22,11 +22,11 @@ n.sims  <- 100  # Simulation replications
 
 recompute <- FALSE  # Recompute heavy computations if TRUE
 
+# install.packages(c("lattice", "Hmisc", "lme4", "epiR"))
 library("lattice") # For plots
 library("lme4")    # For mixed effects models
 library("Hmisc")   # For LaTeX tables
 library("epiR")    # For performance measures and CI hereof
-
 
 # Saved R binary output
 save.file <- "../output/saved.RData"

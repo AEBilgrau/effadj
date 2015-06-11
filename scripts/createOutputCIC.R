@@ -45,8 +45,6 @@ dev.off()
 #   MMSET vs. GAPDH,    MMSET vs. ACTB,      MMSET vs. both
 #
 
-n.boots.cic <- n.boots
-
 grps.list <- list(c("MGST1", "GAPDH"),
                   c("MGST1", "ACTB"),
                   c("MGST1", "ACTB", "GAPDH"),
@@ -61,7 +59,7 @@ if (!exists("cic.boot") || recompute) {
     cic.tmp <- subset(cic, geneName %in% grps.list[[i]])
 
     # Compute bootstrap estimate
-    cic.boot[[i]] <-  bootstrapEstimate(cic.tmp, n.boots = n.boots.cic)
+    cic.boot[[i]] <-  bootstrapEstimate(cic.tmp, n.boots = n.boots)
   }
   resave(cic.boot, file = save.file)
 }
@@ -110,7 +108,7 @@ w <- latex(toTeX,
            file    = "../output/Table1.tex",
            title   = "",
            label   = "table:cic",
-           caption = sprintf(caption.txt, n.boots.cic),
+           caption = sprintf(caption.txt, n.boots),
            caption.loc = "top",
            rgroup  = grps,
            center  = "center",

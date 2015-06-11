@@ -8,7 +8,6 @@
 \usepackage[outdir=./]{epstopdf}
 
 \renewcommand{\vec}{\boldsymbol} % for bold vectors
-
 \newcommand{\vtheta}{\vec{\theta}} % vector theta
 
 \newcommand{\tgt}{\textrm{tgt}}
@@ -66,7 +65,7 @@ Aalborg \O{}, Denmark %Fredrik Bajers Vej 7G, 9220 Aalborg \O{}, Denmark
 % Running headers of paper:
 \markboth%
 % First field is the short list of authors
-{A. E. Bilgrau and others}
+{{A.} {E.} Bilgrau and others}
 % Second field is the short title of the paper
 {Variance approximations in qPCR experiments}
 
@@ -191,8 +190,10 @@ Thus we have the well-known $2^{-\ddcq}$ as the relative abundance of the origin
 
 
 \subsection{Statistical model}
-For ease of notation we use the abbreviations $i\in\{\tgt,\rref\}$ for gene types target and reference;
-$j\in\{\case,\ctrl,\std\}$ for sample types case, control, and standard curve; $k\in\{1,\dots,K\}$ for dilution step; and $l\in\{1,\dots,L\}$ for technical replicate.
+For ease of notation we use the abbreviations
+$i\in\{\tgt,\rref\}$ for gene types target and reference;
+$j\in\{\case,\ctrl,\std\}$ for sample types case, control, and standard curve;
+$k\in\{1,\dots,K\}$ for dilution step; and $l\in\{1,\dots,L\}$ for technical replicate.
 To estimate $\ddcq$, we need estimates of $\alpha_i$ and the expected $C_{q,i,j}$.
 A popular way of estimating the AE $\alpha_i$ is by dilution curves,
 i.e.\ by regressing $C_{q,i,j}$ against a series of decreasing
@@ -209,7 +210,9 @@ N_{0,i,j})$. The random effects $A_{j/s}$ are $N(0,\sigma_S^2)$-distributed and 
 error terms $\epsilon_{i,j,s,k}$ are independent and $N(0,\sigma^2)$-distributed.
 LMMs provide a more correct quantification of the sources of variation and more correct evaluation of the uncertainty of $\mu_{i,j}$ and its derived quantities.
 
-\subsection{Hypothesis test and confidence intervals for $\ddcq$-values by the statistical delta method}
+
+\subsection{Hypothesis test and confidence intervals for $\ddcq$-values
+            by the statistical delta method}
 
 Let the maximum likelihood estimates of the fixed effects
 \begin{equation*}
@@ -256,7 +259,7 @@ approximated by
 According to \citet[Section 2.4.2]{Pinheiro2000a}, $t$ is approximately
 $t$-distributed with $\eta$ degrees of freedom.
 The degrees of freedom of multilevel mixed effects models are highly non-trivial to obtain in general, however.
-For the purposes of this paper, we restrict ourselves to case of a balance experimental design where $\eta$ is obtain relatively straight-forwardly.
+For the purposes of this paper, we do not persue this furher and restrict ourselves to case of a balance experimental design where $\eta$ is obtain relatively straight-forwardly.
 
 On the basis of (\ref{eq:tstat}), an approximate $(1 - \alpha) 100\%$ confidence interval of $c(\vtheta)$ can then given by
 \begin{equation*}
@@ -278,6 +281,7 @@ The needed gradient in \eqref{eq:tstat} is computed straight-forwardly from \eqr
     \mu_{\rref,\case} \gamma_\tgt^{-1} - \mu_{\rref,\ctrl} \gamma_\rref^{-1}
  \right)^\top.
 \end{equation*}
+
 
 \subsection{Hypothesis test and confidence intervals for $\ddcq$-values by bootstrapping}
 
@@ -326,23 +330,40 @@ Based on the above statistical model, we computed the FPR and the TPR for each d
 
 
 
+\section{Applications}
+
+We applied the described approaches to two qPCR validation experiments in two different studies of multiple myeloma (MM) and diffuse large B-cell lymphoma (DLBCL).
+In both experiments, the $C_q$ values were extracted for both the reference and target transcripts with automatic baseline and threshold selection \citep{Mx300P2013}.
+
+
 \subsection{Sample and data preparation}
 
-\subsubsection{CIC data}
+\subsubsection{CIC study}
 
-[Skriv noget om microarray-studiet]
-For this study 8 multiple myeloma (MM) cell lines with $>$10\% culture initiating cells (AMO-1, KMM-1, KMS-11, KMS12-PE, KMS12-BM, MOLP8, L-363, RPMI-8226), and 8 MM cell lines with $<$1\% culture initiating cells (ANBL-1, KAS-6-1, LP-1, MOLP-2, NCI-H929, OPM-2, SK-MM-2, U-266) were used. The fraction of culture initiating cells was determined by the limiting dilution method, see \cite{Lefkovits1999}.
- Total RNA was isolated from frozen cell culture pellets, using a combined method of Trizol (invitrogen) and Mirvana spin columns (Ambion). Isolated RNA was used in complementary DNA (cDNA) synthesis using SuperScript III First-Strand Synthesis Supermix (Invitrogen). As input into the total cDNA synthesis 250ng of total RNA was used. Equal amounts of random hexamers and oligo(dT) were used as primers. Quantitative real-time reverse transcriptase-polymerase chain reaction (qPCR) was performed on a Mx3000p QPCR system (Agilent Technologies/Stratgene) using the TaqMan UniversalPCR Master Mi, No AmpErase UNG, and TaqMan gene expression Assays (Applied Biosystems). The following TaqMan Gene Expression Assays were used (Assay ID numbers in parentheses): MGST1 (Hs00220393\_m1), FGFR3 (Hs00179829\_m1), WHSC1 (Hs00983716\_m1). The two reference paraffines beta actin (ACTB) and GAPDH were used as endogenous controls, assay IDs  4333762-0912030 and 4333764-1111036, respectively. For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of material from the AMO-1.
+[Skriv noget mere om microarray-studiet, referencer!!??]
+By microarrays sceenings of multiple myeloma, the genes MGST1 and MMSET was detected to have a differential expression between cell lines high and low in so-called culture initiating cells (CIC).
+CICs are of particular interest in cancer research as they exhibit a high cellular resilience and ability to initiate repopulation.
+Such properties that provide clues about the molecular drivers of cancer stem-cells and their aggressiveness.
+The purpose of this experiment was to validate the findings of MGST1 and MMSET.
 
-\subsubsection{DLBCL data}
+For this, 8 multiple myeloma cell lines (AMO-1, KMM-1, KMS-11, KMS12-PE, KMS12-BM, MOLP8, L-363, RPMI-8226) with $>$10\% culture initiating cells (CIC), and 8 MM cell lines (ANBL-1, KAS-6-1, LP-1, MOLP-2, NCI-H929, OPM-2, SK-MM-2, U-266) with $<$1\% culture initiating cells were used.
+The fraction of culture initiating cells was determined by the limiting dilution method, see \cite{Lefkovits1999}. Total RNA was isolated from frozen cell culture pellets, using a combined method of Trizol (invitrogen) and Mirvana spin columns (Ambion).
+Isolated RNA was used in complementary DNA (cDNA) synthesis using SuperScript III First-Strand Synthesis Supermix (Invitrogen).
+As input into the total cDNA synthesis 250ng of total RNA was used. Equal amounts of random hexamers and oligo(dT) were used as primers.
+Quantitative real-time reverse transcriptase-polymerase chain reaction (qPCR) was performed on a Mx3000p QPCR system (Agilent Technologies/Stratgene) using the TaqMan UniversalPCR Master Mi, No AmpErase UNG, and TaqMan gene expression Assays (Applied Biosystems).
+The following TaqMan Gene Expression Assays were used (Assay ID numbers in parentheses): MGST1 (Hs00220393\_m1), FGFR3 (Hs00179829\_m1), WHSC1 (Hs00983716\_m1).
+The two reference paraffines beta-actin (ACTB) and GAPDH were used as endogenous controls, assay IDs 4333762-0912030 and 4333764-1111036, respectively.
+For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of material from AMO-1.
 
-DLBCL samples were collected from 8 testicular and 8 nodal paraffin embedded lymphomas at Aalborg Hospital. Total RNA was isolated  using a combined method of  Trizol (Invitrogen) and Mirvana spin columns (Ambion). An amount of 10ng total
-RNA was synthesized into first strand cDNA in a 15$\mu$L reaction using
-TaqMan MicroRNA Reverse Transcription Kit (Applied Biosystems)
-according to the manufactures instruction. In total 1.33$\mu$L cDNA was used as
-template in the real time PCR amplification performed by Mx3000p QPCR system (Agilent Technologies/Stratgene) with sequence specific TaqMan primers (Applied Biosystems). The two microRNAs, hsa-miR-127 and  hsa-miR-143, were chosen for validation of differential expression between testicular and nodal manifestation of diffuse large B-cell lymphoma. As reference  transcripts we chose RNU-6B and RNU-24, which were less variable and equally expressed across nodal and extra-nodal samples among a larger list of candidate reference genes. For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of a pooled material from all 16 lymphomas.
+\subsubsection{DLBCL study}
 
-For both experiments $\rm{C}_q$ values were extracted for both the reference and target transcripts with automatic baseline and threshold selection \citep{Mx300P2013}.
+[Bedre introduktion!?, referencer!!??]
+For this study, DLBCL samples were collected from 8 testicular and 8 nodal paraffin embedded lymphomas at Aalborg Hospital.
+Total RNA was isolated using a combined method of Trizol (Invitrogen) and Mirvana spin columns (Ambion). An amount of 10ng total RNA was synthesized into first strand cDNA in a 15$\mu$L reaction using TaqMan MicroRNA Reverse Transcription Kit (Applied Biosystems) according to the manufactures instruction. In total 1.33$\mu$L cDNA was used as template in the real time PCR amplification performed by Mx3000p QPCR system (Agilent Technologies/Stratgene) with sequence specific TaqMan primers (Applied Biosystems).
+The two microRNAs, hsa-miR-127 and  hsa-miR-143, were chosen for validation of differential expression between testicular and nodal manifestation of diffuse large B-cell lymphoma.
+As reference transcripts we chose RNU-6B and RNU-24, which were less variable and equally expressed across nodal and extra-nodal samples among a larger list of candidate reference genes.
+For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of a pooled material from all 16 lymphomas.
+
 
 \section{Results}
 
@@ -358,7 +379,6 @@ The efficiency corrected estimates are equal for both the variance unadjusted an
 The bootstrap provides a standard deviation slightly less that the delta-method for the MGST1 gene and slightly larger for the the MMSET gene. The $p$-value is zero, probably due to the resolution provided by 500 bootstrapped samples for the MGST1 gene and slightly higher for MMSET gene.
 
 \subsection{DLBCL experiment}
-
 The raw $C_q$-values and dilution curves are depicted in panel A and B of Figure \ref{fig:cqTestis}, respectively.
 
 The differences in gene expressions assessed by the $\ddcq$-values for the target genes mir127 and mir143 and each reference rnu6b and rnu24 gene as well the combination of the reference genes, were estimated using four different methods: Paired $t$-tests and regular $\ddcq$ estimates without efficiency correction, efficiency corrected estimates with and without a variance correction by the statistical delta-method, and the mean of 5000 bootstrapped samples. These results are seen in Table \ref{table:tesits}.
@@ -368,6 +388,9 @@ We notice for the paired t-test and LMM without efficiency correction that the e
 The efficiency corrected estimates are equal for both the variance unadjusted and adjusted, but the standard deviation of the estimate and the $p$-values are higher for the adjusted values. Leading to a more conservative assessment of the difference in gene expression. The results, however, remain significant for the mir127 gene and non-significant for the mir143 gene.
 
 The bootstrap provides a standard deviation slightly higher than the delta-method for both mir127 and mir143. The $p$-value is zero for mir127 normalized with rnu6b, probably due to the resolution provided by 500 bootstrapped samples and slightly higer for the remaining scenarios.
+
+
+\section{Simulation studies}
 
 \subsection{Simulation of FPR and TPR}
 

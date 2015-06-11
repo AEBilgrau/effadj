@@ -18,15 +18,13 @@ if (!grepl("knitr", getwd())) setwd("./knitr")
 rm(list = ls())
 set.seed(987654321)
 n.boots <- 1000 # Bootstrap samples in data analysis
-n.sims  <- 200  # Simulation replications
+n.sims  <- 100  # Simulation replications
 
 recompute <- FALSE  # Recompute heavy computations if TRUE
 
-# library("Bmisc")   # Resave function and more http://github.com/AEBilgrau/Bmisc
 library("lattice") # For plots
 library("lme4")    # For mixed effects models
 library("Hmisc")   # For LaTeX tables
-# library("ROCR")    # For ROC curves
 library("epiR")    # For performance measures and CI hereof
 
 

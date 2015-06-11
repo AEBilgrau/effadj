@@ -10,9 +10,6 @@
 # Perform a simulation
 #
 
-# a <- formals(SimTemp)
-# for (i in seq_along(a)) assign(names(a)[i], a[[i]])
-
 SimTemp <- function (
   nd,                      # Number of dilutions
   ns,                      # Number of samples
@@ -22,11 +19,11 @@ SimTemp <- function (
   alpha.tgt      = 0.75,   # Amp. efficiency of target gene
   alpha.ref      = 0.90,   # Amp. efficiency of refence gene
   ddcq           = 10/9,   # True effect size Delta-Delta-C_q
-  tech.sd        = 1,      # Technical standard deviation
+  tech.sd        = 0.5,    # Technical standard deviation
   sample.sd      = 1,      # Sample standard deviation
   n.replicates   = 1,      # Number of technical replicates
-  n.boot.sim     = 200      # Number of bootstrap samples
-  ) {
+  n.boot.sim     = 150     # Number of bootstrap samples
+) {
 
   data <- structure(vector("list", 2), names = c("H0", "HA"))
   for (i in 1:2) {
@@ -38,14 +35,16 @@ SimTemp <- function (
                   ddcq = ifelse(i==1, 0, ddcq))
   }
   res <- as.data.frame(
-    rbind(DDCq.test(data$H0, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
-          DDCq.test(data$H0, method = "LMM", eff.cor=TRUE,  var.adj=FALSE),
-          DDCq.test(data$H0, method = "LMM", eff.cor=TRUE,  var.adj=TRUE),
-          DDCq.test(data$H0, method = "Bootstrap", n.boots = n.boot.sim),
-          DDCq.test(data$HA, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
-          DDCq.test(data$HA, method = "LMM", eff.cor=TRUE,  var.adj=FALSE),
-          DDCq.test(data$HA, method = "LMM", eff.cor=TRUE,  var.adj=TRUE),
-          DDCq.test(data$HA, method = "Bootstrap", n.boots = n.boot.sim)))
+    rbind(
+      DDCq.test(data$H0, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
+      DDCq.test(data$H0, method = "LMM", eff.cor=TRUE,  var.adj=FALSE),
+      DDCq.test(data$H0, method = "LMM", eff.cor=TRUE,  var.adj=TRUE),
+      DDCq.test(data$H0, method = "Bootstrap", n.boots = n.boot.sim),
+      DDCq.test(data$HA, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
+      DDCq.test(data$HA, method = "LMM", eff.cor=TRUE,  var.adj=FALSE),
+      DDCq.test(data$HA, method = "LMM", eff.cor=TRUE,  var.adj=TRUE),
+      DDCq.test(data$HA, method = "Bootstrap", n.boots = n.boot.sim)
+    ))
 
   # Sanity checks:
   stopifnot(all.equal(res$Estimate[c(2,6)], res$Estimate[c(2,6)+1]))
@@ -62,6 +61,7 @@ SimTemp <- function (
   return(res)
 }
 
+
 #
 # Perform simulation example
 #  - Simulation for 6 samples, 6 dilutions
@@ -72,7 +72,7 @@ if (!exists("res.ex") || recompute) {
   res.ex <- array(NA, c(8, 5, n.sims))
   dimnames(res.ex) <- c(dimnames(ex), list(paste0("Sim", seq_len(n.sims))))
   for (k in seq_len(n.sims)) {
-    res.ex[, , k] <- as.matrix(SimTemp(nd = 6, ns = 6))
+    res.ex[, , k] <- as.matrix(SimTemp(nd = 6, ns = 6, n.boot.sim = 25))
     cat(sprintf("sim = %d\n", k))
   }
   resave(res.ex, file = save.file)
@@ -86,7 +86,7 @@ if (!exists("res.ex") || recompute) {
 samples <- c(4, 8)
 dilutions <- c(4, 8)
 
-if (!exists("sim.results") || recompute || TRUE) {
+if (!exists("sim.results") || recompute) {
   ex <- SimTemp(nd = 3, ns = 3)  # Just used to get dimnames hereof
   set.seed(36)
   st <- proc.time()
@@ -268,4 +268,89 @@ for (i in seq_along(dilutions)) {
   }
 }
 dev.off()
+
+
+#
+# Plot more of the results
+#
+
+get.est.info   <- function(data, estimator = "LMM.EC") {
+  x0 <- cbind(hypothesis = 0, e = data[paste0("H0:", estimator), 1, ])
+  x1 <- cbind(hypothesis = 1, est = subdata[paste0("H1:", estimator), 1, ])
+  return(rbind(x0, x1))
+}
+
+
+
+setEPS()
+postscript("../output/figS1_simCIs.eps", width = 1.5*7, height = 1*7)
+
+par(mfcol = c(6,4), mar = c(0,0,0,0)+0.2, oma = c(0,4,2,0)+0.1)
+for (i in seq_along(dilutions)) {
+  for (j in seq_along(samples)) {
+    dil <- dilutions[i]
+    samp <- samples[j]
+    dat <- sim.results[[i]][[j]]
+
+    # Organize data for i and j
+    methods <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot")
+    p.cuts <- c(0.01, 0.05, 0.1)
+    g <- 2
+
+    for (h in seq_along(methods[-4])) {
+      for (hyp in c("H0", "H1")) {
+        get   <- paste0(hyp, ":", methods[h])
+        df    <- dat[get, "df.n", 1]
+        est   <- dat[get, 1, ]
+        sd    <- dat[get, 2, ]
+        lower <- est + qt(p.cuts[g]/2, df)*sd
+        upper <- est - qt(p.cuts[g]/2, df)*sd
+        p     <- dat[get, 2, ]
+        sig   <- (lower > 0 | upper < 0)
+        sig2 <- dat[get, 5, ] < p.cuts[g]
+        stopifnot(all(sig == sig2))
+        # tp <- (lower < 10/9 & 10/9 < upper) & hyp == "H1"
+
+
+        plot(est, ylim = c(-4, 5), pch = 16, cex = 0.3, axes = FALSE,
+             xlab = "", ylab = "")
+
+        if (hyp == "H0") {
+          col <- ifelse(sig, "red", "green")
+          legend <- sprintf("FPR = %.3f", mean(sig))
+        } else {
+          col <- ifelse(sig, "green", "red")
+          legend <- sprintf("TPR = %.3f", mean(sig))
+        }
+
+
+        if (j == 1 & i == 1) axis(2)
+        segments(seq_along(est), lower, y1 = upper, lwd = 2,
+                 col = col)
+        abline(h = c(0, 10/9), lty = 1:2)
+
+        if (h == 1 & hyp == "H0") {
+          mtext(sprintf("%d dilutions, %d samples", dilutions[i], samples[j]),
+                side = 3, outer = FALSE, adj = 0.5, xpd = TRUE, font = 2,
+                cex = 0.7)
+        }
+        if (i == 1 && j == 1) {
+          m <- methods[h]
+          m <- gsub("\\.", "+", gsub("LMM\\.", "", m))
+          mtext(sprintf("%s, %s", m, hyp), line = 3, cex = 0.7,
+                side = 2, outer = FALSE, adj = 0.5, xpd = TRUE, font = 2)
+        }
+
+        legend("topright", bty = "n", legend = legend)
+
+
+      }
+    }
+  }
+}
+title(paste(100*p.cuts[g], "% CIs"), outer = TRUE)
+dev.off()
+
+
+
 

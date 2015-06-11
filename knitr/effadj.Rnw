@@ -19,9 +19,10 @@
 \newcommand{\Var}{\mathbb{V}\text{ar}}
 \newcommand{\bbOne}{\mathds{1}}
 \newcommand{\slfrac}[2]{\left.#1\middle/#2\right.}
-\newcommand{\ddcq}{\Delta\Delta\mbox{C}_q}
+\newcommand{\ddcq}{\Delta\Delta C_q}
 
 \usepackage{dsfont}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -105,7 +106,7 @@ In life sciences, qPCR is typically applied to detect candidate gene transcripts
 In recent years of the high-volume omics-data, another very important application of qPCR has arisen.
 Here qPCR is used as a validation tool for the most promising results of the hypothesis generated from high-throughput screening studies such as microarrays or next generation RNA and DNA sequencing.
 In precisely validation experiments the ability to control the type I error rate (i.e.\ false positive rate) is hugely important.
-Validation without such an ability cannot be considered very meaningful validation.
+Validation without such an ability cannot be considered very meaningful validation and therefore conservative approaches should be taken.
 
 Like all experiments in molecular biology and chemistry, qPCR is sensitive not only to, say, the gene transcript of interest, but also laboratory settings and experimental conditions.
 There is an incredible amount sources of systematic and non-systematic variation including temperature variations, concentration differences by pipetting errors, primer affinity, and many more, all beside the genuine biological variations of interest across case and control.
@@ -156,12 +157,12 @@ $\alpha$ is the percentage of the $\log_2$-AE.
 In practice, the transcript abundance level is determined by the cycle $C_q$ for which given fluorescence measurement $F_{C_q}$ is reached.
 We rearrange \eqref{eq:fluorescencemodel} and notice that $C_q$ can be expressed as
 \begin{equation*}
-  \alpha C_q = \bigl(\log_2 F_{C_q} - \log_2 \kappa \sigma N_0 \bigr).
+  \alpha C_q = \log_2 F_{C_q} - \log_2 \kappa \sigma N_0.
 \end{equation*}
-In order to estimate the relative amount of transcripts between case
-and control (ctrl) samples for the target (tgt) gene template, we assume
+In order to estimate the relative amount of target (tgt) gene transcripts between case
+and control (ctrl) samples, we assume
 the amount of the reference (ref) gene template is the same in both the case
-and the control, denoted by
+and the control,
 $N_{0,\rref,\case}=N_{0,\rref,\ctrl}$,
 and that the AE only vary between the target and reference gene. We then
 arrive at the following expression for the $\log_2$-fold change of
@@ -186,6 +187,7 @@ This method of estimating the log relative abundance between case and controls i
     (\alpha_{ \tgt}C_{ q,\tgt,\case} - \alpha_{ \rref}C_{ q,\rref,\case})
       - (\alpha_{ \tgt}C_{ q,\tgt,\ctrl} - \alpha_{ \rref}C_{ q,\rref,\ctrl}).
 \end{align}
+Thus we have the well-known $2^{-\ddcq}$ as the relative abundance of the original target transcript.
 
 
 \subsection{Statistical model}

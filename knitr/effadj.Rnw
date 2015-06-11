@@ -7,10 +7,15 @@
 \DeclareGraphicsExtensions{.eps}
 \usepackage[outdir=./]{epstopdf}
 
+\renewcommand{\vec}{\boldsymbol} % for bold vectors
+
+\newcommand{\vtheta}{\vec{\theta}} % vector theta
+
 \newcommand{\tgt}{\textrm{tgt}}
 \newcommand{\rref}{\textrm{ref}}
 \newcommand{\case}{\textrm{case}}
 \newcommand{\ctrl}{\textrm{ctrl}}
+\newcommand{\std}{\textrm{std}}
 \newcommand{\Var}{\mathbb{V}\text{ar}}
 \newcommand{\bbOne}{\mathds{1}}
 \newcommand{\slfrac}[2]{\left.#1\middle/#2\right.}
@@ -21,11 +26,11 @@
 
 
 % Run analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-<<run_master, echo=FALSE, results='hide', message=FALSE>>=
-source("../scripts/master.R")  # Simply runs the master script
-@
-
+%'
+%' <<run_master, echo=FALSE, results='hide', message=FALSE>>=
+%' source("../scripts/master.R")  # Simply runs the master script
+%' @
+%'
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -76,16 +81,16 @@ The most commonly used correction strategy is to estimate the AE by dilution exp
 In recent years it has been recommended to determine the AE with high precision as the plug-in approach do not account for its uncertainty.
 In other words, the method assumes an infinite precision of the AE estimate.
 It has become clear, however, that determining the AE with such high precision require tedious laboratory work and vast amounts of biological material, which is often a scarce resource in e.g.\ molecular studies of cancer biology.
-The violation of this assumption leads to overly optimistic estimates of the standard error of $\ddcq$, confidence intervals, and $p$-values.
+Violation of this assumption leads to overly optimistic estimates of the standard error of $\ddcq$, confidence intervals, and $p$-values.
 Ultimately, the type I error probability is increased.
 It is therefore of great importance to estimate and account for the accuracy of the AE estimate to bound the type I error rate and achieve the desired significance level.
-We outline novel procedures to obtain variance approximations of the efficiency adjusted $\ddcq$-value based on statistical modelling in combination with either bootstrapping or the statistical delta method.
-These procedures can be utilized to obtain reliable power calculations, confidence intervals, and test statistics for the detection of differentially expressed genes by qPCR experiments.
-The method in founded in a linear mixed effects model that enables the simultaneous estimation of the AE and class levels and provides an approximation of the variance the efficiency corrected $\ddcq$ estimate.
+We outline novel procedures to obtain variance approximations of the efficiency adjusted $\ddcq$-value based on statistical modelling in combination with either the statistical delta method to bootstrapping.
+These procedures can be utilized to obtain more reliable power calculations, confidence intervals, and test statistics for the detection of differentially expressed genes by qPCR experiments.
+The method in founded in a linear mixed effects model that enables the simultaneous estimation of the AE and $\ddcq$ and provides an approximation of the variance the efficiency corrected $\ddcq$ estimate.
 The method is used to validate two recent findings which suggests that MGST1 is differentially expressed between multiple myeloma cell lines with high and low numbers of culture initiating cells and that miRNA-127 is differentially expressed between testicular and nodal diffuse large B-cell lymphoma (DLBCL).
 The presented method can be applied to evaluate the uncertainty from efficiency estimation by dilution curves and allow more reliable statistical inference based on qPCR data.}
 % Keywords
-{qPCR; amplification efficiency; efficiency adjusted $\ddcq$; bootstrapping, delta method, power calculation}
+{qPCR; delta-delta Cq, $\ddcq$, amplification efficiency; efficiency adjusted; bootstrapping, delta method, power calculation}
 \end{abstract}
 
 
@@ -116,15 +121,15 @@ We find this particular true for the estimation of the amplification efficiency.
 
 Although, efficiency calibration has been extensively treated by \cite{Pfaffl2001} or the more generalized model presented by \cite{Yuan2008}, there still seems to lack a systematic study of the unavoidable influence of uncertainty in the efficiency amplification estimate on the conclusions of qPCR experiments based on formal statistical inference.
 The current AE adjusted $\ddcq$ methods all do not account for the uncertainty of the estimated AE and thus effectively assumes the AE to be estimated with infinite precision.
-This assumption implies a systematic underestimation of the standard error of $\ddcq$ leading to too narrow confidence intervals hereof and decreased $p$-values in inferences about $\ddcq$.
+This assumption implies a systematic underestimation of the standard error of $\ddcq$ leading to too narrow confidence intervals hereof and decreased $p$-values in inference for $\ddcq$.
 If the AE is poorly determined this underestimation can drastically decrease the $p$-values and thus increase probability of type I errors.
 The increased type I error probability is highly problematic when qPCR is used a validation experiments.
 
-In this paper we describe the estimation of the uncertainty of the efficiency amplification estimate by mixed effects models, which also allows for an appropriate handling of the technical and sample errors by either bootstrapping or the statistical delta method.
+In this paper we describe the estimation of the uncertainty of the efficiency amplification estimate by mixed effects models, which also allows for a more appropriate handling of the technical and sample errors by either bootstrapping or the statistical delta method.
 
 The idea of using mixed effects models for qPCR experiments is not new and has been used by e.g. \cite{fu2006} to formulate generalized estimation equations to handle within group variation.
 \cite{andersen2004} and \cite{abruzzo2005} have used mixed effects modeling to identify candidate normalizing genes.
-However, our idea of using bootstrapping or the statistical $\Delta$-method to handle uncertainty stemming from the efficiency estimation seems to be novel and provides an extension of \cite{Yuan2008}.
+However, our idea of using bootstrapping or the statistical delta method to handle uncertainty stemming from the efficiency estimation seems to be novel and provides an extension of \cite{Yuan2008}.
 
 % Precise aims of the paper
 The aim of the paper is to formulate a mathematical model which allows us to draw formal statistical inference about qPCR experiments with non-efficient amplifications.
@@ -137,7 +142,7 @@ The approach is used demonstrate that multiple myeloma cancer cell lines differe
 \subsection{The observational model}
 
 In order to approximate the standard deviation of the efficiency adjusted
-$\Delta\Delta\textrm{C}_q$-value we model the amplification process
+$\ddcq$-value we model the amplification process
 in the following way
 \begin{equation}
   \label{eq:fluorescencemodel}
@@ -150,158 +155,174 @@ initial template, $\sigma$ is the sample specific handling error and
 $\alpha$ is the percentage of the $\log_2$-AE.
 In practice, the transcript abundance level is determined by the cycle $C_q$ for which given fluorescence measurement $F_{C_q}$ is reached.
 We rearrange \eqref{eq:fluorescencemodel} and notice that $C_q$ can be expressed as
-\[
-  C_q = \frac{1}{\alpha}
-        \left(\log_2 F_{C_q} - \log_2 \kappa \sigma N_0 \right).
-\]
+\begin{equation*}
+  \alpha C_q = \bigl(\log_2 F_{C_q} - \log_2 \kappa \sigma N_0 \bigr).
+\end{equation*}
 In order to estimate the relative amount of transcripts between case
-and control samples for the target gene template, we assume
-the amount of the reference gene template is the same in both the case
+and control (ctrl) samples for the target (tgt) gene template, we assume
+the amount of the reference (ref) gene template is the same in both the case
 and the control, denoted by
 $N_{0,\rref,\case}=N_{0,\rref,\ctrl}$,
 and that the AE only vary between the target and reference gene. We then
 arrive at the following expression for the $\log_2$-fold change of
 the target gene template between case and controls:
 \begin{align*}
-  \log_2\Bigl(\frac{N_{ 0,\tgt,\case}}{N_{ 0,\tgt,\ctrl}}\Bigr)
-  &= \log_2 \kappa \sigma_{ \case} N_{ 0,\tgt,\case}
-    -\log_2 \kappa \sigma_{ \case} N_{ 0,\rref,\case} \\
-  &\quad  - \log_2 \kappa \sigma_{\ctrl} N_{ 0,\tgt,\ctrl}
+  \log_2\Bigl(\frac{N_{ 0,\tgt,\case}}{N_{0,\tgt,\ctrl}}\Bigr)
+  &= \log_2 \kappa \sigma_{ \case} N_{0,\tgt,\case}
+    -\log_2 \kappa \sigma_{ \case} N_{0,\rref,\case} \\
+  &\quad
+       - \log_2 \kappa \sigma_{\ctrl} N_{0,\tgt,\ctrl}
        + \log_2 \kappa \sigma_{\ctrl} N_{0,\rref,\ctrl}  \\
   &=   - \bigl\{(\alpha_{\tgt}  C_{ q,\tgt,\case}
-       -  \alpha_{\rref} C_{ q,\rref,\case})
-       - (\alpha_{\tgt}  C_{ q,\tgt,\ctrl}
-       - \alpha_{\rref} C_{ q,\rref,\ctrl})\bigr\},
+       -  \alpha_{\rref} C_{q,\rref,\case})
+       - (\alpha_{\tgt}  C_{q,\tgt,\ctrl}
+       - \alpha_{\rref} C_{q,\rref,\ctrl})\bigr\},
 \end{align*}
 assuming that the $C_q$-values have been determined by a common florescence level $F_{C_q}$.
-This method of estimating the log relative abundance between case and controls is often referred to as the $\Delta\Delta\textrm{C}_q$-method \citep{Livak2001}, after the double difference appearing in the expression:
+This method of estimating the log relative abundance between case and controls is often referred to as the $\ddcq$-method \citep{Livak2001}, after the double difference appearing in the expression:
 \begin{align}
-  \label{eq:deltadelta}
-  \Delta\Delta\textrm{C}_q :=
+  \label{eq:ddcq}
+  \ddcq :=
     (\alpha_{ \tgt}C_{ q,\tgt,\case} - \alpha_{ \rref}C_{ q,\rref,\case})
       - (\alpha_{ \tgt}C_{ q,\tgt,\ctrl} - \alpha_{ \rref}C_{ q,\rref,\ctrl}).
 \end{align}
 
 
 \subsection{Statistical model}
-For ease of notation we use the abbreviation $i\in\{\tgt,\rref\}$ for gene type,
-$j\in\{\case,\ctrl\}$ for sample type, $k\in\{1,\dots,K\}$ for dilution, and
-$l\in\{1,\dots,L\}$ for technical replicate. In order to estimate the
-$\Delta\Delta\textrm{C}_q$-value we need estimates of $\alpha_{i}$
-and $C_{q,i,j}$.
-A popular way of estimating $\alpha_{i}$ is by dilution curves,
+For ease of notation we use the abbreviations $i\in\{\tgt,\rref\}$ for gene types target and reference;
+$j\in\{\case,\ctrl,\std\}$ for sample types case, control, and standard curve; $k\in\{1,\dots,K\}$ for dilution step; and $l\in\{1,\dots,L\}$ for technical replicate.
+To estimate $\ddcq$, we need estimates of $\alpha_i$ and the expected $C_{q,i,j}$.
+A popular way of estimating the AE $\alpha_i$ is by dilution curves,
 i.e.\ by regressing $C_{q,i,j}$ against a series of decreasing
-$N_{0,i,j}$-values, denoted by $N_{0,i,j,k}=N_{0,i,j,1}2^{-x_k}$, where
-$0=x_1<\cdots<x_K<\infty$.
-This can be formulated as a linear mixed effects model (LMEM) \citep{Pinheiro2000a},
+$N_{0,i,j}$-values, denoted by $N_{0,i,j,k} = N_{0,i,j,1}2^{-x_k}$, where
+$0 = x_1 < \cdots < x_K < \infty$, and na\"{i}vely plugging $\hat{\alpha}_i$ into \eqref{eq:ddcq} thus disregarding its uncertainty.
+The estimation of the expected $C_{q,i,j}$-values and $\alpha_i$ can however be estimated simultaneously when formulated as a linear mixed effects model (LMM) \citep{Pinheiro2000a};
 \begin{equation*}
   C_{q,i,j,s,k} = \mu_{i,j} + A_{j/s} + \gamma_{i} x_k + \epsilon_{i,j,s,k},
 \end{equation*}
 where $A_{j/s}$ is a random effect from sample $s$ nested under the $j$'th sample type,
-$\gamma_{i} = \alpha_{i}^{-1}$ and
-$\mu_{i,j} = \alpha_{i}^{-1}(\log_2 F_{C_q} - \log_2 \kappa \sigma_{j}
-N_{0,i,j})$. The random effects $A_{j/s}$'s are $N(0,\sigma_S^2)$-distributed and the
-$\epsilon_{i,j,s,k}$'s are independent and $N(0,\sigma^2)$-distributed.
+$\gamma_{i} = \alpha_i^{-1}$ and
+$\mu_{i,j} = \alpha_i^{-1}(\log_2 F_{C_q} - \log_2 \kappa \sigma_j
+N_{0,i,j})$. The random effects $A_{j/s}$ are $N(0,\sigma_S^2)$-distributed and the
+error terms $\epsilon_{i,j,s,k}$ are independent and $N(0,\sigma^2)$-distributed.
+LMMs provide a more correct quantification of the sources of variation and more correct evaluation of the uncertainty of $\mu_{i,j}$ and its derived quantities.
 
-
-\subsection{Hypothesis test and confidence intervals for $\Delta\Delta\textrm{C}_q$-values by the statistical $\Delta$-method}
+\subsection{Hypothesis test and confidence intervals for $\ddcq$-values by the statistical delta method}
 
 Let the maximum likelihood estimates of the fixed effects
 \begin{equation*}
-  \theta = (\mu_{\tgt,\case},  \mu_{\tgt,\ctrl},
-      \gamma_{\tgt},    \mu_{\rref,\case},
-            \mu_{\rref,\ctrl}, \gamma_{\rref})
+\vtheta = (\mu_{\tgt,\case},  \mu_{\tgt,\ctrl},  \gamma_{\tgt},
+           \mu_{\rref,\case}, \mu_{\rref,\ctrl}, \gamma_{\rref})^\top
 \end{equation*}
 be denoted by
 \begin{equation*}
-  \hat{\theta} = (\hat{\mu}_{\tgt,\case},  \hat{\mu}_{\tgt,\ctrl},
-                  \hat{\gamma}_{\tgt},    \hat{\mu}_{\rref,\case},
-                  \hat{\mu}_{\rref,\ctrl}, \hat{\gamma}_{\rref}).
+  \hat{\vtheta} = (\hat{\mu}_{\tgt, \case}, \hat{\mu}_{\tgt,\ctrl},  \hat{\gamma}_{\tgt},
+                   \hat{\mu}_{\rref,\case}, \hat{\mu}_{\rref,\ctrl}, \hat{\gamma}_{\rref})^\top.
 \end{equation*}
-Suppose that we wish to test the hypothesis
+We wish to test the hypothesis
 \begin{equation*}
-  H_0 : c(\theta) = 0,
+  H_0 : c(\vtheta) = 0,
 \end{equation*}
 where $c$ is the continuously differentiable function of the
-fixed effects to the $\Delta\Delta\textrm{C}_q$-value given by
+fixed effects to the $\ddcq$-value given by
 \begin{equation}
-  \label{eq:deltadelta2}
-  c(\theta)
-    =      \big\{ (\mu_{\tgt,\case}  \gamma_{ \tgt}^{-1}
-               -  \mu_{\rref,\case} \gamma_{ \rref}^{-1})
-               - (\mu_{\tgt,\ctrl}  \gamma_{ \tgt}^{-1}
-               -  \mu_{\rref,\ctrl} \gamma_{ \rref}^{-1})\bigr\}.
+  \label{eq:c}
+  c(\vtheta)
+    =      \big\{ (\mu_{\tgt,\case} \gamma_\tgt^{-1}
+               -  \mu_{\rref,\case} \gamma_\rref^{-1})
+               - (\mu_{\tgt,\ctrl}  \gamma_\tgt^{-1}
+               -  \mu_{\rref,\ctrl} \gamma_\rref^{-1})\bigr\}.
 \end{equation}
 Then a statistic for testing $H_0$, is given by
 \begin{equation*}
-  t = \frac{c(\hat{\theta})}
-           {\sqrt{\Var\!\big[c(\hat{\theta})\big]}}
+  t = \frac{c(\hat{\vtheta})}
+           {\sqrt{\Var\!\bigl[c(\hat{\vtheta})\bigr]}}
 \end{equation*}
 which according to a first order Taylor series expansion of $c$ can be
 approximated by
 \begin{equation}
   t =
   \frac{
-    c(\hat{\theta})
+    c(\hat{\vtheta})
   }{
-   \sqrt{\nabla c(\hat{\theta})^\top
-        \Var[\hat{\theta}]
-        \nabla c(\hat{\theta})}
+   \sqrt{\nabla c(\hat{\vtheta})^\top
+        \Var[\hat{\vtheta}]
+        \nabla c(\hat{\vtheta})}
   }.
   \label{eq:tstat}
 \end{equation}
 According to \citet[Section 2.4.2]{Pinheiro2000a}, $t$ is approximately
-$t$-distributed with $\eta = S_{\case}+S_{\ctrl} -5$ degrees of freedom.
-On the basis of (\ref{eq:tstat}), an approximate $(1- \alpha) 100\%$ confidence interval of $c(\theta)$ is then given by
+$t$-distributed with $\eta$ degrees of freedom.
+The degrees of freedom of multilevel mixed effects models are highly non-trivial to obtain in general, however.
+For the purposes of this paper, we restrict ourselves to case of a balance experimental design where $\eta$ is obtain relatively straight-forwardly.
+
+On the basis of (\ref{eq:tstat}), an approximate $(1 - \alpha) 100\%$ confidence interval of $c(\vtheta)$ can then given by
 \begin{equation*}
-     c(\hat{\theta}) \pm  t_{\alpha/2,\eta}\sqrt{\nabla c(\hat{\theta})^{\top}\Var[\hat{\theta}]\nabla c(\hat{\theta})}.
+     c(\hat{\vtheta}) \pm
+     t_{\alpha/2,\eta}\sqrt{\nabla c(\hat{\vtheta})^{\top}\Var[\hat{\vtheta}]\nabla c(\hat{\vtheta})}.
 \end{equation*}
+Likewise, $p$-values can be obtained by computing $P(T > |t|)$ where $T$ is $t$-distributed with $\eta$ degrees of freedom.
 Both maximum likelihood (ML) and restricted maximum likelihood estimation (REML) of mixed linear model have been implemented by the R-package \texttt{lme4} based on the \texttt{nlme} package of  \cite{Pinheiro2000a}.
-Based on this package we compute the estimates $\hat{\theta}$ and $\textrm{Var}(\hat{\theta})$ and use these in the construction of test and confidence intervals for the $\Delta\Delta\textrm{C}_q$-values as described above.
+Based on this package we compute the estimates $\hat{\vtheta}$ and $\Var[\hat{\vtheta}]$ and use these in the construction of test and confidence intervals for the $\ddcq$-values as described above.
+The needed gradient in \eqref{eq:tstat} is computed straight-forwardly from \eqref{eq:c} as
+\begin{equation*}
+  \nabla c(\hat{\vtheta}) =
+  \left(
+    \gamma_\tgt^{-1} ,
+    -\gamma_\tgt^{-1} ,
+    -\mu_{\tgt,\case} \gamma_\tgt^{-1} + \mu_{\tgt,\ctrl} \gamma_\rref^{-1} ,
+    -\gamma_\rref^{-1} ,
+    \gamma_\rref^{-1} ,
+    \mu_{\rref,\case} \gamma_\tgt^{-1} - \mu_{\rref,\ctrl} \gamma_\rref^{-1}
+ \right)^\top.
+\end{equation*}
 
-\subsection{Hypothesis test and confidence intervals for $\Delta\Delta\textrm{C}_q$-values by bootstrapping}
+\subsection{Hypothesis test and confidence intervals for $\ddcq$-values by bootstrapping}
 
-A simple alternative to the statistical $\Delta$-method, which avoids calculating gradients and often performing better in small sample situations, is to bootstrap.
+A simple alternative to the statistical delta method, which avoids calculating gradients and often performing better in small sample situations, is to bootstrap.
 
-The basic idea of bootstrapping is that inference about the $\Delta\Delta\textrm{C}_q$-values can be can conducted by resampling the sample data and performing inference on the re-sampled data.
+The basic idea of bootstrapping is that inference about the $\ddcq$-values can be can conducted by resampling the sample data and performing inference on the re-sampled data.
 
 Non-parametric block bootstrap samples for the case-control data are generated by sampling matched pairs of target/reference genes with replacement for cases and controls, respectively.
 However, as we have only got a single observation for each dilution step we chose to re-sample residuals from the fitted simple regression model and subsequently adding the residuals to the fitted values from the linear regression.
 
-Hence the bootstrapped data set consists of the re-sampled matched pairs and the bootstrapped standard curve. For each data set the $\Delta\Delta\textrm{C}_q$-value is calculated. For the analysis of the CIC and Testis data we draw 5000 bootstrap samples and used them to carry out statistical inference.
+Hence the bootstrapped data set consists of the re-sampled matched pairs and the bootstrapped standard curve. For each data set the $\ddcq$-value is calculated. For the analysis of the CIC and Testis data we draw 5000 bootstrap samples and used them to carry out statistical inference.
 
-First, standard errors of $\Delta\Delta\textrm{C}_q$-value is calculated by the empirical standard error of the bootstrapped samples.
-Secondly, the P-value for the test for the null hypothesis of a vanishing $\Delta\Delta C_q$-value is calculated as the minimum of two times the percentile and two times one minus the percentile of 0 in the bootstrapped sample.
+First, standard errors of $\ddcq$-value is calculated by the empirical standard error of the bootstrapped samples.
+Secondly, the $p$-value for the test for the null hypothesis of a vanishing $\ddcq$-value is calculated as the minimum of two times the percentile and two times one minus the percentile of 0 in the bootstrapped sample.
+
 
 \subsection{Simulation of the false positive and true positive rate}
 
-In order to properly study a statistical test procedure one needs to have an idea of the false positive rate (FPR), or specificity or type I error rate,  and the true positive rate (TPR), or  sensitivity or power.
+In order to properly study a statistical test procedure one needs to have an idea of the false positive rate (FPR), or type I error rate, as well as the true positive rate (TPR), or sensitivity or power.
 
-The TPR of a statistical test is the probability that the test will correctly declare a result statistically significant given an effect size or difference of $\delta = c(\theta)$ between case and controls. Hence for qPCR-experiments the TPR is given by
-\[
-  \mbox{TPR} =
-    P\big(t > t_{\alpha/2,\eta} \big| c(\theta) = \delta\big).
-\]
+In our setting, the TPR of the statistical test is the probability that the test will correctly declare a result statistically significant given an non-zero effect size $\delta = c(\theta)$ between case and controls. Hence for qPCR-experiments the TPR is given by
+\begin{equation*}
+  \mathrm{TPR} =
+    P\bigl(t > t_{\alpha/2,\eta} \bigm| c(\theta) = \delta\bigr).
+\end{equation*}
 A straightforward way to obtain the TPR is to simulate a number of $t$-values $t_1,\dots,t_n$ under the alternative hypothesis of $c(\theta) = \delta$ and then estimate the TPR by
-\[
-  \widehat{\mbox{TPR}} =
-    \frac{1}{n}\sum_{i=1}^n \bbOne \!\big[ t_i >  t_{\alpha/2,\eta} \big],
-\]
+\begin{equation*}
+  \widehat{\mathrm{TPR}} =
+    \frac{1}{n}\sum_{i=1}^n \bbOne \!\bigl[ t_i >  t_{\alpha/2,\eta} \bigr],
+\end{equation*}
 i.e.\ the fraction of tests correctly declared significant.
 
 On the other hand the FPR of a statistical test is the probability that the test incorrectly will declare a result statistically significant given a vanishing effect size or difference of $ c(\theta) = 0$ between case and controls. Hence for qPCR-experiments the FPR is given by
-\[
-  \mbox{FPR} =
-    P\big(t > t_{\alpha/2,\eta} \big| c(\theta) = 0\big).
-\]
+\begin{equation*}
+  \mathrm{FPR} =
+    P\bigl(t > t_{\alpha/2,\eta} \bigm| c(\theta) = 0\bigr).
+\end{equation*}
 A straightforward way to obtain the FPR is to simulate a number of $t$-values $t_1,\dots,t_n$ under the null hypothesis of $c(\theta) = 0$ and then estimate the FPR by
-\[
-  \widehat{\mbox{FPR}} =
-    \frac{1}{n}\sum_{i=1}^n \bbOne \!\big[ t_i >  t_{\alpha/2,\eta} \big],
-\]
+\begin{equation*}
+  \widehat{\mathrm{FPR}} =
+    \frac{1}{n}\sum_{i=1}^n \bbOne \!\bigl[ t_i >  t_{\alpha/2,\eta} \bigr],
+\end{equation*}
 i.e.\ the fraction of tests incorrectly declared significant.
 
-Based on the above statistical model, we computed the FPR and the TPR for a given sample sizes, sample and experimental variations, and effect sizes.
+Based on the above statistical model, we computed the FPR and the TPR for each discussed method under chosen some sample sizes, sample and experimental variations, and true effect sizes.
+
+
 
 \subsection{Sample and data preparation}
 
@@ -326,40 +347,41 @@ For both experiments $\rm{C}_q$ values were extracted for both the reference and
 \subsection{CIC experiment}
 The raw $C_q$-values and dilution curves are depicted in panel A and B of Figure \ref{fig:cqCIC}, respectively.
 
-The differences in gene expressions assessed by the $\Delta \Delta C_q$-values for the target genes MGST1 and MMSNET and each reference GAPDH and ACTB gene as well the combination of the reference genes, were estimated using four different methods: Paired $t$-tests and regular $\Delta \Delta C_q$ estimates without efficiency correction, efficiency corrected estimates with and without a variance correction by the statistical $\Delta$-method, and the mean of 5000 bootstrapped samples. These results are seen in Table \ref{table:cic}.
+The differences in gene expressions assessed by the $\ddcq$-values for the target genes MGST1 and MMSNET and each reference GAPDH and ACTB gene as well the combination of the reference genes, were estimated using four different methods: Paired $t$-tests and regular $\ddcq$ estimates without efficiency correction, efficiency corrected estimates with and without a variance correction by the statistical delta-method, and the mean of 5000 bootstrapped samples. These results are seen in Table \ref{table:cic}.
 
-We notice for the paired t-test and LMEM without efficiency correction that the estimates are equal, but the standard error estimate is lower for the LMEM model due to improved efficiency in an unbalanced case-ctrl set-up. For all combinations of reference genes the MGST1 estimate is significantly different from zero  and the MMSET estimate is not significantly different from zero.
+We notice for the paired t-test and LMM without efficiency correction that the estimates are equal, but the standard error estimate is lower for the LMM due to improved efficiency in an unbalanced case-ctrl set-up. For all combinations of reference genes the MGST1 estimate is significantly different from zero  and the MMSET estimate is not significantly different from zero.
 
-The efficiency corrected estimates are equal for both the variance unadjusted and adjusted, but the standard deviation of the estimate and the P-values are higher for the adjusted values. Leading to a more conservative assessment of the difference in gene expression. The results, however, remain significant for the MGST1 gene and non-significant for the MMSET gene.
+The efficiency corrected estimates are equal for both the variance unadjusted and adjusted, but the standard deviation of the estimate and the $p$-values are higher for the adjusted values. Leading to a more conservative assessment of the difference in gene expression. The results, however, remain significant for the MGST1 gene and non-significant for the MMSET gene.
 
-The bootstrap provides a standard deviation slightly less that the $\Delta$-method for the MGST1 gene and slightly larger for the the MMSET gene. The P-value is zero, probably due to the resolution provided by 500 bootstrapped samples for the MGST1 gene and slightly higher for MMSET gene.
+The bootstrap provides a standard deviation slightly less that the delta-method for the MGST1 gene and slightly larger for the the MMSET gene. The $p$-value is zero, probably due to the resolution provided by 500 bootstrapped samples for the MGST1 gene and slightly higher for MMSET gene.
 
 \subsection{DLBCL experiment}
 
 The raw $C_q$-values and dilution curves are depicted in panel A and B of Figure \ref{fig:cqTestis}, respectively.
 
-The differences in gene expressions assessed by the $\Delta \Delta C_q$-values for the target genes mir127 and mir143 and each reference rnu6b and rnu24 gene as well the combination of the reference genes, were estimated using four different methods: Paired $t$-tests and regular $\Delta \Delta C_q$ estimates without efficiency correction, efficiency corrected estimates with and without a variance correction by the statistical $\Delta$-method, and the mean of 5000 bootstrapped samples. These results are seen in Table \ref{table:tesits}.
+The differences in gene expressions assessed by the $\ddcq$-values for the target genes mir127 and mir143 and each reference rnu6b and rnu24 gene as well the combination of the reference genes, were estimated using four different methods: Paired $t$-tests and regular $\ddcq$ estimates without efficiency correction, efficiency corrected estimates with and without a variance correction by the statistical delta-method, and the mean of 5000 bootstrapped samples. These results are seen in Table \ref{table:tesits}.
 
-We notice for the paired t-test and LMEM without efficiency correction that the estimates are equal, but the standard error estimate is lower for the LMEM model due to improved efficiency in an ubalanced case-ctrl set-up. For all combinations of reference genes the mir127 estimate is significantly different from zero  and the mir143 estimate is not significantly different from zero.
+We notice for the paired t-test and LMM without efficiency correction that the estimates are equal, but the standard error estimate is lower for the LMM due to improved efficiency in an ubalanced case-ctrl set-up. For all combinations of reference genes the mir127 estimate is significantly different from zero  and the mir143 estimate is not significantly different from zero.
 
-The efficiency corrected estimates are equal for both the variance unadjusted and adjusted, but the standard deviation of the estimate and the P-values are higher for the adjusted values. Leading to a more conservative assessment of the difference in gene expression. The results, however, remain significant for the mir127 gene and non-significant for the mir143 gene.
+The efficiency corrected estimates are equal for both the variance unadjusted and adjusted, but the standard deviation of the estimate and the $p$-values are higher for the adjusted values. Leading to a more conservative assessment of the difference in gene expression. The results, however, remain significant for the mir127 gene and non-significant for the mir143 gene.
 
-The bootstrap provides a standard deviation slightly higher than the $\Delta$-method for both mir127 and mir143. The P-value is zero for mir127 normalized with rnu6b, probably due to the resolution provided by 500 bootstrapped samples and slightly higer for the remaining scenarios.
+The bootstrap provides a standard deviation slightly higher than the delta-method for both mir127 and mir143. The $p$-value is zero for mir127 normalized with rnu6b, probably due to the resolution provided by 500 bootstrapped samples and slightly higer for the remaining scenarios.
 
 \subsection{Simulation of FPR and TPR}
 
-We present a simulation example of a two-sided test for the null hypothesis of a vanishing $\Delta\Delta C_q$-value at $5\%$ significance level.
+We present a simulation example of a two-sided test for the null hypothesis of a vanishing $\ddcq$-value at $5\%$ significance level.
 The test was performed by 6 samples in each case and control groups and 8 dilution.
 The effect size was set to $\delta = 10/9$, the sample and experimental variation  was set to $\sigma_{S}^2 = 1$ and $\sigma^2 = 0.25$, respectively.
 Finally, the AE was set to 0.9.
-The results are summarized in \ref{table:cic}. We notice the FPR/TPR are xx/xx, xx/xx, xx/xx, and xx/xx for the LMEM, efficiency corrected without and with variance adjustment $\Delta$-method, and bootstrap method, respectively. This means the variance adjusted and bootstrapped methods controls the FPR much better than the methods without variance adjustment. This comes, however with cost of a lower true positive rate.
+The results are summarized in \ref{table:cic}. We notice the FPR/TPR are xx/xx, xx/xx, xx/xx, and xx/xx for the LMM, efficiency corrected without and with variance adjustment delta-method, and bootstrap method, respectively. This means the variance adjusted and bootstrapped methods controls the FPR much better than the methods without variance adjustment. This comes, however with cost of a lower true positive rate.
 
-In Figure \ref{fig:xxx} the performance of the FPR and TPR is shown for sample size equal to 4 and 8 in each case and control group and the number of dilution steps varying between 4 and 8. In each panel the P-value cut-off is varied between 0.01, 0.05 and 0.1.
+In Figure \ref{fig:simstudy} the performance of the FPR and TPR is shown for sample size equal to 4 and 8 in each case and control group and the number of dilution steps varying between 4 and 8.
+In each panel the $p$-value cut-off is varied between 0.01, 0.05 and 0.1.
 
 
 \section{Discussion}
 % Main message
-Our approach based on the statistical  $\Delta$-method to approximate the variance of efficiency adjusted $\Delta\Delta\textrm{C}_q$-values, shows that it is possible to draw statistical inference about qPCR experiments. This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation. The approach was used to validate that MGST1 is differentially expressed between multiple myeloma cell lines and to design a study which results support the hypothesis that miRNA-127 is differentially expressed between testicular and nodal DLBCL.
+Our approach based on the statistical delta-method to approximate the variance of efficiency adjusted $\ddcq$-values, shows that it is possible to draw statistical inference about qPCR experiments. This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation. The approach was used to validate that MGST1 is differentially expressed between multiple myeloma cell lines and to design a study which results support the hypothesis that miRNA-127 is differentially expressed between testicular and nodal DLBCL.
 
 % Comparison with other studies
 We noticed a dramatic increase in the standard error of the estimate when the

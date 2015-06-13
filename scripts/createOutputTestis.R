@@ -97,10 +97,10 @@ grps <-
                                        paste(x[1], "vs", x[2], "+", x[3]),
                                        paste(x[1], "vs", x[2])))
 
-caption.txt <- "{\\bf Testis data: method comparison for estimating the
-  $\\Delta\\Delta\\textrm{C}_q$-value}. $t$-test shows results from a simple
+caption.txt <- "Testis data: method comparison for estimating the
+  $\\ddcq$-value. $t$-test shows results from a simple
   $t$-test using only undiluted data. LMEM signifies the regular
-  $\\Delta\\Delta\\textrm{C}_q$ method using a linaer mixed effects model
+  $\\ddcq$ method using a linaer mixed effects model
   without using dilution data and thus without efficiency correction.
   Eff.\\ corr.\\ denotes use of the plugin-estimator.
   Var.\\ adj.\\ denotes that the efficiency correction was variance adjusted.
@@ -110,7 +110,7 @@ w <- latex(toTeX,
            file    = "../output/Table2.tex",
            title   = "",
            label   = "table:tesits",
-           caption = sprintf(caption.txt, n.boots),
+           caption = sprintf(caption.txt, length(testis.boot)),
            caption.loc = "top",
            rgroup  = grps,
            center  = "center",

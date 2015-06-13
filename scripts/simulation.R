@@ -16,14 +16,14 @@ SimTemp <- function (
   # Parameters of simulation
   mu.tgt         = 30,     # Mean of target gene
   mu.ref         = 25,     # Mean of reference gene
-  alpha.tgt      = 0.75,   # Amp. efficiency of target gene
-  alpha.ref      = 0.90,   # Amp. efficiency of refence gene
+  alpha.tgt      = 0.80,   # Amp. efficiency of target gene
+  alpha.ref      = 0.95,   # Amp. efficiency of refence gene
   ddcq           = 10/9,   # True effect size Delta-Delta-C_q
   tech.sd        = 0.5,    # Technical standard deviation
   sample.sd      = 1,      # Sample standard deviation
   n.replicates   = 1,      # Number of technical replicates
-  n.boot.sim     = 150     # Number of bootstrap samples
-) {
+  n.boot.sim     = 101     # Number of bootstrap samples
+  ) {
 
   data <- structure(vector("list", 2), names = c("H0", "HA"))
   for (i in 1:2) {
@@ -34,6 +34,7 @@ SimTemp <- function (
                   alpha.ref = alpha.ref, sample.sd = sample.sd,
                   ddcq = ifelse(i==1, 0, ddcq))
   }
+
   res <- as.data.frame(
     rbind(
       DDCq.test(data$H0, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
@@ -162,7 +163,7 @@ colnames(ex.tab) <- gsub("H0", "$H_0$", gsub("H1", "$H_A$", colnames(tab)))
 # rownames(ex.tab) <- ifelse(grepl("<", tmp), "Significant", "Non-significant")
 
 tmp.caption <- "Contingency tables for the different estimators for at
-  two different $p$-value thresholds. The used estimators are the naive linear
+  two different $p$-value thresholds. The used estimators are the linear
   mixed effect model (LMM), the LMM with efficiency correction (EC), the LMM
   with EC and variance adjustment (EC\\&VA), and the bootstrapped LMM approach."
 w <- latex(ex.tab, file = "../output/Table3.tex", title = "",
@@ -224,7 +225,7 @@ for (i in seq_along(dilutions)) {
     points(x.tpr, tpr$rate,  pch = 15:18, col = col)
 
     # Panel letter
-    text(1, 0.95, LETTERS[h], cex = 1.5, font = 2)
+    mtext(LETTERS[h], side = 3, adj = 0, cex = 1.1, line = -.5, font = 2)
 
     # Axes
     if (j == 1) {
@@ -348,7 +349,7 @@ for (i in seq_along(dilutions)) {
     }
   }
 }
-title(paste(100*p.cuts[g], "% CIs"), outer = TRUE)
+title(paste(100*(1-p.cuts[g]), "% CIs"), outer = TRUE)
 dev.off()
 
 

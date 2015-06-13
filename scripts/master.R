@@ -17,8 +17,8 @@
 if (!grepl("knitr", getwd())) setwd("./knitr")
 rm(list = ls())
 set.seed(987654321)
-n.boots <- 1000 # Bootstrap samples in data analysis
-n.sims  <- 100  # Simulation replications
+n.boots <- 1000  # Bootstrap samples in data analysis
+n.sims  <- 1000  # Simulation replications
 
 recompute <- FALSE  # Recompute heavy computations if TRUE
 
@@ -30,7 +30,7 @@ library("epiR")    # For performance measures and CI hereof
 
 # Saved R binary output
 save.file <- "../output/saved.RData"
-if (file.exists(save.file) || recompute) {
+if (file.exists(save.file) && !recompute) {
   load(save.file)
 }
 

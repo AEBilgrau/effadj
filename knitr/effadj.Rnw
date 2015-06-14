@@ -44,8 +44,7 @@ accepted for publication November 1, 2010}
 \begin{document}
 
 % Title of paper
-\title{Variance approximation of efficiency corrected
-       $\ddcq$-values in qPCR experiments}
+\title{Variance approximation of the amplification efficiency in qPCR experiments}
 
 
 % List of authors, with corresponding author marked by asterisk
@@ -67,7 +66,7 @@ Aalborg \O{}, Denmark %Fredrik Bajers Vej 7G, 9220 Aalborg \O{}, Denmark
 % First field is the short list of authors
 {{A.} {E.} Bilgrau and others}
 % Second field is the short title of the paper
-{Variance approximations in qPCR experiments}
+{Variance approximation of amplification efficiency in qPCR experiments}
 
 \maketitle
 
@@ -319,9 +318,9 @@ In order to gauge the performance of the methods we subsequently a simulation st
 
 \subsubsection{Introduction}
 
-By microarrays screenings of multiple myeloma, the genes MGST1 and MMSET have been detected to have a differential expression between cell lines high and low in so-called culture initiating cells (CIC).
+By a microarray screening of multiple myeloma, the genes MGST1 and MMSET have been detected to have a differential expression between cell lines with high and low abundance of so-called culture initiating cells (CIC).
 CICs are of particular interest in cancer research as they exhibit a high cellular resilience and ability to initiate repopulation.
-Such properties that provide clues about the molecular drivers of cancer stem-cells and their aggressiveness.
+Such properties provide clues about the molecular drivers of cancer stem-cells and their aggressiveness.
 The purpose of this experiment was to validate the findings of MGST1 and MMSET.
 
 [Skriv noget mere om microarray-studiet, referencer!!??]
@@ -344,9 +343,10 @@ For each target and reference transcripts a standard curve based on seven 2-fold
 \subsubsection{Introduction}
 
 Prompted by the research of \citet{Robertus2009} as well as our own work,
-we wished to validate or falsify the differential expression of so-called micro RNAs (miRNA or miR), which are short non-coding RNAs, between testicular and nodal DLBCL cases.
-\citet{Robertus2009} investigated 50 cases of DLBCL the expression of 15 different miRNAs in is differentially expressed between different DLBCL subtypes.
-In this experiment we wished to validate or falsify the differential expression of miR-127 and miR-143
+we wished to validate or falsify the differential expression of two specific so-called micro RNAs (miR) between testicular and nodal DLBCL cases.
+Micro RNAs are non-coding RNA transcripts with regulartory capabilities.
+\citet{Robertus2009} investigated in 50 cases of DLBCL the expression of 15 different miRs between two different DLBCL subtypes.
+In this experiment, we wished to validate or falsify the differential expression of miR-127 and miR-143.
 
 [Bedre introduktion!?, referencer!!??]
 
@@ -367,37 +367,43 @@ For each target and reference transcripts a standard curve based on seven 2-fold
 In order to properly benchmark statistical test procedures one needs to have an idea of the false positive rate (FPR), or type I error rate, as well as the true positive rate (TPR), or sensitivity or power.
 As ground truth is usually not available in non-synthetic data, we use simulation experiments to determine the error rates of the discussed statistical procedures.
 
-In our setting, the TPR of the statistical test is the probability that the test will correctly declare a result statistically significant given an non-zero effect size $\delta = c(\theta)$ between case and controls. Hence for qPCR-experiments the TPR is given by
+In our setting, the TPR of the statistical test is the probability that the test will correctly declare a result statistically significant given an non-zero effect size $\delta = c(\theta)$ between case and controls.
+Hence for qPCR-experiments the TPR is given by
 \begin{equation*}
   \mathrm{TPR} =
-    P\bigl(t > t_{\alpha/2,\eta} \bigm| c(\theta) = \delta\bigr).
+    P\bigl(\vert t \vert > t_{1 - \alpha/2,\eta} \bigm| c(\theta) = \delta\bigr).
 \end{equation*}
-A straightforward way to obtain an estimate of the TPR is to simulate a number of $t$-values $t_1,\dots,t_n$ under the alternative hypothesis of $c(\theta) = \delta$ and then estimate the TPR by
-\begin{equation*}
-  \widehat{\mathrm{TPR}} =
-    \frac{1}{n}\sum_{i=1}^n \bbOne \!\bigl[ t_i >  t_{\alpha/2,\eta} \bigr],
-\end{equation*}
-i.e.\ the fraction of tests correctly declared significant.
-
 On the other hand the FPR of a statistical test is the probability that the test incorrectly will declare a result statistically significant given a vanishing effect size or difference of $ c(\theta) = 0$ between case and controls. Hence for qPCR-experiments the FPR is given by
 \begin{equation*}
   \mathrm{FPR} =
-    P\bigl(t > t_{\alpha/2,\eta} \bigm| c(\theta) = 0\bigr).
+    P\bigl(\vert t \vert > t_{1 - \alpha/2,\eta} \bigm| c(\theta) = 0\bigr).
 \end{equation*}
-A straightforward way to obtain the FPR is to simulate a number of $t$-values $t_1,\dots,t_n$ under the null hypothesis of $c(\theta) = 0$ and then estimate the FPR by
+
+A straightforward way to obtain an estimate of the TPR is to simulate a large number $n$ of datasets under the alternative hypothesis of $c(\theta) = \delta$, fit the LMM for each dataset, and compute $t$-values $t_1, \dots, t_n$.
+From these $t$-scores the TPR can estimated by
+\begin{equation*}
+  \widehat{\mathrm{TPR}} =
+    \frac{1}{n}\sum_{i=1}^n
+      \bbOne\bigl[\vert t_i \vert > t_{1-\alpha/2,\eta} \bigr],
+\end{equation*}
+where $\bbOne[\;\cdot\;]$ is the indicator function.
+Hence, the estimated TPR is the fraction of tests correctly declared significant.
+
+Likewise, an estimate of the FPR is to simulate $n$ datasets under the null hypothesis of $c(\theta) = 0$ and obtain $t$-values $t_1, \dots ,t_n$ from which FPR is estimated by
 \begin{equation*}
   \widehat{\mathrm{FPR}} =
-    \frac{1}{n}\sum_{i=1}^n \bbOne \!\bigl[ t_i >  t_{\alpha/2,\eta} \bigr],
+    \frac{1}{n}\sum_{i=1}^n
+      \bbOne\bigl[ \vert t_i \vert >  t_{1 - \alpha/2,\eta} \bigr],
 \end{equation*}
 i.e.\ the fraction of tests incorrectly declared significant.
 
-Based on the above statistical model, we computed the FPR and the TPR for each discussed method under some chosen sample sizes, sample and experimental variations, and true effect sizes.
+Based on the above statistical model, we estimate the FPR and the TPR for each discussed method under different choices of sample sizes and number of dilutions whilst fixing the size of the sample and experimental variations.
 
 
 
 \section{Results}
 
-\subsection{CIC experiment}
+\subsection{CIC study}
 The raw $C_q$-values and dilution curves are depicted in Fig.~\ref{fig:cqCIC} panels A--B, respectively.
 
 The differences in gene expressions assessed by the $\ddcq$-values for the target genes MGST1 and MMSNET and each reference GAPDH and ACTB gene as well the combination of the reference genes, were estimated using four different methods:
@@ -423,7 +429,7 @@ The bootstrap provides a standard deviation slightly less that the delta-method 
 The $p$-value is zero, probably due to the resolution provided by 1000 bootstrapped samples for the MGST1 gene and slightly higher for MMSET gene.
 
 
-\subsection{DLBCL experiment}
+\subsection{DLBCL study}
 
 The raw $C_q$-values and dilution curves are depicted in Fig.~\ref{fig:cqTestis}, panels A--B, respectively.
 
@@ -469,25 +475,36 @@ In each panel the $p$-value cut-off is varied between 0.01, 0.05 and 0.1.
 
 \section{Discussion and conclusion}
 % Main message
-Many current statistical approaches to analysis qPCR data disregard the uncertainty of the estimated amplification efficiency leading to increased false positive rates.
+The common efficientcy corrected $\ddcq$ approach to analysis qPCR data disregard the uncertainty of the estimated amplification efficiency leading to increased false positive rates.
 As qPCR experiments are often used for validation this is highly undesirable.
-Our approach based on the statistical delta-method to approximate the variance of efficiency adjusted $\ddcq$-values, shows that it is possible to draw statistical inference about qPCR experiments. This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation. The approach was used to validate that MGST1 is differentially expressed between multiple myeloma cell lines and to design a study which results support the hypothesis that miRNA-127 is differentially expressed between testicular and nodal DLBCL.
+Our primary approach based on the statistical delta-method to approximate the variance of efficiency adjusted $\ddcq$-values, shows that it is possible to draw statistical inference about qPCR experiments whilst properly accounting for the AE uncertainty.
+This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation.
+The approach was used to validate that
+(1) MGST1 is differentially expressed between multiple myeloma cell lines of high and low abundance of culture initiating cells and
+(2) design and analyze a study with the hypothesis that miRNA-127 is differentially expressed between testicular and nodal DLBCL.
 
 % Comparison with other studies
 We noticed a dramatic increase in the standard error of the estimate when the
-variance approximation was introduced, leading to a change of significance for the presented data set. This illustrates that it is important to consider all aspects of uncertainty when conducting efficiency correction of qPCR experiments. Problems with uncertainty in efficiency estimates should be handled by establishing well-estimated dilution curves as argued elsewhere \cite{Bustin2010}, however even in this case the presented method allows for design guidelines for power calculations and assessing the influence of the estimated dilution curves.
+variance approximation was introduced, potentially leading to a change of significance for the presented data set depending on the desired significance level.
+This illustrates that it is important to consider all aspects of uncertainty when conducting efficiency correction of qPCR experiments.
+Problems with uncertainty in efficiency estimates should be handled by establishing well-estimated dilution curves as argued elsewhere \cite{Bustin2010}, however even in this case the presented method also allows for design guidelines for power calculations and assessing the influence of the estimated dilution curves.
 
 % Conclusions
-Despite the recent success of qPCR  much more statistical methodological research is needed, in our opinion,  in order to firmly establish qPCR as a reliable quantitative method to assess the amount of nucleic acids.
+Despite the recent success of qPCR much more statistical methodological research is needed, in our opinion, in order to establish qPCR even more firmly as a reliable quantitative method to assess the amount of nucleic acids.
+
 
 \section*{Software and supplementary Material}
+
 All statistical analysis were done with R \citep{Rproj} version 3.1.3 and the contributed \texttt{lme4}-package \citep{Pinheiro2000a} was applied for random effects modelling.
 All data, R code, LaTeX, and instructions to reproduce present paper and results within is freely available at \url{http://www.github.org/AEBilgrau/effadj/} or upon personal request.
 The paper is generated using \texttt{knitr} (an improvement of Sweave) \citep{Xie2013, Leisch2002}.
 
+
 \section*{Acknowledgments}
+
 The research is supported by MSCNET, a translational program studying cancer stem cells in multiple myeloma supported by the EU FP6, and CHEPRE, a program studying chemo-sensitivity in malignant lymphoma by genomic signatures supported by The Danish Agency for Science, Technology and Innovation, as well as Karen Elise Jensen Fonden. The founders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.\\
 {\it Conflict of Interest}: None declared.
+
 
 \bibliographystyle{biorefs}
 \bibliography{references}

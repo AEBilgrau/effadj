@@ -4,19 +4,22 @@
 #               Variance approximation of efficiency adjusted                  #
 #                      DDCq-values in qPCR experiments                         #
 #                                                                              #
-#                           Bilgrau et al. (2011)                              #
+#                           Bilgrau et al. (2015)                              #
 #                                                                              #
 ################################################################################
 
 This is the repository for the paper on esimation of amplification eficiency in
 qPCR experiments.
 
-## How to compile the paper ##
 
-The paper is written in using the R-package knitr (`.Rnw`) document. The results
+## How to compile the paper
+
+The paper is written in using the R-package knitr (`.Rnw`) document. Plase make
+sure that R and LaTeX is installed. Likewise, make sure that the needed
+R-packages (seen in scripts/master.R) are installed. The results
 of the paper and the pdf document can be generated in multiple ways:
 
-(1) If you use Rstudio, open the `paper-qPCR-Rproj` and press compile document.
+(1) If you use Rstudio, open `paper-qPCR-Rproj` and press compile document.
 
 (2) From within `R` run:
 
@@ -32,4 +35,4 @@ your favorite TeX editor or the command line.
     Rscript -e "knitr::knit('effadj.Rnw')"
     pdflatex effadj.tex
 
-Please cite the paper if you use code, methodology, or results from the paper.
+Please cite our paper if you use code, methodology, or results from the paper.

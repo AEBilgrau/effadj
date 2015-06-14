@@ -26,11 +26,11 @@
 
 
 % Run analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%'
-%' <<run_master, echo=FALSE, results='hide', message=FALSE>>=
-%' source("../scripts/master.R")  # Simply runs the master script
-%' @
-%'
+
+<<run_master, echo=FALSE, results='hide', message=FALSE>>=
+source("../scripts/master.R")  # Simply runs the master script
+@
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -78,7 +78,7 @@ Aalborg \O{}, Denmark %Fredrik Bajers Vej 7G, 9220 Aalborg \O{}, Denmark
 \begin{abstract}
 {Accurate estimation of the amplification efficiency (AE) is an important prerequisite for quantification of gene expression by quantitative polymerase chain reaction (qPCR).
 The most commonly used correction strategy is to estimate the AE by dilution experiments and use it as a plug-in when efficiency correcting the $\ddcq$-value.
-In recent years it has been recommended to determine the AE with high precision as the plug-in approach do not account for its uncertainty.
+Currently it is recommended to determine the AE with high precision as the plug-in approach do not account for its uncertainty.
 In other words, the method assumes an infinite precision of the AE estimate.
 It has become clear, however, that determining the AE with such high precision require tedious laboratory work and vast amounts of biological material, which is often a scarce resource in e.g.\ molecular studies of cancer biology.
 Violation of this assumption leads to overly optimistic estimates of the standard error of $\ddcq$, confidence intervals, and $p$-values.
@@ -134,7 +134,8 @@ However, our idea of using bootstrapping or the statistical delta method to hand
 % Precise aims of the paper
 The aim of the paper is to formulate a mathematical model which allows us to draw formal statistical inference about qPCR experiments with non-efficient amplifications.
 This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation, with special emphasis on true positive rates.
-The approach is used demonstrate that multiple myeloma cancer cell lines differentially express the MGST1 gene depending on the frequency of culture initiating cells. We also used the approach  to design a study which results turned out to support the hypothesis of \cite{Robertus2009} that miRNA-127 is differentially expressed between testicular and nodal DLBCL
+The approach is used demonstrate that multiple myeloma cancer cell lines differentially express the MGST1 gene depending on the frequency of culture initiating cells.
+We also used the approach to design a study which results turned out to support the hypothesis of \cite{Robertus2009} that miRNA-127 is differentially expressed between testicular and nodal DLBCL
 
 
 \section{Methods}
@@ -437,7 +438,7 @@ Despite the recent success of qPCR  much more statistical methodological researc
 
 \section*{Software and supplementary Material}
 All statistical analysis were done with R \citep{Rproj} version 3.1.3 and the contributed \texttt{lme4}-package \citep{Pinheiro2000a} was applied for random effects modelling.
-All data, R code, LaTeX, and instructions to produce present paper and results within is freely available at \url{http://www.github.org/AEBilgrau/effadj/} or upon personal request.
+All data, R code, LaTeX, and instructions to reproduce present paper and results within is freely available at \url{http://www.github.org/AEBilgrau/effadj/} or upon personal request.
 The paper is generated using \texttt{knitr} (an improvement of Sweave) \citep{Xie2013, Leisch2002}.
 
 \section*{Acknowledgments}

@@ -96,7 +96,7 @@ grps <-
                                        paste(x[1], "vs", x[2], "+", x[3]),
                                        paste(x[1], "vs", x[2])))
 
-caption.txt <- "CIC data: method comparison for estimating the
+caption.txt <- "CIC data: Method comparison for estimating the
   $\\ddcq$-value. $t$-test shows results from a simple
   $t$-test using only undiluted data. LMEM signifies the regular
   $\\ddcq$ method using a linaer mixed effects model

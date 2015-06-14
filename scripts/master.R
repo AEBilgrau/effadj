@@ -5,7 +5,7 @@
 #               Variance approximation of efficiency adjusted                  #
 #                      DDCq-values in qPCR experiments                         #
 #                                                                              #
-#                           Bilgrau et al. (2011)                              #
+#                           Bilgrau et al. (2015)                              #
 #                                                                              #
 # Script written by:                                                           #
 #   Anders Ellern Bilgrau, Steffen Falgreen, and Martin Boegsted               #

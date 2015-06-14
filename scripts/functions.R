@@ -116,7 +116,7 @@ qPCRfit <- function(data, ...) {
                   (1 | sampleType:sampleName),
                 data = data, REML = FALSE)
 
-      } else {
+  } else {
 
     fit <- lmer(Cq ~ -1 + sampleType:geneType + (1 | sampleType:sampleName),
                 data = data, REML = FALSE, ...)
@@ -130,7 +130,7 @@ qPCRfit <- function(data, ...) {
 # Delta delta Cq analysis method
 #
 
-DDCq <- function(data, var.adj) {
+DDCq <- function(data, var.adj, alpha = 0.05) {
   # data can also be a fit from lmer
   # Function to calculate efficiency corrected with or without
   # adjusted variance DDCq values in qPCR experiments
@@ -138,7 +138,7 @@ DDCq <- function(data, var.adj) {
   # var.adj is a boolean value
 
   # Internal functions:
-  cHyp <- function (fit) {
+  cHyp <- function(fit) {
     # Function for evaluating the mapping into DDCq
     e <- fixef(fit)
     names(e) <- gsub("sample|gene|Type", "", names(e))
@@ -168,7 +168,7 @@ DDCq <- function(data, var.adj) {
     }
   }
 
-  Var.cHyp <- function (fit, var.adj) {
+  Var.cHyp <- function(fit, var.adj) {
     # Compute variance estimate
     e <- fixef(fit)
     names(e) <- gsub("sample|gene|Type", "", names(e))
@@ -195,11 +195,14 @@ DDCq <- function(data, var.adj) {
   # Perform t test using above functions
   con     <- cHyp(fit)
   var.con <- Var.cHyp(fit, var.adj)
-  t       <- con/sqrt(var.con)
+  sd.con  <- sqrt(var.con)
+  t       <- con/sd.con
   df      <- getME(fit, "n") - getME(fit, "p") - getME(fit, "n_rtrms") - 1
   p.val   <- 2*(1 - pt(abs(t), df))
-  result  <- c("Estimate" = con, "Std. Error" = sqrt(var.con),
-               "t value" = t, "df" = round(df), "Pr(>|t|)" = p.val)
+  conf.int <- con + c(-1, 1)*qt(1-alpha/2, df)*sd.con
+  result  <- c("Estimate" = con, "Std. Error" = sd.con,
+               "t value" = t, "df" = round(df), "Pr(>|t|)" = p.val,
+               "LCL" = conf.int[1], "UCL" = conf.int[2])
   return(result)
 }
 
@@ -207,13 +210,23 @@ DDCq <- function(data, var.adj) {
 # Wrapper for using DDCq with various methods
 #
 
+
+addCI <- function(x, alpha = 0.05) {
+  t <- qt(1-alpha/2, df = x["df.n"])
+  nms <- names(x)
+  res <- c(x, x["Estimate"] + c(-1, 1)*t*x["Std. Error"])
+  names(res) <- c(nms, "LCL", "UCL")
+  return(res)
+}
+
 DDCq.test <- function (data,
                        method = c("LMM", "Naive", "Bootstrap"),
                        eff.cor = TRUE,
                        var.adj = eff.cor,
                        subset.cols,
                        subset.rows,
-                       n.boots = 100) {
+                       n.boots = 100,
+                       alpha = 0.05) {
   # method; character, either "Naive" (i.e a simple t-test) or "LMM"
   # eff.cor; logical, Should the data be efficiency corrected?
   # var.adj; logical, Should the eff. corrected estimate be variace corrected?
@@ -246,10 +259,14 @@ DDCq.test <- function (data,
                      timevar = c("geneType"), direction = "wide")
     colnames(wmean) <- gsub("Cq.", "", colnames(wmean))
 
-    t <- t.test(tgt - ref ~ sampleType, var.equal = TRUE, data = wmean)
+    t <- t.test(tgt - ref ~ sampleType, var.equal = TRUE, data = wmean,
+                conf.level = alpha)
     est <- -diff(t$estimate)
-    result <- c(est, est/t$statistic, t$statistic, t$parameter, t$p.value)
-    names(result) <- c("Estimate", "Std. Error", "t value", "df", "Pr(>|t|)")
+
+    result <-
+      c(est, est/t$statistic, t$statistic, t$parameter, t$p.value, t$conf.int)
+    names(result) <-
+      c("Estimate", "Std. Error", "t value", "df", "Pr(>|t|)", "LCL", "UCL")
     return(result)
 
   } else if (method == "LMM") {    # Linear mixed model method
@@ -466,6 +483,7 @@ twoSideP <- function(bdist){
   return(p)
 }
 
+
 bootstrapEstimate <- function(data, n.boots) {
   # Aggregate data
   if (is.null(data$geneName)) {
@@ -487,10 +505,13 @@ bootstrapEstimate <- function(data, n.boots) {
   # Compute the statistics
   ddcq <- res["Estimate", ]
 
+  alpha <- 0.05
   ans <- c("Estimate" = mean(ddcq), "Std. Error" = sd(ddcq),
-           "t value" = NA, "df" = NA, "Pr(>|t|)" =   twoSideP(ddcq))
+           "t value" = NA, "df" = NA, "Pr(>|t|)" = twoSideP(ddcq),
+           "LCL" = quantile(ddcq, alpha/2), "UCL" = quantile(ddcq, 1-alpha/2))
   return(ans)
 }
+
 
 
 #

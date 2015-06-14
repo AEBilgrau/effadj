@@ -3,14 +3,14 @@
 # Simulation example and experiment
 # Written by
 #   Anders Ellern Bilgrau, Steffen Falgreen, and Martin Boegsted
-# Last revision: 10th of June, 2013
+# Last revision: 10th of June, 2015
 ################################################################################
 
 #
-# Perform a simulation
+# Function to perform a simulation
 #
 
-SimTemp <- function (
+SimTemp <- function(
   nd,                      # Number of dilutions
   ns,                      # Number of samples
   # Parameters of simulation
@@ -21,7 +21,6 @@ SimTemp <- function (
   ddcq           = 10/9,   # True effect size Delta-Delta-C_q
   tech.sd        = 0.5,    # Technical standard deviation
   sample.sd      = 1,      # Sample standard deviation
-  n.replicates   = 1,      # Number of technical replicates
   n.boot.sim     = 101     # Number of bootstrap samples
   ) {
 
@@ -29,23 +28,29 @@ SimTemp <- function (
   for (i in 1:2) {
     data[[i]] <-
       SimqPCRData(std.curve = TRUE, mu.tgt = mu.tgt, mu.ref = mu.ref,
-                  n.samples = ns, n.replicates = n.replicates, n.dilutions = nd,
+                  n.samples = ns, n.replicates = 1, n.dilutions = nd,
                   tech.sd = tech.sd, alpha.tgt = alpha.tgt,
                   alpha.ref = alpha.ref, sample.sd = sample.sd,
                   ddcq = ifelse(i==1, 0, ddcq))
   }
 
+  # Aggregate replicates
+  qfit0 <- qPCRfit(data$H0)
+  qfitA <- qPCRfit(data$HA)
+
   res <- as.data.frame(
     rbind(
+      # Under the null hypothesis
       DDCq.test(data$H0, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
-      DDCq.test(data$H0, method = "LMM", eff.cor=TRUE,  var.adj=FALSE),
-      DDCq.test(data$H0, method = "LMM", eff.cor=TRUE,  var.adj=TRUE),
+      DDCq(qfit0, var.adj = FALSE),
+      DDCq(qfit0, var.adj = TRUE),
       DDCq.test(data$H0, method = "Bootstrap", n.boots = n.boot.sim),
+      # Under the alternative
       DDCq.test(data$HA, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
-      DDCq.test(data$HA, method = "LMM", eff.cor=TRUE,  var.adj=FALSE),
-      DDCq.test(data$HA, method = "LMM", eff.cor=TRUE,  var.adj=TRUE),
+      DDCq(qfitA, var.adj = FALSE),
+      DDCq(qfitA, var.adj = TRUE),
       DDCq.test(data$HA, method = "Bootstrap", n.boots = n.boot.sim)
-    ))
+      ))
 
   # Sanity checks:
   stopifnot(all.equal(res$Estimate[c(2,6)], res$Estimate[c(2,6)+1]))
@@ -69,13 +74,16 @@ SimTemp <- function (
 #
 
 if (!exists("res.ex") || recompute) {
+  set.seed(34956374)
   ex <- SimTemp(nd = 3, ns = 3)  # Just used to get dimnames hereof
-  res.ex <- array(NA, c(8, 5, n.sims))
+  res.ex <- array(NA, c(8, 7, n.sims))
   dimnames(res.ex) <- c(dimnames(ex), list(paste0("Sim", seq_len(n.sims))))
+
   for (k in seq_len(n.sims)) {
     res.ex[, , k] <- as.matrix(SimTemp(nd = 6, ns = 6, n.boot.sim = 25))
     cat(sprintf("sim = %d\n", k))
   }
+
   resave(res.ex, file = save.file)
 }
 
@@ -88,8 +96,8 @@ samples <- c(4, 8)
 dilutions <- c(4, 8)
 
 if (!exists("sim.results") || recompute) {
+  set.seed(807123)
   ex <- SimTemp(nd = 3, ns = 3)  # Just used to get dimnames hereof
-  set.seed(36)
   st <- proc.time()
 
   sim.results        <- vector("list", length(dilutions))
@@ -98,7 +106,7 @@ if (!exists("sim.results") || recompute) {
     samp        <- vector("list", length(samples))
     names(samp) <- paste0("n.samples", samples)
     for (j in seq_along(samples)) {
-      res <- array(NA, c(8, 5, n.sims))
+      res <- array(NA, c(8, 7, n.sims))
       dimnames(res) <- c(dimnames(ex), list(paste0("Sim", seq_len(n.sims))))
 
       for (k in seq_len(n.sims)) {
@@ -149,29 +157,32 @@ get.2by2.table <-  function(subdata, estimator = "LMM.EC", p.cut = 0.05) {
 # Create LaTeX table for simulation EXAMPLE
 ex.tab <- matrix(NA, 0, 8)
 est <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot")
-p.cuts <- c(0.01, 0.05)
-for (i in seq_along(p.cuts)) {
-  tab <- matrix(NA, 2, 0)
-  for (nm in est) {
-    subtab <- get.2by2.table(res.ex, estimator = nm, p.cut = p.cuts[i])
-    tab <- cbind(tab, t(subtab)[2:1, 2:1])
-  }
-  ex.tab <- rbind(ex.tab, tab)
+p.cut <- 0.05
+
+ex.tab <- matrix(NA, 2, 0)
+for (nm in est) {
+  subtab <- get.2by2.table(res.ex, estimator = nm, p.cut = p.cut)
+  ex.tab <- cbind(ex.tab, t(subtab)[2:1, 2:1])
 }
-colnames(ex.tab) <- gsub("H0", "$H_0$", gsub("H1", "$H_A$", colnames(tab)))
-# tmp <- rownames(ex.tab)
-# rownames(ex.tab) <- ifelse(grepl("<", tmp), "Significant", "Non-significant")
+colnames(ex.tab) <- gsub("H0", "$H_0$", gsub("H1", "$H_A$", colnames(ex.tab)))
+ex.cgroup <- c("LMM", "EC", "EC\\&VA", "Bootstrap")
 
 tmp.caption <- "Contingency tables for the different estimators for at
-  two different $p$-value thresholds. The used estimators are the linear
+  5 \\% $p$-value threshold. The used estimators are the linear
   mixed effect model (LMM), the LMM with efficiency correction (EC), the LMM
   with EC and variance adjustment (EC\\&VA), and the bootstrapped LMM approach."
 w <- latex(ex.tab, file = "../output/Table3.tex", title = "",
-           cgroup = c("LMM", "EC", "EC\\&VA", "Bootstrap"),
-           rgroup = c("Significance", "Significance"),
+           cgroup = ex.cgroup,
+           rgroup = "$p$-values",
            caption = tmp.caption,
            label = "tab:simexample")
 
+
+# To use in the knitr document
+get <- c(1,3,5,7)
+ex.fpr <- ex.tab[1,get+1]/colSums(ex.tab[,get+1])
+ex.tpr <- ex.tab[1,get]/colSums(ex.tab[,get])
+names(ex.fpr) <- names(ex.tpr) <- ex.cgroup
 
 #
 # Plot the results

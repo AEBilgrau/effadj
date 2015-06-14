@@ -126,9 +126,6 @@ qPCRfit <- function(data, ...) {
 }
 
 
-
-
-
 #
 # Delta delta Cq analysis method
 #
@@ -155,23 +152,23 @@ DDCq <- function(data, var.adj) {
     return(sum(gam^-1*eff*c(1, -1, -1, 1)))
   }
 
-  DcHyp <- function (fit, var.adj) {
+  DcHyp <- function(fit, var.adj) {
     # Compute the gradient of cHyp
     e <- fixef(fit)
     names(e) <- gsub("sample|gene|Type", "", names(e))
     eff <- e[c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref")]
 
     if (std.data) {
+      M <- cbind(c(-1, 0, 1, 0), c(0, 1, 0, -1))
       gam <- e[rep(c("tgt:l2con","ref:l2con"), 2)]
-      D <- c(gam^-1*c(1, -1, -1, 1),
-             (gam^-2*eff) %*% cbind(c(-1, 0, 1, 0), c(0, 1, 0, -1))*(var.adj))
+      D <- c(gam^-1*c(1, -1, -1, 1), (gam^-2*eff) %*% M * (var.adj))
       return(D)
     } else {
       return(c(1, -1, -1, 1))
     }
   }
 
-  Var.cHyp <- function (fit, var.adj = var.adj) {
+  Var.cHyp <- function (fit, var.adj) {
     # Compute variance estimate
     e <- fixef(fit)
     names(e) <- gsub("sample|gene|Type", "", names(e))
@@ -181,10 +178,10 @@ DDCq <- function(data, var.adj) {
     get <- c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref",
              if (std.data) {c("tgt:l2con", "ref:l2con")})
     grad <- DcHyp(fit, var.adj)
-    return(as.numeric(t(grad)%*%v[get, get]%*%grad))
+    return(as.numeric(t(grad) %*% v[get, get] %*% grad))
   }
 
-  # Perform t test using above functions
+
   if (inherits(data, "lmerMod")) {
     fit <- data
     std.data <- any(grepl("Standard", names(fixef(fit))))
@@ -195,6 +192,7 @@ DDCq <- function(data, var.adj) {
     stop("data should be a data.qPCR dataset or a lmer fit.")
   }
 
+  # Perform t test using above functions
   con     <- cHyp(fit)
   var.con <- Var.cHyp(fit, var.adj)
   t       <- con/sqrt(var.con)
@@ -241,7 +239,7 @@ DDCq.test <- function (data,
 
   if (method == "Naive") {    # Naive method
 
-    data  <- data[data$sampleType != "Standard", ]  # Ignoring dilution data
+    data  <- subset(data, sampleType != "Standard") # Ignoring dilution data
     hmean <- aggregate(Cq ~ sampleName + geneType + sampleType,
                        data = data, FUN = mean)
     wmean <- reshape(hmean, idvar = c("sampleName","sampleType"),
@@ -258,7 +256,7 @@ DDCq.test <- function (data,
 
     if (eff.cor == FALSE) {
       # Simple DDCq method
-      data <- data[data$sampleType != "Standard", ]  # Ignoring dilution data
+      data <- subset(data, sampleType != "Standard")  # Ignoring dilution data
       # Average over replicates
       data <-  aggregate(Cq ~ sampleName + geneType + sampleType +
                            copyNumber + l2con, data = data, FUN = mean)
@@ -630,3 +628,4 @@ resave <- function(..., list = character(), file) {
   }
   save(list = unique(c(previous, var.names)), file = file)
 }
+

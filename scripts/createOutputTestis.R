@@ -11,19 +11,23 @@
 #
 
 # Trellis plot of all data
+testis.data <- subset(testis, sampleType != "Standard")
 fig2a <- dotplot(sampleName ~ Cq | geneType:sampleType,
-                 data = subset(testis, sampleType != "Standard"),
+                 data = testis.data,
                  main = "", col = "tomato",
                  xlab = expression(C[q]),
+                 pch = 16,
                  key = list(text=list(title="A"),
                             corner = c(-0.1,1.1),
                             cex = 1.5, font = "bold"))
 
-fig2b <- xyplot(Cq ~ l2con | geneName, pch = 16,
-                data = subset(testis, sampleType == "Standard"),
+testis.std <- subset(testis, sampleType == "Standard")
+fig2b <- xyplot(Cq ~ l2con | geneName,
+                data = testis.std,
                 xlab = as.expression(bquote(-log[2]*N["0,i,j,k"])),
                 ylab = expression(C[q]),
                 main = "", col = "tomato",
+                pch = 16,
                 key = list(text=list(title="B"),
                            corner = c(-0.1,1.1),
                            cex = 1.5, font = "bold"))
@@ -35,6 +39,8 @@ postscript("../output/fig2.eps", width = 1.5*7, height = 0.5*7)
   print(fig2b, position=c(0.5, 0, 1, 1))
 dev.off()
 
+
+rm(testis.data, testis.std)
 
 #
 # Analysis

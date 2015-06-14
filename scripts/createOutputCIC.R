@@ -11,18 +11,22 @@
 #
 
 # Trellis plot of all data
+cic.data <- subset(cic, sampleType != "Standard")
 fig1a <- dotplot(sampleName ~ Cq | geneType:sampleType,
-                 data = subset(cic, sampleType != "Standard"),
+                 data = cic.data,
                  main = "", col = "steelblue",
                  xlab = expression(C[q]),
+                 pch = 16,
                  key = list(text=list(title="A"),
                             corner = c(-0.1,1.1),
                             cex = 1.5, font = "bold"))
 
-fig1b <- xyplot(Cq ~ l2con | as.factor(geneName), pch = 16,
-                data = subset(cic, sampleType == "Standard"),
+cic.std <- subset(cic, sampleType == "Standard")
+fig1b <- xyplot(Cq ~ l2con | as.factor(geneName),
+                data = cic.std,
                 xlab = as.expression(bquote(-log[2]*N["0,i,j,k"])),
                 ylab = expression(C[q]),
+                pch = 16,
                 main = "", col = "steelblue",
                 key = list(text=list(title="B"),
                            corner = c(-0.1,1.1),
@@ -34,6 +38,8 @@ postscript("../output/fig1.eps", width = 1.5*7, height = 0.5*7)
   print(fig1a, position=c(0, 0, 0.5, 1), more = TRUE)
   print(fig1b, position=c(0.5, 0, 1, 1))
 dev.off()
+
+rm(cic.data, cic.std)
 
 #
 # Analysis

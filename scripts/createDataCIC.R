@@ -3,10 +3,9 @@
 # Creating and cleaning dataset for the paper:                                 #
 #                  Variance approximation of efficiency adjusted               #
 #                         DDCq-values in qPCR experiments                      #
-#              by Boegsted, Petersen, Falgreen, Bilgrau et al. (2010)          #
 # Script written by:                                                           #
 # Steffen Falgreen, Anders Ellern Bilgrau and Martin Boegsted                  #
-# Last revision: 8th of Aug, 2012                                              #
+# Last revision: 8th of Aug, 2015                                              #
 ################################################################################
 
 #

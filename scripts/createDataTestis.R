@@ -3,10 +3,9 @@
 # Creating and cleaning dataset for the paper:                                 #
 #                  Variance approximation of efficiency adjusted               #
 #                         DDCq-values in qPCR experiments                      #
-#              by Boegsted, Petersen, Falgreen, Bilgrau et al. (2010)          #
 # Script written by:                                                           #
 # Steffen Falgreen, Anders Ellern Bilgrau and Martin Boegsted                  #
-# Last revision: 10th of June, 2013                                            #
+# Last revision: 10th of June, 2015                                            #
 ################################################################################
 
 # Read metadata for testis dataset

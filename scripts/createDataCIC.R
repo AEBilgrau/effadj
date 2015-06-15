@@ -36,14 +36,23 @@ cic       <- cic[!is.na(cic$Cq), ]
 cic$l2con <- round(cic$l2con)  # Should we round?
 
 # Make data balanced by removing references with no paired target
+cic <- subset(cic, cic$geneName != "FGFR3")  # FGFR3 gene not paired anywhere
 cic <- subset(cic, !(cic$sampleName == "KAS-6-1" & cic$geneName == "GAPDH"))
-cic <- subset(cic, !(cic$sampleName == "U-266" & cic$geneName == "GAPDH"))
-
+cic <- subset(cic, !(cic$sampleName == "U-266"   & cic$geneName == "GAPDH"))
 cic <- subset(cic, !(cic$sampleName == "KAS-6-1" & cic$geneName == "ACTB"))
-cic <- subset(cic, !(cic$sampleName == "U-266" & cic$geneName == "ACTB"))
-
+cic <- subset(cic, !(cic$sampleName == "U-266"   & cic$geneName == "ACTB"))
 cic <- subset(cic, !(cic$sampleName == "KAS-6-1" & cic$geneName == "MMSET"))
-cic <- subset(cic, !(cic$sampleName == "U-266" & cic$geneName == "MMSET"))
+cic <- subset(cic, !(cic$sampleName == "U-266"   & cic$geneName == "MMSET"))
+
+# Aggregating
+cic <- aggregate(Cq ~ sampleName + geneType + sampleType + geneName +
+                   copyNumber + l2con, data = cic, FUN = mean)
+
+# Ordering
+cic <- cic[order(cic$geneType), ]
+cic <- cic[order(cic$sampleType), ]
+cic <- cic[order(cic$sampleName), ]
+
 
 #
 # Converting cic into an object of class "data.qPCR";

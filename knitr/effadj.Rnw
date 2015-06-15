@@ -300,7 +300,7 @@ However, as we have only got a single observation for each dilution step we chos
 Hence the bootstrapped data set consists of the re-sampled matched pairs and the bootstrapped standard curve.
 For each data set the $\ddcq$-value is calculated and confidence intervals and $p$-values can be obtained from the bootstrap distribution.
 
-In the analysis of the CIC and Testis data we draw 1000 bootstrap sample and used them to carry out statistical inference.
+In the analysis of the CIC and Testis data we draw \Sexpr{n.boots} bootstrap sample and used them to carry out statistical inference.
 First, standard errors of $\ddcq$-value is calculated by the empirical standard error of the bootstrapped samples.
 Secondly, the $p$-value for the test for the null hypothesis of a vanishing $\ddcq$-value is calculated as the minimum of two times the percentile and two times one minus the percentile of 0 in the bootstrapped sample.
 
@@ -426,7 +426,7 @@ For the target gene MMSET in combination with difference reference genes, all es
 Hence no good evidence for differential expression of MMSET between cell lines of high and low abundance of CICs.
 
 The bootstrap provides a standard deviation slightly less that the delta-method for the MGST1 gene and slightly larger for the the MMSET gene.
-The $p$-value is zero, probably due to the resolution provided by 1000 bootstrapped samples for the MGST1 gene and slightly higher for MMSET gene.
+The $p$-value is zero, probably due to the resolution provided by \Sexpr{n.boots} bootstrapped samples for the MGST1 gene and slightly higher for MMSET gene.
 
 
 \subsection{DLBCL study}
@@ -449,12 +449,12 @@ The bootstrap again provides a standard deviation slightly higher than the delta
 \subsection{Simulation example and study}
 
 First, we present results of a simulation example for a two-sided test for the null hypothesis of a vanishing $\ddcq$-value at $5\%$ significance level.
-We simulated 1000 datasets under both the null and alternative hypothesis with 6 samples in each case and control groups and 6 dilution steps.
+We simulated \Sexpr{n.sims} datasets under both the null and alternative hypothesis with 6 samples in each case and control groups and 6 dilution steps.
 The effect size under the alternative was set to $\delta = 10/9$.
 The sample and experimental standard deviations were set to $\sigma_{S} = 1$ and $\sigma = 0.5$, respectively.
 The AE for the target and reference genes was set to 0.80 and 0.95, respectively.
 
-Each of the discussed methods were applied to the $2\times 1000$ datasets and the $p$-value testing the null hypothesis was computed.
+Each of the discussed methods were applied to the $2\times \Sexpr{n.sims}$ datasets and the $p$-value testing the null hypothesis was computed.
 The results of these tests are summarized in \ref{table:cic} from which the FPR and TPR can be computed at the 0.05 cutoff.
 Considering first the FPR of the test procedures.
 From the table, we see that the FPR is \Sexpr{ex.fpr} for the LMM, the efficiency corrected LMM (EC), the efficient corrected with variance adjustment LLM (EC\&VA), and the bootstrap method, respectively.

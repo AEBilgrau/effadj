@@ -146,11 +146,13 @@ for (i in seq_along(dilutions)) {
 }
 
 get.2by2.table <-  function(subdata, estimator = "LMM.EC", p.cut = 0.05) {
+
   x <- get.p.info(subdata, estimator)
-  hyp <- ifelse(x[,"hypothesis"], "H1", "H0")
-  sig <- x[,"p"] < p.cut
-  dec <- sprintf(ifelse(sig, "$p < %.2f$", "$p \\geq %.2f$"), p.cut)
-  return(table("Truth" = hyp, "Decision" = dec))
+  hyp <- factor(ifelse(x[,"hypothesis"], "H1", "H0"), levels = c("H1", "H0"))
+  sig <- factor(x[,"p"] < p.cut, levels = c(TRUE, FALSE))
+  levels(sig) <- sprintf(c("$p < %.2f$", "$p \\geq %.2f$"), p.cut)
+  return(table("Truth" = hyp, "Decision" = sig))
+
 }
 
 
@@ -207,11 +209,13 @@ for (i in seq_along(dilutions)) {
     k <- 1
     for (p.cut in p.cuts) {
       for (method in methods) {
+
         twoByTwo <- get.2by2.table(dat, estimator = method, p.cut)
         summ.stats <- summary(epi.tests(t(twoByTwo)[2:1, 2:1]))
         fpr[k, ] <- c(p.cut, method, 1 - summ.stats["sp", ])
         tpr[k, ] <- c(p.cut, method, summ.stats["se", ])
         k <- k + 1
+
       }
     }
 
@@ -312,7 +316,7 @@ for (i in seq_along(dilutions)) {
     for (h in seq_along(methods[-4])) {
       for (hyp in c("H0", "H1")) {
         get   <- paste0(hyp, ":", methods[h])
-        df    <- dat[get, "df.n", 1]
+        df    <- dat[get, "df.q", 1]
         est   <- dat[get, 1, ]
         sd    <- dat[get, 2, ]
         lower <- est + qt(p.cuts[g]/2, df)*sd

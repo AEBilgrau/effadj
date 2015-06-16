@@ -197,7 +197,16 @@ DDCq <- function(data, var.adj, alpha = 0.05) {
   var.con <- Var.cHyp(fit, var.adj)
   sd.con  <- sqrt(var.con)
   t       <- con/sd.con
-  df      <- getME(fit, "n") - getME(fit, "p") - getME(fit, "n_rtrms") - 1
+
+  # Assumes paired
+  #nn <- getME(fit, "n")
+#   nn <-  sum(with(fit@frame, sampleType != "Standard" & geneType == "tgt")) +
+#     sum(fit@frame$sampleType == "Standard")
+  # df <- nn - getME(fit, "p") - getME(fit, "n_rtrms") - 1
+  df      <- getME(fit, "q") - 2 - 2 - 2*std.data
+  # df      <- getME(fit, "q") - length(fixef(fit))
+
+  stopifnot(df > 0)
   p.val   <- 2*(1 - pt(abs(t), df))
   conf.int <- con + c(-1, 1)*qt(1-alpha/2, df)*sd.con
   result  <- c("Estimate" = con, "Std. Error" = sd.con,
@@ -260,7 +269,7 @@ DDCq.test <- function (data,
     colnames(wmean) <- gsub("Cq.", "", colnames(wmean))
 
     t <- t.test(tgt - ref ~ sampleType, var.equal = TRUE, data = wmean,
-                conf.level = alpha)
+                conf.level = 1-alpha)
     est <- -diff(t$estimate)
 
     result <-
@@ -438,15 +447,18 @@ bootstrapSample <- function(data) {
   }
 
   # if (is.null(unique(data$geneName))) warning("no geneName col present in data")
-  for (gname in unique(data$geneName)) {
-    for (gtype in unique(data$geneType)) {
-      if (is.null(gname)) {
-        get <- with(data, std & geneType == gtype)
-      } else {
-        get <- with(data, std & geneType == gtype & geneName == gname)
+  for (gtype in unique(data$geneType)) {
+    if (!is.null(data$geneName)) {
+      for (gname in unique(data$geneName)) {
+        l <- with(data, std & geneType == gtype & geneName == gname)
+        if (sum(l) > 0) {
+          data$Cq[l] <- residualBootstrap(data[l, ])
+        }
       }
-      if (sum(get) > 0) {
-        data$Cq[get] <- residualBootstrap(data[get, ])
+    } else {
+      l <- with(data, std & geneType == gtype)
+      if (sum(l) > 0) {
+        data$Cq[l] <- residualBootstrap(data[l, ])
       }
     }
   }
@@ -470,6 +482,7 @@ bootstrapSample <- function(data) {
   }
   data$sampleName <- as.factor(data$sampleName)
 
+  data <- subset(data, select = -Cq_old)
   return(data)
 }
 

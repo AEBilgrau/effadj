@@ -47,16 +47,17 @@ rm(cic.data, cic.std)
 
 #
 # We wish to test:
-#   MGST1 vs. GAPDH,    MGST1 vs. ACTB,      MGST1 vs. both
-#   MMSET vs. GAPDH,    MMSET vs. ACTB,      MMSET vs. both
+#   MGST1 vs. GAPDH,    MGST1 vs. ACTB,      MGST1 vs. both (omitted)
+#   MMSET vs. GAPDH,    MMSET vs. ACTB,      MMSET vs. both (omitted)
 #
 
 grps.list <- list(c("MGST1", "GAPDH"),
                   c("MGST1", "ACTB"),
-                  c("MGST1", "ACTB", "GAPDH"),
+                  # c("MGST1", "ACTB", "GAPDH"),
                   c("MMSET", "GAPDH"),
-                  c("MMSET", "ACTB"),
-                  c("MMSET", "ACTB", "GAPDH"))
+                  c("MMSET", "ACTB")
+                  # c("MMSET", "ACTB", "GAPDH")
+                  )
 
 if (!exists("cic.boot") || recompute) {
   cic.boot <- list()

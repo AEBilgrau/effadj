@@ -48,16 +48,17 @@ rm(testis.data, testis.std)
 
 #
 # We wish to test
-#   mir127 vs rnu6b,      mir127 vs rnu24,     mir127 vs rnu6b + rnu24
-#   mir143 vs rnu6b,      mir143 vs rnu24,     mir143 vs rnu6b + rnu24
+#   mir127 vs rnu6b,      mir127 vs rnu24,     mir127 vs rnu6b + rnu24 (omitted)
+#   mir143 vs rnu6b,      mir143 vs rnu24,     mir143 vs rnu6b + rnu24 (omitted)
 #
 
 grps.list <- list(c("mir127", "rnu6b"),
                   c("mir127", "rnu24"),
-                  c("mir127", "rnu6b", "rnu24"),
+                  # c("mir127", "rnu6b", "rnu24"),
                   c("mir143", "rnu6b"),
-                  c("mir143", "rnu24"),
-                  c("mir143", "rnu6b", "rnu24"))
+                  c("mir143", "rnu24")
+                  # c("mir143", "rnu6b", "rnu24")
+                  )
 
 # Do boostrap
 if (!exists("testis.boot") || recompute) {

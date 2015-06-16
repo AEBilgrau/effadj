@@ -21,13 +21,22 @@ n.boots <- 1000  # Bootstrap samples in data analysis
 n.sims  <- 1000  # Simulation replications
 
 recompute <- FALSE  # Recompute heavy computations if TRUE
+start.t <- proc.time()
+
+parallel <- TRUE
+n.cpus <- 4
+
+n.boots <- 150  # Bootstrap samples in data analysis
+n.sims  <- 150  # Simulation datasets/replications
+
+recompute <- TRUE  # Recompute heavy computations if TRUE
 
 # install.packages(c("lattice", "Hmisc", "lme4", "epiR"))
 library("lattice") # For plots
 library("lme4")    # For mixed effects models
 library("Hmisc")   # For LaTeX tables
 library("epiR")    # For performance measures and CI hereof
-
+library("snowfall") # For parallel computing
 # Saved R binary output
 save.file <- "../output/saved.RData"
 if (file.exists(save.file) && !recompute) {
@@ -52,3 +61,6 @@ source("../scripts/createOutputTestis.R")
 
 # 4. Run simulation experiment
 source("../scripts/simulation.R")
+
+end.t <- proc.time()
+print(end.t - start.t)

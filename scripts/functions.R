@@ -692,5 +692,9 @@ catchBootstrapWarning <- function(expr) {
 }
 
 
-
+export <-
+  c("SimqPCRData", "qPCRfit", "is.data.qPCR",
+    "std.curve", "DDCq.test", "DDCq", "as.data.qPCR", "bootstrapEstimate",
+    "parametricBootstrapEstimate", "bootstrapSample", "twoSideP",
+    "catchBootstrapWarning")
 

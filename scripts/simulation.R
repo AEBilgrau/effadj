@@ -10,7 +10,7 @@
 # Function to perform a simulation
 #
 
-SimTemp <- function(
+SimFunc <- function(
   nd,                      # Number of dilutions
   ns,                      # Number of samples
   # Parameters of simulation
@@ -22,7 +22,7 @@ SimTemp <- function(
   tech.sd        = 0.5,    # Technical standard deviation
   sample.sd      = 1,      # Sample standard deviation
   n.boot.sim     = 101     # Number of bootstrap samples
-  ) {
+) {
 
   data <- structure(vector("list", 2), names = c("H0", "HA"))
   for (i in 1:2) {
@@ -52,7 +52,7 @@ SimTemp <- function(
       DDCq(qfitA, var.adj = TRUE),
       DDCq.test(data$HA, method =  "Bootstrap", n.boots = n.boot.sim),
       DDCq.test(data$HA, method = "pBootstrap", n.boots = n.boot.sim)
-      ))
+    ))
 
   # Sanity checks:
   i <- c(2,7)
@@ -78,17 +78,25 @@ SimTemp <- function(
 
 if (!exists("res.ex") || recompute) {
   set.seed(34956374)
-  ex <- SimTemp(nd = 3, ns = 3)  # Just used to get dimnames hereof
-  res.ex <- array(NA, c(10, 7, n.sims))
-  dimnames(res.ex) <- c(dimnames(ex), list(paste0("Sim", seq_len(n.sims))))
-
-  for (k in seq_len(n.sims)) {
-    res.ex[, , k] <- as.matrix(SimTemp(nd = 6, ns = 6, n.boot.sim = 25))
-    cat(sprintf("sim = %d\n", k))
+  SimTemp <- function(x) {
+    return(as.matrix(SimFunc(nd = 6, ns = 6, n.boot.sim = 25)))
   }
+
+  sfInit(parallel, cpus = n.cpus)
+  sfLibrary(lme4)
+  sfExport("SimTemp", "SimFunc", list = export)
+
+  res.ex <- sfLapply(seq_len(n.sims), SimTemp)
+
+  sfStop()
+
+  names(res.ex) <- paste0("Sim", seq_along(res.ex))
+  res.ex <- simplify2array(res.ex)
 
   resave(res.ex, file = save.file)
 }
+
+
 
 #
 # Perform simulation study
@@ -100,8 +108,16 @@ dilutions <- c(4, 8)
 
 if (!exists("sim.results") || recompute) {
   set.seed(807123)
-  ex <- SimTemp(nd = 3, ns = 3)  # Just used to get dimnames hereof
+
+  SimTemp2 <- function(x) {
+    as.matrix(SimFunc(nd = dilutions[i], ns = samples[j]))
+  }
+
   st <- proc.time()
+
+  sfInit(parallel, cpus = n.cpus)
+  sfLibrary(lme4)
+  sfExport("dilutions", "samples", "SimFunc", list = export)
 
   sim.results        <- vector("list", length(dilutions))
   names(sim.results) <- paste0("n.dilutions", dilutions)
@@ -109,20 +125,21 @@ if (!exists("sim.results") || recompute) {
     samp        <- vector("list", length(samples))
     names(samp) <- paste0("n.samples", samples)
     for (j in seq_along(samples)) {
-      res <- array(NA, c(10, 7, n.sims))
-      dimnames(res) <- c(dimnames(ex), list(paste0("Sim", seq_len(n.sims))))
 
-      for (k in seq_len(n.sims)) {
-        res[, , k] <- as.matrix(SimTemp(nd = dilutions[i], ns = samples[j]))
+      sfExport("SimTemp2", "i", "j")
 
-        tm <- (proc.time() - st)/60
-        cat(sprintf("dil = %-2d, samp = %-2d, sim = %-3d, ellapsed: %d mins.\n",
-                    i, j, k, round(tm[3])))
-      }
-      samp[[j]] <- res
+      res <- sfLapply(seq_len(n.sims), SimTemp2)
+
+      names(res) <- paste0("Sim", seq_along(res))
+      samp[[j]] <- simplify2array(res)
+
+      cat(sprintf("dil = %-2d, samp = %-2d, ellapsed: %d mins.\n",
+                  i, j, round((proc.time() - st)[3]) %/% 60))
     }
     sim.results[[i]]  <- samp
   }
+
+  sfStop()
 
   run.time <- proc.time() - st
   attr(sim.results, "time") <- run.time[3]

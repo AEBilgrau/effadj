@@ -61,15 +61,18 @@ grps.list <- list(c("mir127", "rnu6b"),
                   )
 
 # Do boostrap
-if (!exists("testis.boot") || !exists("testis.pboot") || recompute) {
+if (!exists("testis.boot") || !exists("testis.pboot") || recompute || TRUE) {
   testis.boot <- testis.pboot <- list()
   for (i in 1:length(grps.list)) {
     # Subset data
     testis.tmp <- as.data.qPCR(subset(testis, geneName %in% grps.list[[i]]))
 
     # Compute bootstrap estimate and results
-    testis.boot[[i]] <- bootstrapEstimate(testis.tmp, n.boots = n.boots)
-    testis.pboot[[i]]<- parametricBootstrapEstimate(testis.tmp, n.boots=n.boots)
+    testis.boot[[i]] <- catchBootstrapWarning(
+      bootstrapEstimate(testis.tmp, n.boots = n.boots))
+    testis.pboot[[i]]<- catchBootstrapWarning(
+      parametricBootstrapEstimate(testis.tmp, n.boots=n.boots))
+
   }
   resave(testis.boot, testis.pboot, file = save.file)
 }
@@ -127,3 +130,8 @@ w <- latex(toTeX,
            numeric.dollar = TRUE,
            keep.tex = TRUE,
            size = "small")
+
+
+
+
+

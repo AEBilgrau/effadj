@@ -681,3 +681,16 @@ resave <- function(..., list = character(), file) {
   save(list = unique(c(previous, var.names)), file = file)
 }
 
+
+catchBootstrapWarning <- function(expr) {
+  warningHandler <- function(w) {
+    out <- rep(NA, 7)
+    attr(out, "warning") <- w
+    return(out)
+  }
+  return(tryCatch(expr, warning = warningHandler))
+}
+
+
+
+

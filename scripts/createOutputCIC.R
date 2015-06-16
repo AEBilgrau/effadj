@@ -59,16 +59,18 @@ grps.list <- list(c("MGST1", "GAPDH"),
                   # c("MMSET", "ACTB", "GAPDH")
                   )
 
-if (!exists("cic.boot") || recompute) {
-  cic.boot <- list()
+if (!exists("cic.boot") || !exists("cic.pboot") || recompute) {
+  cic.boot <- cic.pboot <- list()
   for (i in 1:length(grps.list)) {
     # Subset data
-    cic.tmp <- subset(cic, geneName %in% grps.list[[i]])
+    cic.tmp <- as.data.qPCR(subset(cic, geneName %in% grps.list[[i]]))
 
     # Compute bootstrap estimate
-    cic.boot[[i]] <-  bootstrapEstimate(cic.tmp, n.boots = n.boots)
+    cic.boot[[i]] <- bootstrapEstimate(cic.tmp, n.boots = n.boots)
+    cic.pboot[[i]] <- parametricBootstrapEstimate(cic.tmp, n.boots = n.boots)
   }
-  resave(cic.boot, file = save.file)
+
+  resave(cic.boot, cic.pboot, file = save.file)
 }
 
 # Combine results
@@ -82,7 +84,9 @@ for (i in 1:length(grps.list)) {
     "LMEM"   = DDCq.test(cic.tmp, method = "LMM", eff.cor = F),
     "EC"     = DDCq.test(cic.tmp, method = "LMM", eff.cor = T, var.adj = F),
     "ECVA"   = DDCq.test(cic.tmp, method = "LMM", eff.cor = T, var.adj = T),
-    "Bootstrap" = as.numeric(cic.boot[[i]]))
+    "Bootstrap" = as.numeric(cic.boot[[i]]),
+    "PBootstrap" = as.numeric(cic.pboot[[i]])
+    )
 
   toTeX <- rbind(toTeX, results)
 }
@@ -115,7 +119,7 @@ w <- latex(toTeX,
            file    = "../output/Table1.tex",
            title   = "",
            label   = "table:cic",
-           caption = sprintf(caption.txt, length(cic.boot)),
+           caption = sprintf(caption.txt, n.boots),
            caption.loc = "top",
            rgroup  = grps,
            center  = "center",

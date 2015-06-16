@@ -44,26 +44,29 @@ SimTemp <- function(
       DDCq.test(data$H0, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
       DDCq(qfit0, var.adj = FALSE),
       DDCq(qfit0, var.adj = TRUE),
-      DDCq.test(data$H0, method = "Bootstrap", n.boots = n.boot.sim),
+      DDCq.test(data$H0, method =  "Bootstrap", n.boots = n.boot.sim),
+      DDCq.test(data$H0, method = "pBootstrap", n.boots = n.boot.sim),
       # Under the alternative
       DDCq.test(data$HA, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
       DDCq(qfitA, var.adj = FALSE),
       DDCq(qfitA, var.adj = TRUE),
-      DDCq.test(data$HA, method = "Bootstrap", n.boots = n.boot.sim)
+      DDCq.test(data$HA, method =  "Bootstrap", n.boots = n.boot.sim),
+      DDCq.test(data$HA, method = "pBootstrap", n.boots = n.boot.sim)
       ))
 
   # Sanity checks:
-  stopifnot(all.equal(res$Estimate[c(2,6)], res$Estimate[c(2,6)+1]))
-  if (!all(res$"Std. Error"[c(2,6)] <= res$"Std. Error"[c(2,6)+1])) {
+  i <- c(2,7)
+  stopifnot(all.equal(res$Estimate[i], res$Estimate[i+1]))
+  if (!all(res$"Std. Error"[i] <= res$"Std. Error"[i+1])) {
     stop("The standard error in EC+VA is not increased!")
   }
-  if (!all(res[c(2,6), 5] <= res[c(2,6)+1, 5])) {
+  if (!all(res[i, 5] <= res[i+1, 5])) {
     stop("The p-values in EC+VA has not increased!")
   }
 
   rownames(res) <-
-    paste0(rep(c("H0:", "H1:"), each = 4),
-           rep(c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot"), 2))
+    paste0(rep(c("H0:", "H1:"), each = 5),
+           rep(c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot", "LMM.pboot"), 2))
   return(res)
 }
 
@@ -76,7 +79,7 @@ SimTemp <- function(
 if (!exists("res.ex") || recompute) {
   set.seed(34956374)
   ex <- SimTemp(nd = 3, ns = 3)  # Just used to get dimnames hereof
-  res.ex <- array(NA, c(8, 7, n.sims))
+  res.ex <- array(NA, c(10, 7, n.sims))
   dimnames(res.ex) <- c(dimnames(ex), list(paste0("Sim", seq_len(n.sims))))
 
   for (k in seq_len(n.sims)) {
@@ -106,7 +109,7 @@ if (!exists("sim.results") || recompute) {
     samp        <- vector("list", length(samples))
     names(samp) <- paste0("n.samples", samples)
     for (j in seq_along(samples)) {
-      res <- array(NA, c(8, 7, n.sims))
+      res <- array(NA, c(10, 7, n.sims))
       dimnames(res) <- c(dimnames(ex), list(paste0("Sim", seq_len(n.sims))))
 
       for (k in seq_len(n.sims)) {
@@ -157,8 +160,8 @@ get.2by2.table <-  function(subdata, estimator = "LMM.EC", p.cut = 0.05) {
 
 
 # Create LaTeX table for simulation EXAMPLE
-ex.tab <- matrix(NA, 0, 8)
-est <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot")
+ex.tab <- matrix(NA, 0, 10)
+est <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot", "LMM.pboot")
 p.cut <- 0.05
 
 ex.tab <- matrix(NA, 2, 0)
@@ -167,7 +170,7 @@ for (nm in est) {
   ex.tab <- cbind(ex.tab, t(subtab)[2:1, 2:1])
 }
 colnames(ex.tab) <- gsub("H0", "$H_0$", gsub("H1", "$H_A$", colnames(ex.tab)))
-ex.cgroup <- c("LMM", "EC", "EC\\&VA", "Bootstrap")
+ex.cgroup <- c("LMM", "EC", "EC\\&VA", "Bootstr.", "P.~Bootstr.")
 
 tmp.caption <- "Contingency tables for the different estimators for at
   5 \\% $p$-value threshold. The used estimators are the linear
@@ -181,7 +184,7 @@ w <- latex(ex.tab, file = "../output/Table3.tex", title = "",
 
 
 # To use in the knitr document
-get <- c(1,3,5,7)
+get <- seq(1, 9, by = 2)
 ex.fpr <- ex.tab[1,get+1]/colSums(ex.tab[,get+1])
 ex.tpr <- ex.tab[1,get]/colSums(ex.tab[,get])
 names(ex.fpr) <- names(ex.tpr) <- ex.cgroup
@@ -202,7 +205,7 @@ for (i in seq_along(dilutions)) {
     dat <- sim.results[[i]][[j]]
 
     # Organize data for i and j
-    methods <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot")
+    methods <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot", "LMM.pboot")
     p.cuts <- c(0.01, 0.05, 0.1)
     fpr <- tpr <- as.data.frame(matrix(NA, length(methods)*length(p.cuts), 5))
     names(fpr) <- names(tpr) <- c("p.cut", "est", "rate", "upper", "lower")
@@ -309,11 +312,11 @@ for (i in seq_along(dilutions)) {
     dat <- sim.results[[i]][[j]]
 
     # Organize data for i and j
-    methods <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot")
+    methods <- c("LMM", "LMM.EC", "LMM.EC.VA")
     p.cuts <- c(0.01, 0.05, 0.1)
     g <- 2
 
-    for (h in seq_along(methods[-4])) {
+    for (h in seq_along(methods)) {
       for (hyp in c("H0", "H1")) {
         get   <- paste0(hyp, ":", methods[h])
         df    <- dat[get, "df.q", 1]

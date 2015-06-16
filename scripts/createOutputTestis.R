@@ -61,16 +61,17 @@ grps.list <- list(c("mir127", "rnu6b"),
                   )
 
 # Do boostrap
-if (!exists("testis.boot") || recompute) {
-  testis.boot <- list()
+if (!exists("testis.boot") || !exists("testis.pboot") || recompute) {
+  testis.boot <- testis.pboot <- list()
   for (i in 1:length(grps.list)) {
     # Subset data
-    testis.tmp <- subset(testis, geneName %in% grps.list[[i]])
+    testis.tmp <- as.data.qPCR(subset(testis, geneName %in% grps.list[[i]]))
 
     # Compute bootstrap estimate and results
     testis.boot[[i]] <- bootstrapEstimate(testis.tmp, n.boots = n.boots)
+    testis.pboot[[i]]<- parametricBootstrapEstimate(testis.tmp, n.boots=n.boots)
   }
-  resave(testis.boot, file = save.file)
+  resave(testis.boot, testis.pboot, file = save.file)
 }
 
 toTeX <- NULL
@@ -83,7 +84,9 @@ for (i in 1:length(grps.list)) {
     "LMEM"   = DDCq.test(testis.tmp, method = "LMM", eff.cor = F),
     "EC"     = DDCq.test(testis.tmp, method = "LMM", eff.cor = T, var.adj = F),
     "ECVA"   = DDCq.test(testis.tmp, method = "LMM", eff.cor = T, var.adj = T),
-    "Bootstrap" = testis.boot[[i]])
+    "Bootstrap" = testis.boot[[i]],
+    "PBootstrap" = testis.pboot[[i]]
+    )
 
   toTeX <- rbind(toTeX, results)
 }

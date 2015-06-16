@@ -229,13 +229,14 @@ addCI <- function(x, alpha = 0.05) {
 }
 
 DDCq.test <- function (data,
-                       method = c("LMM", "Naive", "Bootstrap"),
+                       method = c("LMM", "Naive", "Bootstrap", "pBootstrap"),
                        eff.cor = TRUE,
                        var.adj = eff.cor,
                        subset.cols,
                        subset.rows,
                        n.boots = 100,
-                       alpha = 0.05) {
+                       alpha = 0.05,
+                       ...) {
   # method; character, either "Naive" (i.e a simple t-test) or "LMM"
   # eff.cor; logical, Should the data be efficiency corrected?
   # var.adj; logical, Should the eff. corrected estimate be variace corrected?
@@ -298,12 +299,18 @@ DDCq.test <- function (data,
       return(DDCq(as.data.qPCR(data), var.adj = var.adj))
 
     }
-  } else if (method == "Bootstrap") {    # Booststrap
+  } else if (method == "Bootstrap") {
 
-    return(bootstrapEstimate(data, n.boots))
+    return(bootstrapEstimate(data, n.boots, alpha))
+
+  } else if (method == "pBootstrap") {
+
+    return(parametricBootstrapEstimate(data, n.boots, alpha, ...))
 
   } else {
+
     stop("No usable method found")
+
   }
 }
 
@@ -374,6 +381,7 @@ Bootstrap.qPCR <- function(data,               # A data.qPCR object
                            n.dilutions    = 5,
                            n.resamp       = 100,
                            verbose        = TRUE) {
+  # THIS FUNCTION IS NOT USED ANYMORE
   res      <- NULL
   samp.res <- matrix(NA, nrow = 2, ncol = n.resamp)
   dil.res  <- matrix(NA, nrow = 6, ncol = n.samples)
@@ -497,7 +505,7 @@ twoSideP <- function(bdist){
 }
 
 
-bootstrapEstimate <- function(data, n.boots) {
+bootstrapEstimate <- function(data, n.boots, alpha = 0.05) {
   # Aggregate data
   if (is.null(data$geneName)) {
     data <- aggregate(Cq ~ sampleName + geneType + sampleType +
@@ -518,10 +526,20 @@ bootstrapEstimate <- function(data, n.boots) {
   # Compute the statistics
   ddcq <- res["Estimate", ]
 
-  alpha <- 0.05
   ans <- c("Estimate" = mean(ddcq), "Std. Error" = sd(ddcq),
            "t value" = NA, "df" = NA, "Pr(>|t|)" = twoSideP(ddcq),
            "LCL" = quantile(ddcq, alpha/2), "UCL" = quantile(ddcq, 1-alpha/2))
+  return(ans)
+}
+
+
+parametricBootstrapEstimate <- function(data, n.boots, alpha = 0.05, ...) {
+  fit <- qPCRfit(data)
+  ddcq <- function(x) DDCq(x, var.adj = FALSE, alpha = alpha)["Estimate"]
+  r <- bootMer(fit, ddcq, nsim = n.boots, seed = 8833L)
+  ans <- c("Estimate" = mean(r$t), "Std. Error" = sd(r$t),
+           "t value" = NA, "df" = NA, "Pr(>|t|)" = twoSideP(r$t),
+           "LCL" = quantile(r$t, alpha/2), "UCL" = quantile(r$t, 1-alpha/2))
   return(ans)
 }
 
@@ -550,7 +568,7 @@ as.data.qPCR <- function (data) {
     data$sampleType <- as.factor(as.character(data$sampleType))
     data$sampleName <- as.factor(as.character(data$sampleName))
     if ("geneName" %in% names(data)) {
-      data$geneName   <- as.factor(as.character(data$nameName))
+      data$geneName   <- as.factor(as.character(data$geneName))
     }
   }
   return(data)

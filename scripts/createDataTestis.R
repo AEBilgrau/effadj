@@ -85,6 +85,18 @@ testis$threshold <- round(testis$threshold, 1)
 testis$l2con <- -1*log2(testis$copyNumber)
 testis$l2con <- round(testis$l2con)
 
+
+# Aggregating
+testis <- aggregate(Cq ~ sampleName + geneType + sampleType + geneName +
+                      copyNumber + l2con, data = testis, FUN = mean)
+
+# Ordering
+testis <- testis[order(testis$geneType), ]
+testis <- testis[order(testis$sampleType), ]
+testis <- testis[order(testis$sampleName), ]
+
+
+
 # Making the data.frame into a data.qPCR class object
 names(testis) <- gsub("replicateNumber", "replicate", names(testis))
 class(testis) <- c("data.qPCR", "data.frame")

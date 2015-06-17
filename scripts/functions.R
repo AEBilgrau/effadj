@@ -534,12 +534,17 @@ bootstrapEstimate <- function(data, n.boots, alpha = 0.05) {
 
 
 parametricBootstrapEstimate <- function(data, n.boots, alpha = 0.05, ...) {
+
   fit <- qPCRfit(data)
-  ddcq <- function(x) DDCq(x, var.adj = FALSE, alpha = alpha)["Estimate"]
+  ddcq <- function(x) {
+    catchBootstrapWarning(DDCq(x, var.adj = FALSE, alpha = alpha)["Estimate"])
+  }
   r <- bootMer(fit, ddcq, nsim = n.boots, seed = 8833L)
-  ans <- c("Estimate" = mean(r$t), "Std. Error" = sd(r$t),
-           "t value" = NA, "df" = NA, "Pr(>|t|)" = twoSideP(r$t),
-           "LCL" = quantile(r$t, alpha/2), "UCL" = quantile(r$t, 1-alpha/2))
+  t <- na.omit(c(r$t))
+  ans <- c("Estimate" = mean(t), "Std. Error" = sd(t),
+           "t value" = NA, "df" = NA, "Pr(>|t|)" = twoSideP(t),
+           "LCL" = quantile(t, alpha/2), "UCL" = quantile(t, 1-alpha/2))
+
   return(ans)
 }
 
@@ -684,7 +689,7 @@ resave <- function(..., list = character(), file) {
 
 catchBootstrapWarning <- function(expr) {
   warningHandler <- function(w) {
-    out <- rep(NA, 7)
+    out <- NA #rep(NA, 7)
     attr(out, "warning") <- w
     return(out)
   }

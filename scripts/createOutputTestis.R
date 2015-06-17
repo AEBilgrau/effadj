@@ -68,11 +68,10 @@ if (!exists("testis.boot") || !exists("testis.pboot") || recompute || TRUE) {
     testis.tmp <- as.data.qPCR(subset(testis, geneName %in% grps.list[[i]]))
 
     # Compute bootstrap estimate and results
-    testis.boot[[i]] <- catchBootstrapWarning(
-      bootstrapEstimate(testis.tmp, n.boots = n.boots))
-    testis.pboot[[i]]<- catchBootstrapWarning(
-      parametricBootstrapEstimate(testis.tmp, n.boots=n.boots))
+    testis.boot[[i]] <- bootstrapEstimate(testis.tmp, n.boots = n.boots)
+    testis.pboot[[i]]<- parametricBootstrapEstimate(testis.tmp, n.boots=n.boots)
 
+    cat(sprintf("i = %d\n", i))
   }
   resave(testis.boot, testis.pboot, file = save.file)
 }

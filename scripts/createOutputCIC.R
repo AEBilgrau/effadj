@@ -66,10 +66,10 @@ if (!exists("cic.boot") || !exists("cic.pboot") || recompute) {
     cic.tmp <- as.data.qPCR(subset(cic, geneName %in% grps.list[[i]]))
 
     # Compute bootstrap estimate
-    cic.boot[[i]] <- catchBootstrapWarning(
-      bootstrapEstimate(cic.tmp, n.boots = n.boots))
-    cic.pboot[[i]] <- catchBootstrapWarning(
-      parametricBootstrapEstimate(cic.tmp, n.boots = n.boots))
+    cic.boot[[i]] <- bootstrapEstimate(cic.tmp, n.boots = n.boots)
+    cic.pboot[[i]] <- parametricBootstrapEstimate(cic.tmp, n.boots = n.boots)
+
+    cat(sprintf("i = %d\n", i))
   }
 
   resave(cic.boot, cic.pboot, file = save.file)

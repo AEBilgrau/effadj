@@ -195,21 +195,16 @@ DDCq <- function(data, var.adj, alpha = 0.05) {
   # Perform t test using above functions
   con     <- cHyp(fit)
   var.con <- Var.cHyp(fit, var.adj)
-  sd.con  <- sqrt(var.con)
-  t       <- con/sd.con
+  se.con  <- sqrt(var.con)
+  t       <- con/se.con
 
-  # Assumes paired
-  #nn <- getME(fit, "n")
-#   nn <-  sum(with(fit@frame, sampleType != "Standard" & geneType == "tgt")) +
-#     sum(fit@frame$sampleType == "Standard")
-  # df <- nn - getME(fit, "p") - getME(fit, "n_rtrms") - 1
-  df      <- getME(fit, "q") - 2 - 2 - 2*std.data
-  # df      <- getME(fit, "q") - length(fixef(fit))
+  # Assumes paired samples
+  df <- getME(fit, "q") - 2 - 2 - 2*std.data
 
   stopifnot(df > 0)
   p.val   <- 2*(1 - pt(abs(t), df))
-  conf.int <- con + c(-1, 1)*qt(1-alpha/2, df)*sd.con
-  result  <- c("Estimate" = con, "Std. Error" = sd.con,
+  conf.int <- con + c(-1, 1)*qt(1-alpha/2, df)*se.con
+  result  <- c("Estimate" = con, "Std. Error" = se.con,
                "t value" = t, "df" = round(df), "Pr(>|t|)" = p.val,
                "LCL" = conf.int[1], "UCL" = conf.int[2])
   return(result)
@@ -218,7 +213,6 @@ DDCq <- function(data, var.adj, alpha = 0.05) {
 #
 # Wrapper for using DDCq with various methods
 #
-
 
 addCI <- function(x, alpha = 0.05) {
   t <- qt(1-alpha/2, df = x["df.n"])

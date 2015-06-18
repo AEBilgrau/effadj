@@ -54,14 +54,12 @@ rm(testis.data, testis.std)
 
 grps.list <- list(c("mir127", "rnu6b"),
                   c("mir127", "rnu24"),
-                  # c("mir127", "rnu6b", "rnu24"),
                   c("mir143", "rnu6b"),
-                  c("mir143", "rnu24")
-                  # c("mir143", "rnu6b", "rnu24")
-                  )
+                  c("mir143", "rnu24"))
 
 # Do boostrap
-if (!exists("testis.boot") || !exists("testis.pboot") || recompute || TRUE) {
+if (!exists("testis.boot") || !exists("testis.pboot") || recompute) {
+  message("Testis boostrap")
   testis.boot <- testis.pboot <- list()
   for (i in 1:length(grps.list)) {
     # Subset data
@@ -71,7 +69,7 @@ if (!exists("testis.boot") || !exists("testis.pboot") || recompute || TRUE) {
     testis.boot[[i]] <- bootstrapEstimate(testis.tmp, n.boots = n.boots)
     testis.pboot[[i]]<- parametricBootstrapEstimate(testis.tmp, n.boots=n.boots)
 
-    cat(sprintf("i = %d\n", i))
+    message(sprintf("i = %d", i))
   }
   resave(testis.boot, testis.pboot, file = save.file)
 }

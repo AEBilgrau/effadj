@@ -53,23 +53,21 @@ rm(cic.data, cic.std)
 
 grps.list <- list(c("MGST1", "GAPDH"),
                   c("MGST1", "ACTB"),
-                  # c("MGST1", "ACTB", "GAPDH"),
                   c("MMSET", "GAPDH"),
-                  c("MMSET", "ACTB")
-                  # c("MMSET", "ACTB", "GAPDH")
-                  )
+                  c("MMSET", "ACTB"))
 
 if (!exists("cic.boot") || !exists("cic.pboot") || recompute) {
+  message("CIC boostraps")
   cic.boot <- cic.pboot <- list()
   for (i in 1:length(grps.list)) {
     # Subset data
     cic.tmp <- as.data.qPCR(subset(cic, geneName %in% grps.list[[i]]))
 
     # Compute bootstrap estimate
-    cic.boot[[i]] <- bootstrapEstimate(cic.tmp, n.boots = n.boots)
+    cic.boot[[i]]  <- bootstrapEstimate(cic.tmp, n.boots = n.boots)
     cic.pboot[[i]] <- parametricBootstrapEstimate(cic.tmp, n.boots = n.boots)
 
-    cat(sprintf("i = %d\n", i))
+    message(sprintf("i = %d", i))
   }
 
   resave(cic.boot, cic.pboot, file = save.file)

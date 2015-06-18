@@ -75,19 +75,19 @@ Aalborg \O{}, Denmark %Fredrik Bajers Vej 7G, 9220 Aalborg \O{}, Denmark
 \footnotetext{To whom correspondence should be addressed.}
 
 \begin{abstract}
-{Accurate estimation of the amplification efficiency (AE) is an important prerequisite for quantification of gene expression by quantitative polymerase chain reaction (qPCR).
-The most commonly used correction strategy is to estimate the AE by dilution experiments and use it as a plug-in when efficiency correcting the $\ddcq$-value.
-Currently it is recommended to determine the AE with high precision as the plug-in approach do not account for its uncertainty.
-In other words, the method assumes an infinite precision of the AE estimate.
-It has become clear, however, that determining the AE with such high precision require tedious laboratory work and vast amounts of biological material, which is often a scarce resource in e.g.\ molecular studies of cancer biology.
-Violation of this assumption leads to overly optimistic estimates of the standard error of $\ddcq$, confidence intervals, and $p$-values.
+{Accurate estimation of the amplification efficiency (AE) is an important prerequisite in real-time quantitative polymerase chain reaction (qPCR) e.g.~for quantification of gene expression.
+The most commonly used correction strategy is to estimate the AE by dilution experiments and use this as a plug-in when efficiency correcting the $\ddcq$-value.
+Currently it is recommended to determine the AE with a high precision as the plug-in approach do not account for its uncertainty,
+corresponding to a implicit assumption of an infinitely precise estimate of the AE.
+It is clear, however, that determining the AE with such high precision require tedious laboratory work and vast amounts of biological material which is often a scarce resource in e.g.\ molecular studies of cancer biology.
+Violation of the assumption often leads to overly optimistic estimates of the standard error of $\ddcq$, confidence intervals, and $p$-values.
 Ultimately, the type I error probability is increased.
-It is therefore of great importance to estimate and account for the accuracy of the AE estimate to bound the type I error rate and achieve the desired significance level.
-We outline novel procedures to obtain variance approximations of the efficiency adjusted $\ddcq$-value based on statistical modelling in combination with either the statistical delta method to bootstrapping.
-These procedures can be utilized to obtain more reliable power calculations, confidence intervals, and test statistics for the detection of differentially expressed genes by qPCR experiments.
-The method in founded in a linear mixed effects model that enables the simultaneous estimation of the AE and $\ddcq$ and provides an approximation of the variance the efficiency corrected $\ddcq$ estimate.
-The method is used to validate two recent findings which suggests that MGST1 is differentially expressed between multiple myeloma cell lines with high and low numbers of culture initiating cells and that miRNA-127 is differentially expressed between testicular and nodal diffuse large B-cell lymphoma (DLBCL).
-The presented method can be applied to evaluate the uncertainty from efficiency estimation by dilution curves and allow more reliable statistical inference based on qPCR data.}
+As qPCR is often used for validation it should be a high priority to estimate and account for the accuracy of the AE estimate to properly bound the type I error rate and achieve the desired significance level.
+We provide novel methods to obtain variance approximations of the efficiency adjusted $\ddcq$-value based on statistical modelling in combination with either the statistical delta method to bootstrapping.
+These procedures can be utilized to obtain more reliable statistical inference based on qPCR data and power calculations.
+The methods are founded in a linear mixed effects model that enables the simultaneous estimation of the AE and $\ddcq$ and provides an approximation of the variance the efficiency corrected $\ddcq$ estimate.
+We validate two recent findings which suggests that MGST1 is differentially expressed between multiple myeloma cell lines with high and low numbers of culture initiating cells and that miRNA-127 is differentially expressed between testicular and nodal diffuse large B-cell lymphoma (DLBCL).
+}
 % Keywords
 {qPCR; delta-delta Cq, $\ddcq$, amplification efficiency; efficiency adjusted; bootstrapping, delta method, power calculation}
 \end{abstract}
@@ -124,11 +124,12 @@ This assumption implies a systematic underestimation of the standard error of $\
 If the AE is poorly determined this underestimation can drastically decrease the $p$-values and thus increase probability of type I errors.
 The increased type I error probability is highly problematic when qPCR is used a validation experiments.
 
-In this paper we describe the estimation of the uncertainty of the efficiency amplification estimate by mixed effects models, which also allows for a more appropriate handling of the technical and sample errors by either bootstrapping or the statistical delta method.
+In this paper we describe the estimation of the uncertainty of the efficiency amplification estimate by mixed effects models, which also allows for a more appropriate handling of the technical and sample errors by either the statistical delta method or bootstrapping.
 
-The idea of using mixed effects models for qPCR experiments is not new and has been used by e.g.~\cite{fu2006} to formulate generalized estimation equations to handle within group variation.
+The idea of using linear mixed models (LMM) for qPCR experiments is not completely new.
 \cite{andersen2004} and \cite{abruzzo2005} have used mixed effects modeling to identify candidate normalizing genes.
-However, our idea of using bootstrapping or the statistical delta method to handle uncertainty stemming from the efficiency estimation seems to be novel and provides an extension of \cite{Yuan2008}.
+\citet{fu2006} applied the related generalized estimation equations to handle intra and inter group variation.
+However, our idea of LMMs combined with the statistical delta method or bootstrapping to handle uncertainty stemming from the efficiency estimation seems to be novel and provides general statistical framework for qPCR experiments and an extension of \cite{Yuan2008}.
 
 % Precise aims of the paper
 The aim of the paper is to formulate a mathematical model which allows us to draw formal statistical inference about qPCR experiments with non-efficient amplifications.
@@ -345,7 +346,7 @@ For each target and reference transcripts a standard curve based on seven 2-fold
 
 Prompted by the research of \citet{Robertus2009} as well as our own work,
 we wished to validate or falsify the differential expression of two specific so-called micro RNAs (miR) between testicular and nodal DLBCL cases.
-Micro RNAs are non-coding RNA transcripts with regulartory capabilities.
+Micro RNAs are non-coding RNA transcripts with regulatory capabilities.
 \citet{Robertus2009} investigated in 50 cases of DLBCL the expression of 15 different miRs between two different DLBCL subtypes.
 In this experiment, we wished to validate or falsify the differential expression of miR-127 and miR-143.
 
@@ -354,11 +355,12 @@ In this experiment, we wished to validate or falsify the differential expression
 
 \subsubsection{Sample and data preparation}
 
-For this study, DLBCL samples were collected from 8 testicular and 8 nodal paraffin embedded lymphomas at Aalborg Hospital.
+For this study, DLBCL samples were collected from 8 testicular (case) and 8 nodal (control) paraffin embedded lymphomas at Aalborg Hospital.
 Total RNA was isolated using a combined method of Trizol (Invitrogen) and Mirvana spin columns (Ambion). An amount of 10ng total RNA was synthesized into first strand cDNA in a 15$\mu$L reaction using TaqMan MicroRNA Reverse Transcription Kit (Applied Biosystems) according to the manufactures instruction. In total 1.33$\mu$L cDNA was used as template in the real time PCR amplification performed by Mx3000p QPCR system (Agilent Technologies/Stratgene) with sequence specific TaqMan primers (Applied Biosystems).
 The two microRNAs, hsa-miR-127 and  hsa-miR-143, were chosen for validation of differential expression between testicular and nodal manifestation of diffuse large B-cell lymphoma.
 As reference transcripts we chose RNU-6B and RNU-24, which were less variable and equally expressed across nodal and extra-nodal samples among a larger list of candidate reference genes.
 For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of a pooled material from all 16 lymphomas.
+[In the preprocessing of the data the sample H420 was deemed an outlier and omitted]
 
 
 
@@ -476,7 +478,7 @@ In each panel the $p$-value cut-off is varied between 0.01, 0.05 and 0.1.
 
 \section{Discussion and conclusion}
 % Main message
-The common efficientcy corrected $\ddcq$ approach to analysis qPCR data disregard the uncertainty of the estimated amplification efficiency leading to increased false positive rates.
+The common efficiency corrected $\ddcq$ approach to analysis qPCR data disregard the uncertainty of the estimated amplification efficiency leading to increased false positive rates.
 As qPCR experiments are often used for validation this is highly undesirable.
 Our primary approach based on the statistical delta-method to approximate the variance of efficiency adjusted $\ddcq$-values, shows that it is possible to draw statistical inference about qPCR experiments whilst properly accounting for the AE uncertainty.
 This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation.

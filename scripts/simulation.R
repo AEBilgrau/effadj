@@ -10,28 +10,16 @@
 # Function to perform a simulation
 #
 
-SimFunc <- function(
-  nd,                      # Number of dilutions
-  ns,                      # Number of samples
-  # Parameters of simulation
-  mu.tgt         = 30,     # Mean of target gene
-  mu.ref         = 25,     # Mean of reference gene
-  alpha.tgt      = 0.80,   # Amp. efficiency of target gene
-  alpha.ref      = 0.95,   # Amp. efficiency of refence gene
-  ddcq           = 10/9,   # True effect size Delta-Delta-C_q
-  tech.sd        = 0.5,    # Technical standard deviation
-  sample.sd      = 1,      # Sample standard deviation
-  n.boot.sim     = 101     # Number of bootstrap samples
-) {
+SimFunc <- function(nd, ns, n.boot.sim = 101) {
 
   data <- structure(vector("list", 2), names = c("H0", "HA"))
   for (i in 1:2) {
     data[[i]] <-
-      SimqPCRData(std.curve = TRUE, mu.tgt = mu.tgt, mu.ref = mu.ref,
+      SimqPCRData(std.curve = TRUE, mu.tgt = 30, mu.ref = 25,
                   n.samples = ns, n.replicates = 1, n.dilutions = nd,
-                  tech.sd = tech.sd, alpha.tgt = alpha.tgt,
-                  alpha.ref = alpha.ref, sample.sd = sample.sd,
-                  ddcq = ifelse(i==1, 0, ddcq))
+                  tech.sd = 0.5, sample.sd = 1,
+                  alpha.tgt = 0.80, alpha.ref = 0.95,
+                  ddcq = ifelse(i==1, 0, 10/9))
   }
 
   # Aggregate replicates
@@ -67,7 +55,7 @@ SimFunc <- function(
   rownames(res) <-
     paste0(rep(c("H0:", "H1:"), each = 5),
            rep(c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot", "LMM.pboot"), 2))
-  return(res)
+  return(as.matrix(res))
 }
 
 
@@ -77,16 +65,21 @@ SimFunc <- function(
 #
 
 if (!exists("res.ex") || recompute) {
-  set.seed(34956374)
-  SimTemp <- function(x) {
+
+  wrapperSimFunc <- function(seed) {
+    set.seed(seed)
     return(as.matrix(SimFunc(nd = 6, ns = 6, n.boot.sim = 25)))
   }
 
   sfInit(parallel, cpus = n.cpus)
   sfLibrary(lme4)
-  sfExport("SimTemp", "SimFunc", list = export)
+  sfExport("wrapperSimFunc", "SimFunc", list = export)
 
-  res.ex <- sfLapply(seq_len(n.sims), SimTemp)
+  set.seed(2028674731)  # "Meta-seed": Seed for the seeds
+  seeds <- sample.int(2^31, n.sims) # seed for each simulation
+
+  # Do the computation
+  res.ex <- sfClusterApplyLB(seeds, wrapperSimFunc)
 
   sfStop()
 
@@ -107,17 +100,17 @@ samples <- c(4, 8)
 dilutions <- c(4, 8)
 
 if (!exists("sim.results") || recompute) {
-  set.seed(807123)
 
-  SimTemp2 <- function(x) {
-    as.matrix(SimFunc(nd = dilutions[i], ns = samples[j]))
+  wrapperSimFunc2 <- function(seed) {
+    set.seed(seed)
+    return(SimFunc(nd = nd, ns = ns))
   }
 
   st <- proc.time()
 
   sfInit(parallel, cpus = n.cpus)
   sfLibrary(lme4)
-  sfExport("dilutions", "samples", "SimFunc", list = export)
+  sfExport("wrapperSimFunc2", "SimFunc", list = export)
 
   sim.results        <- vector("list", length(dilutions))
   names(sim.results) <- paste0("n.dilutions", dilutions)
@@ -126,9 +119,13 @@ if (!exists("sim.results") || recompute) {
     names(samp) <- paste0("n.samples", samples)
     for (j in seq_along(samples)) {
 
-      sfExport("SimTemp2", "i", "j")
+      ns <- samples[j]
+      nd <- dilutions[i]
+      sfExport("nd", "ns")
 
-      res <- sfLapply(seq_len(n.sims), SimTemp2)
+      set.seed(840896246)  # "Meta-seed": Seed for the seeds
+      seeds <- sample.int(2^31, n.sims) # Seed for each simulation
+      res <- sfClusterApplyLB(seeds, wrapperSimFunc2)
 
       names(res) <- paste0("Sim", seq_along(res))
       samp[[j]] <- simplify2array(res)

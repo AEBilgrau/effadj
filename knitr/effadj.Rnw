@@ -300,7 +300,8 @@ However, as we have only got a single observation for each dilution step we chos
 Hence a bootstrapped data set consists of the re-sampled matched pairs and the bootstrapped standard curve.
 For each data set the $\ddcq$-value is calculated and confidence intervals and $p$-values can be obtained from the bootstrap distribution.
 
-Alternatively, parametric bootstrap can be made by simulating datasets from the fitted model.
+Alternatively, parametric bootstrap could be made by simulating datasets from the fitted model.
+Here, both new random effects and noise terms are realized by the fitted parameters.
 
 In the analysis of the CIC and Testis data we draw \Sexpr{n.boots} bootstrap samples (both parametric and non-parametric) and used them to carry out statistical inference.
 First, standard errors of $\ddcq$-value is calculated by the empirical standard error of the bootstrapped samples.

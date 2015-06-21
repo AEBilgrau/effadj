@@ -53,6 +53,12 @@ cic <- cic[order(cic$geneType), ]
 cic <- cic[order(cic$sampleType), ]
 cic <- cic[order(cic$sampleName), ]
 
+# Changing sample name  (to avoid fitting issue due to AMO-1 also being used
+# as a case sample type)
+cic$sampleName <- as.character(cic$sampleName)
+cic$sampleName[cic$sampleType == "Standard"] <-
+  paste0(cic$sampleName[cic$sampleType == "Standard"], "-std")
+cic$sampleName <- as.factor(cic$sampleName)
 
 #
 # Converting cic into an object of class "data.qPCR";

@@ -51,17 +51,17 @@ rm(cic.data, cic.std)
 #   MMSET vs. GAPDH,    MMSET vs. ACTB,      MMSET vs. both (omitted)
 #
 
-grps.list <- list(c("MGST1", "GAPDH"),
-                  c("MGST1", "ACTB"),
-                  c("MMSET", "GAPDH"),
-                  c("MMSET", "ACTB"))
+grps.list.cic <- list(c("MGST1", "GAPDH"),
+                      c("MGST1", "ACTB"),
+                      c("MMSET", "GAPDH"),
+                      c("MMSET", "ACTB"))
 
 if (!exists("cic.boot") || !exists("cic.pboot") || recompute) {
   message("CIC boostraps")
   cic.boot <- cic.pboot <- list()
-  for (i in 1:length(grps.list)) {
+  for (i in 1:length(grps.list.cic)) {
     # Subset data
-    cic.tmp <- as.data.qPCR(subset(cic, geneName %in% grps.list[[i]]))
+    cic.tmp <- as.data.qPCR(subset(cic, geneName %in% grps.list.cic[[i]]))
 
     # Compute bootstrap estimate
     cic.boot[[i]]  <- bootstrapEstimate(cic.tmp, n.boots = n.boots)
@@ -70,26 +70,29 @@ if (!exists("cic.boot") || !exists("cic.pboot") || recompute) {
     message(sprintf("i = %d", i))
   }
 
-  resave(cic.boot, cic.pboot, file = save.file)
+  # resave(cic.boot, cic.pboot, file = save.file)
 }
 
 # Combine results
 toTeX <- NULL
-for (i in 1:length(grps.list)) {
+for (i in 1:length(grps.list.cic)) {
   # Subset data
-  cic.tmp <- subset(cic, geneName %in% grps.list[[i]])
+  cic.tmp <- subset(cic, geneName %in% grps.list.cic[[i]])
 
   results <- rbind(
     "t-test" = DDCq.test(cic.tmp, method = "N"),
     "LMEM"   = DDCq.test(cic.tmp, method = "LMM", eff.cor = F),
     "EC"     = DDCq.test(cic.tmp, method = "LMM", eff.cor = T, var.adj = F),
-    "ECVA"   = DDCq.test(cic.tmp, method = "LMM", eff.cor = T, var.adj = T),
+    "ECVA1"   = DDCq.test(cic.tmp, method = "LMM", eff.cor = T, var.adj = T),
+    "ECVA2"   = DDCq.test(cic.tmp, method = "LMM", eff.cor = T, var.adj = T,
+                          var.type = "monte"),
     "Bootstrap" = as.numeric(cic.boot[[i]]),
     "PBootstrap" = as.numeric(cic.pboot[[i]])
     )
 
   toTeX <- rbind(toTeX, results)
 }
+
 
 #
 # Writing LaTeX table
@@ -103,9 +106,9 @@ rownames(toTeX) <- gsub("EC", "Eff. Corr.", rownames(toTeX))
 rownames(toTeX) <- gsub("VA", " \\\\& Var. Adj.", rownames(toTeX))
 
 grps <-
-  sapply(grps.list, function(x) ifelse(length(x)==3,
-                                       paste(x[1], "vs", x[2], "+", x[3]),
-                                       paste(x[1], "vs", x[2])))
+  sapply(grps.list.cic, function(x) ifelse(length(x)==3,
+                                           paste(x[1], "vs", x[2], "+", x[3]),
+                                           paste(x[1], "vs", x[2])))
 
 caption.txt <- "CIC data: Method comparison for estimating the
   $\\ddcq$-value. $t$-test shows results from a simple

@@ -10,12 +10,12 @@
 # Function to perform a simulation
 #
 
-SimFunc <- function(nd, ns, n.boot.sim = 101) {
+SimFunc <- function(nd, ns, n.boots = 101) {
 
   data <- structure(vector("list", 2), names = c("H0", "HA"))
   for (i in 1:2) {
     data[[i]] <-
-      SimqPCRData(std.curve = TRUE, mu.tgt = 30, mu.ref = 25,
+      SimqPCRData(std.curve = TRUE, mu.tgt = 25, mu.ref = 30,
                   n.samples = ns, n.replicates = 1, n.dilutions = nd,
                   tech.sd = 0.5, sample.sd = 1,
                   alpha.tgt = 0.80, alpha.ref = 0.95,
@@ -32,14 +32,14 @@ SimFunc <- function(nd, ns, n.boot.sim = 101) {
       DDCq.test(data$H0, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
       DDCq(qfit0, var.adj = FALSE),
       DDCq(qfit0, var.adj = TRUE),
-      DDCq.test(data$H0, method =  "Bootstrap", n.boots = n.boot.sim),
-      DDCq.test(data$H0, method = "pBootstrap", n.boots = n.boot.sim),
+      bs0 <- DDCq.test(data$H0, method =  "Bootstrap", n.boots = n.boots),
+      pbs0 <- DDCq.test(data$H0, method = "pBootstrap", n.boots = n.boots),
       # Under the alternative
       DDCq.test(data$HA, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
       DDCq(qfitA, var.adj = FALSE),
       DDCq(qfitA, var.adj = TRUE),
-      DDCq.test(data$HA, method =  "Bootstrap", n.boots = n.boot.sim),
-      DDCq.test(data$HA, method = "pBootstrap", n.boots = n.boot.sim)
+      bs1 <- DDCq.test(data$HA, method =  "Bootstrap", n.boots = n.boots),
+      pbs1 <- DDCq.test(data$HA, method = "pBootstrap", n.boots = n.boots)
     ))
 
   # Sanity checks:
@@ -55,9 +55,24 @@ SimFunc <- function(nd, ns, n.boot.sim = 101) {
   rownames(res) <-
     paste0(rep(c("H0:", "H1:"), each = 5),
            rep(c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot", "LMM.pboot"), 2))
-  return(as.matrix(res))
+
+  res <- as.matrix(res)
+  attr(res, "bootstrapDist") <-
+    data.frame(pbs0 = attributes(pbs0)$extra$t[,1],
+               bs0  = attributes(bs0)$extra["Estimate", ],
+               pbs1 = attributes(pbs1)$extra$t[,1],
+               bs1  = attributes(bs1)$extra["Estimate", ])
+  return(res)
 }
 
+# res <- SimFunc(6, 6, n.boots = 1000)
+# dists <- attributes(res)$bootstrapDist
+# plot( density(dists[,1]), col = "blue", lwd = 2, xlim = range(dists))
+# lines(density(dists[,3]), col = "red", lwd = 2)
+# lines(density(dists[,2]), col = "darkblue", lwd = 2)
+# lines(density(dists[,4]), col = "darkred", lwd = 2)
+# abline(v = c(0, 10/9), lwd = 2, col = "orange")
+# abline(v = colMeans(dists), lwd = 2, col = "darkgrey")
 
 #
 # Perform simulation example
@@ -68,7 +83,7 @@ if (!exists("res.ex") || recompute) {
 
   wrapperSimFunc <- function(seed) {
     set.seed(seed)
-    return(as.matrix(SimFunc(nd = 6, ns = 6, n.boot.sim = 25)))
+    return(as.matrix(SimFunc(nd = 6, ns = 6, n.boots = 21)))
   }
 
   sfInit(parallel, cpus = n.cpus)
@@ -83,11 +98,16 @@ if (!exists("res.ex") || recompute) {
 
   sfStop()
 
-  names(res.ex) <- paste0("Sim", seq_along(res.ex))
-  res.ex <- simplify2array(res.ex)
+  if (any(sapply(res.ex, is.null))) {
+    warning("some entires of res.ex are NULL")
+  }
 
+  names(res.ex) <- paste0("Sim", seq_along(res.ex))
   resave(res.ex, file = save.file)
 }
+
+res.ex <- simplify2array(res.ex)
+
 
 
 
@@ -173,19 +193,19 @@ get.2by2.table <-  function(subdata, estimator = "LMM.EC", p.cut = 0.05) {
 }
 
 
+#
 # Create LaTeX table for simulation EXAMPLE
-ex.tab <- matrix(NA, 0, 10)
-est <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot", "LMM.pboot")
+#
+
 p.cut <- 0.05
-
-ex.tab <- matrix(NA, 2, 0)
-for (nm in est) {
-  subtab <- get.2by2.table(res.ex, estimator = nm, p.cut = p.cut)
-  ex.tab <- cbind(ex.tab, t(subtab)[2:1, 2:1])
-}
-colnames(ex.tab) <- gsub("H0", "$H_0$", gsub("H1", "$H_A$", colnames(ex.tab)))
+est <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot", "LMM.pboot")
+getr <- paste(rep(c("H0", "H1"), length(est)), rep(est, each = 2), sep = ":")
+significant <- res.ex[getr, "Pr(>|t|)", ] < p.cut
+ex.tab <- rbind(rowSums(!significant),
+                rowSums(significant))
+colnames(ex.tab) <- gsub("H0:.+","$H_0$",gsub("H1:.+","$H_A$",colnames(ex.tab)))
+rownames(ex.tab) <- sprintf(c("$p \\geq %.2f$", "$p < %.2f$"), p.cut)
 ex.cgroup <- c("LMM", "EC", "EC\\&VA", "Bootstr.", "P.~Bootstr.")
-
 tmp.caption <- "Contingency tables for the different estimators for at
   5 \\% $p$-value threshold. The used estimators are the linear
   mixed effect model (LMM), the LMM with efficiency correction (EC), the LMM
@@ -196,8 +216,10 @@ w <- latex(ex.tab, file = "../output/Table3.tex", title = "",
            caption = tmp.caption,
            label = "tab:simexample")
 
-
+#
 # To use in the knitr document
+#
+
 get <- seq(1, 9, by = 2)
 ex.fpr <- ex.tab[1,get+1]/colSums(ex.tab[,get+1])
 ex.tpr <- ex.tab[1,get]/colSums(ex.tab[,get])
@@ -219,20 +241,28 @@ for (i in seq_along(dilutions)) {
     dat <- sim.results[[i]][[j]]
 
     # Organize data for i and j
-    methods <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot", "LMM.pboot")
+    methods <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot")
     p.cuts <- c(0.01, 0.05, 0.1)
     fpr <- tpr <- as.data.frame(matrix(NA, length(methods)*length(p.cuts), 5))
     names(fpr) <- names(tpr) <- c("p.cut", "est", "rate", "upper", "lower")
     k <- 1
     for (p.cut in p.cuts) {
       for (method in methods) {
+        twoByTwo <- t(get.2by2.table(dat, estimator = method, p.cut))
 
-        twoByTwo <- get.2by2.table(dat, estimator = method, p.cut)
-        summ.stats <- summary(epi.tests(t(twoByTwo)[2:1, 2:1]))
+        summ.stats <- summary(epi.tests(twoByTwo))
+
         fpr[k, ] <- c(p.cut, method, 1 - summ.stats["sp", ])
         tpr[k, ] <- c(p.cut, method, summ.stats["se", ])
-        k <- k + 1
 
+
+        # Check
+        dd <- as.data.frame(get.p.info(dat, method), row.names = FALSE)
+        dd$sig <- dd$p < p.cut
+        dd <- aggregate(sig ~ hypothesis, mean, data = dd)
+        stopifnot(all.equal(dd$sig[dd$hypothesis == 0], fpr[k, 3]))
+        stopifnot(all.equal(dd$sig[dd$hypothesis == 1], tpr[k, 3]))
+        k <- k + 1
       }
     }
 
@@ -307,10 +337,10 @@ dev.off()
 # Plot more of the results
 #
 
-get.est.info   <- function(data, estimator = "LMM.EC") {
-  x0 <- cbind(hypothesis = 0, e = data[paste0("H0:", estimator), 1, ])
-  x1 <- cbind(hypothesis = 1, est = subdata[paste0("H1:", estimator), 1, ])
-  return(rbind(x0, x1))
+get.est.info <- function(data, estimator = "LMM.EC") {
+  x0 <- cbind(hypothesis = 0, est = data[paste0("H0:", estimator), 1, ])
+  x1 <- cbind(hypothesis = 1, est = data[paste0("H1:", estimator), 1, ])
+  return(data.frame(x0, x1))
 }
 
 

@@ -106,8 +106,7 @@ qPCRfit <- function(data, ...) {
   # ... arguments passed to lmer
 
   if (!is.data.qPCR(data)) {
-    arg <- deparse(substitute(data))
-    stop(paste(arg, "is not of data.qPCR class."))
+    data <- as.data.qPCR(data)
   }
 
   if (std.curve(data)) {
@@ -125,62 +124,99 @@ qPCRfit <- function(data, ...) {
   return(fit)
 }
 
-
 #
 # Delta delta Cq analysis method
 #
 
-DDCq <- function(data, var.adj, alpha = 0.05) {
-  # data can also be a fit from lmer
+cHyp <- function(fit) {
+  # Function for evaluating the mapping into DDCq
+  e <- fixef(fit)
+  names(e) <- gsub("sample|gene|Type", "", names(e))
+  eff <- e[c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref")]
+  std.data <- any(grepl("Standard", names(e)))
+
+  if (std.data) {
+    gam <- e[rep(c("tgt:l2con","ref:l2con"), 2)]
+  } else {
+    gam <- rep(1, length(eff))
+  }
+  return(sum(gam^-1*eff*c(1, -1, -1, 1)))
+}
+
+DcHyp <- function(fit, var.adj) {
+  # Compute the gradient of cHyp
+  e <- fixef(fit)
+  names(e) <- gsub("sample|gene|Type", "", names(e))
+  eff <- e[c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref")]
+  std.data <- any(grepl("Standard", names(e)))
+
+  if (std.data) {
+    M <- cbind(c(-1, 0, 1, 0), c(0, 1, 0, -1))
+    gam <- e[rep(c("tgt:l2con","ref:l2con"), 2)]
+    D <- c(gam^-1*c(1, -1, -1, 1), (gam^-2*eff) %*% M * (var.adj))
+    return(D)
+  } else {
+    return(c(1, -1, -1, 1))
+  }
+}
+
+Var.cHyp <- function(fit, var.adj) {
+  # Compute variance estimate
+  e <- fixef(fit)
+  names(e) <- gsub("sample|gene|Type", "", names(e))
+  v <- vcov(fit)
+  rownames(v) <- colnames(v) <- names(e)
+  std.data <- any(grepl("Standard", names(e)))
+
+  get <- c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref",
+           if (std.data) {c("tgt:l2con", "ref:l2con")})
+  grad <- DcHyp(fit, var.adj)
+  return(as.numeric(t(grad) %*% v[get, get] %*% grad))
+}
+
+Var.cHyp.monte.carlo <- function(fit, n = 1e6) {
+  # Evalutate the variance by monte carlo integration
+  # About fourth decimal place n = 1e5
+  e <- fixef(fit)
+  names(e) <- gsub("sample|gene|Type", "", names(e))
+  v <- vcov(fit)
+  rownames(v) <- colnames(v) <- names(e)
+  std.data <- any(grepl("Standard", names(e)))
+
+  rmvn <- rmvnormal(n, e, as.matrix(v))
+  colnames(rmvn) <- names(e)
+
+  # Truncate if efficiencies are too low
+  low <- abs(rmvn[,c("tgt:l2con","ref:l2con")]) < 0.05
+  is.low <- rowSums(low)
+  n.low <- sum(is.low)
+  if (n.low) {
+    warning("Some of the realised efficiencies in monte carlo integration are",
+            " very low. Perhaps the std. error of the efficiency is too high.",
+            " Removed ", n.low, " values")
+    rmvn <- rmvn[!is.low, ]
+  }
+
+  if (std.data) {
+    gam <- rmvn[, rep(c("tgt:l2con","ref:l2con"), 2)]
+  } else {
+    gam <- 1
+  }
+
+  rmvn <- rmvn[, c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref")]
+  var.chyp <- var(rowSums(gam^-1*t(t(rmvn)*c(1, -1, -1, 1))))
+  return(var.chyp)
+}
+
+DDCq <- function(data, var.adj, alpha = 0.05,
+                 var.type = c("deltamethod", "montecarlo")) {
   # Function to calculate efficiency corrected with or without
   # adjusted variance DDCq values in qPCR experiments
-  # data is a qPCR.data object
+  # data is a qPCR.data object but can also be a fit from lmer
   # var.adj is a boolean value
+  # var.type is the method used to estimate the variance of DDCq
 
-  # Internal functions:
-  cHyp <- function(fit) {
-    # Function for evaluating the mapping into DDCq
-    e <- fixef(fit)
-    names(e) <- gsub("sample|gene|Type", "", names(e))
-    eff <- e[c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref")]
-
-    if (std.data) {
-      gam <- e[rep(c("tgt:l2con","ref:l2con"), 2)]
-    } else {
-      gam <- rep(1, length(eff))
-    }
-    return(sum(gam^-1*eff*c(1, -1, -1, 1)))
-  }
-
-  DcHyp <- function(fit, var.adj) {
-    # Compute the gradient of cHyp
-    e <- fixef(fit)
-    names(e) <- gsub("sample|gene|Type", "", names(e))
-    eff <- e[c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref")]
-
-    if (std.data) {
-      M <- cbind(c(-1, 0, 1, 0), c(0, 1, 0, -1))
-      gam <- e[rep(c("tgt:l2con","ref:l2con"), 2)]
-      D <- c(gam^-1*c(1, -1, -1, 1), (gam^-2*eff) %*% M * (var.adj))
-      return(D)
-    } else {
-      return(c(1, -1, -1, 1))
-    }
-  }
-
-  Var.cHyp <- function(fit, var.adj) {
-    # Compute variance estimate
-    e <- fixef(fit)
-    names(e) <- gsub("sample|gene|Type", "", names(e))
-    v <- vcov(fit)
-    rownames(v) <- colnames(v) <- names(e)
-
-    get <- c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref",
-             if (std.data) {c("tgt:l2con", "ref:l2con")})
-    grad <- DcHyp(fit, var.adj)
-    return(as.numeric(t(grad) %*% v[get, get] %*% grad))
-  }
-
+  var.type <- match.arg(var.type)
 
   if (inherits(data, "lmerMod")) {
     fit <- data
@@ -194,12 +230,19 @@ DDCq <- function(data, var.adj, alpha = 0.05) {
 
   # Perform t test using above functions
   con     <- cHyp(fit)
-  var.con <- Var.cHyp(fit, var.adj)
+  if (var.type == "deltamethod") {
+    var.con <- Var.cHyp(fit, var.adj)
+  }
+  if (var.type == "montecarlo") {
+    if (!var.adj) warning("If montecarlo")
+    var.con <- Var.cHyp.monte.carlo(fit)
+  }
   se.con  <- sqrt(var.con)
   t       <- con/se.con
 
   # Assumes paired samples
-  df <- getME(fit, "q") - 2 - 2 - 2*std.data
+  # df <- getME(fit, "q") - 2 - 2 - 2*std.data
+  df <- getME(fit, "q") - 2 - 2*std.data
 
   stopifnot(df > 0)
   p.val   <- 2*(1 - pt(abs(t), df))
@@ -230,12 +273,14 @@ DDCq.test <- function (data,
                        subset.rows,
                        n.boots = 100,
                        alpha = 0.05,
+                       var.type = c("deltamethod", "montecarlo"),
                        ...) {
   # method; character, either "Naive" (i.e a simple t-test) or "LMM"
   # eff.cor; logical, Should the data be efficiency corrected?
   # var.adj; logical, Should the eff. corrected estimate be variace corrected?
   # subset.cols and subset.rows can be used to subset the rows and columns
   method <- match.arg(method)
+  var.type <- match.arg(var.type)
 
   if (method == "LMM") {
     if (eff.cor == FALSE && var.adj == TRUE) {
@@ -264,7 +309,7 @@ DDCq.test <- function (data,
     colnames(wmean) <- gsub("Cq.", "", colnames(wmean))
 
     t <- t.test(tgt - ref ~ sampleType, var.equal = TRUE, data = wmean,
-                conf.level = 1-alpha)
+                conf.level = 1 - alpha)
     est <- -diff(t$estimate)
 
     result <-
@@ -290,7 +335,7 @@ DDCq.test <- function (data,
       data <- aggregate(Cq ~ sampleName + geneType + sampleType +
                           copyNumber + l2con, data = data, FUN = mean)
 
-      return(DDCq(as.data.qPCR(data), var.adj = var.adj))
+      return(DDCq(as.data.qPCR(data), var.adj = var.adj, var.type = var.type))
 
     }
   } else if (method == "Bootstrap") {
@@ -365,7 +410,7 @@ PowerSim <-
 
 
 #
-# Bootstrapping method
+# Bootstrapping method and faclilities
 #
 
 Bootstrap.qPCR <- function(data,               # A data.qPCR object
@@ -448,7 +493,6 @@ bootstrapSample <- function(data) {
     return(fitted(lin.fit) + sample(resid(lin.fit), replace = TRUE))
   }
 
-  # if (is.null(unique(data$geneName))) warning("no geneName col present in data")
   for (gtype in unique(data$geneType)) {
     if (!is.null(data$geneName)) {
       for (gname in unique(data$geneName)) {
@@ -523,6 +567,9 @@ bootstrapEstimate <- function(data, n.boots, alpha = 0.05) {
   ans <- c("Estimate" = mean(ddcq), "Std. Error" = sd(ddcq),
            "t value" = NA, "df" = NA, "Pr(>|t|)" = twoSideP(ddcq),
            "LCL" = quantile(ddcq, alpha/2), "UCL" = quantile(ddcq, 1-alpha/2))
+
+  attr(ans, "extra") <- res
+
   return(ans)
 }
 
@@ -533,12 +580,14 @@ parametricBootstrapEstimate <- function(data, n.boots, alpha = 0.05, ...) {
   ddcq <- function(x) {
     catchBootstrapWarning(DDCq(x, var.adj = FALSE, alpha = alpha)["Estimate"])
   }
-  r <- bootMer(fit, ddcq, nsim = n.boots, seed = 8833L)
-  t <- na.omit(c(r$t))
+  r <- bootMer(fit, ddcq, nsim = n.boots)
+  t <- r$t[!is.na(r$t)] # Omit NAs
+
   ans <- c("Estimate" = mean(t), "Std. Error" = sd(t),
            "t value" = NA, "df" = NA, "Pr(>|t|)" = twoSideP(t),
            "LCL" = quantile(t, alpha/2), "UCL" = quantile(t, 1-alpha/2))
 
+  attr(ans, "extra") <- r
   return(ans)
 }
 
@@ -684,15 +733,15 @@ resave <- function(..., list = character(), file) {
 catchBootstrapWarning <- function(expr) {
   warningHandler <- function(w) {
     out <- NA #rep(NA, 7)
-    attr(out, "warning") <- w
+    # attr(out, "warning") <- w
     return(out)
   }
   return(tryCatch(expr, warning = warningHandler))
 }
 
 
-export <-
-  c("SimqPCRData", "qPCRfit", "is.data.qPCR",
+export <- # Function names to export to parallel clusters
+  c("SimqPCRData", "qPCRfit", "is.data.qPCR", "cHyp", "DcHyp", "Var.cHyp",
     "std.curve", "DDCq.test", "DDCq", "as.data.qPCR", "bootstrapEstimate",
     "parametricBootstrapEstimate", "bootstrapSample", "twoSideP",
     "catchBootstrapWarning")

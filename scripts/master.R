@@ -17,8 +17,8 @@
 if (!grepl("knitr", getwd())) setwd("./knitr")
 rm(list = ls())
 set.seed(987654321)
-n.boots <- 1000  # Bootstrap samples in data analysis
-n.sims  <- 1000  # Simulation replications
+n.boots <- 1000 # Bootstrap samples in data analysis
+n.sims  <- 1000 # Simulation replications
 
 recompute <- FALSE  # Recompute heavy computations if TRUE
 start.t <- proc.time()
@@ -26,27 +26,19 @@ start.t <- proc.time()
 parallel <- TRUE
 n.cpus <- 4
 
-n.boots <- 150  # Bootstrap samples in data analysis
-n.sims  <- 150  # Simulation datasets/replications
-
-recompute <- TRUE  # Recompute heavy computations if TRUE
-
 # install.packages(c("lattice", "Hmisc", "lme4", "epiR"))
 library("lattice") # For plots
-library("lme4")    # For mixed effects models
+library("lme4")    # For mixed effects models > 1.1-8
 library("Hmisc")   # For LaTeX tables
 library("epiR")    # For performance measures and CI hereof
 library("snowfall") # For parallel computing
+library("GMCM")    # For multivariate simulations
+
 # Saved R binary output
 save.file <- "../output/saved.RData"
 if (file.exists(save.file) && !recompute) {
   load(save.file)
 }
-
-
-# Colors
-jet.colors <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan",
-                                 "#7FFF7F", "yellow", "#FF7F00", "red"))
 
 # 1. Load auxillary functions
 source("../scripts/functions.R")

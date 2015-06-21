@@ -75,6 +75,9 @@ testis$geneName <- as.factor(testis$geneName)
 testis$threshold <- as.numeric(testis$threshold)
 testis$Cq        <- suppressWarnings(as.numeric(as.character(testis$Cq)))
 
+# Clean sampleNames
+testis$sampleName <- gsub(" $", "", testis$sampleName)
+testis$sampleName <- gsub(" ", "-", testis$sampleName)
 
 # Remove missing Cq-values and take only cDNA synthesis 4
 # Round threshold to equal size -- should be done in MX-Pro
@@ -82,9 +85,7 @@ testis <- testis[!is.na(testis$Cq), ]
 testis <- testis[testis$cDNAMix == 4 & testis$sampleName != "H420", ]
 testis$threshold <- round(testis$threshold, 1)
 
-testis$l2con <- -1*log2(testis$copyNumber)
-testis$l2con <- round(testis$l2con)
-
+testis$l2con <- round(-log2(testis$copyNumber))
 
 # Aggregating
 testis <- aggregate(Cq ~ sampleName + geneType + sampleType + geneName +

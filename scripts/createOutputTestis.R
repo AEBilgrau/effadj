@@ -84,6 +84,8 @@ for (i in 1:length(grps.list)) {
     "LMEM"   = DDCq.test(testis.tmp, method = "LMM", eff.cor = F),
     "EC"     = DDCq.test(testis.tmp, method = "LMM", eff.cor = T, var.adj = F),
     "ECVA"   = DDCq.test(testis.tmp, method = "LMM", eff.cor = T, var.adj = T),
+    "ECVA2"  = DDCq.test(testis.tmp, method = "LMM", eff.cor = T, var.adj = T,
+                         var.type = "montecarlo"),
     "Bootstrap" = testis.boot[[i]],
     "PBootstrap" = testis.pboot[[i]]
     )

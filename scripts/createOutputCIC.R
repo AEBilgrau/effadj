@@ -74,24 +74,34 @@ if (!exists("cic.boot") || !exists("cic.pboot") || recompute) {
 }
 
 # Combine results
+sink("../output/fit_summary_cic.txt")
 toTeX <- NULL
 for (i in 1:length(grps.list.cic)) {
   # Subset data
   cic.tmp <- subset(cic, geneName %in% grps.list.cic[[i]])
 
+  # Print fit information
+  fit <- qPCRfit(as.data.qPCR(cic.tmp))
+  cat("\n\n\n\n\n===", paste(grps.list.cic[[i]], collapse = " vs. "), "===\n")
+  print(summary(fit))
+
+  # Create results for table
   results <- rbind(
     "t-test" = DDCq.test(cic.tmp, method = "N"),
-    "LMEM"   = DDCq.test(cic.tmp, method = "LMM", eff.cor = F),
+    "LMM"    = DDCq.test(cic.tmp, method = "LMM", eff.cor = F),
     "EC"     = DDCq.test(cic.tmp, method = "LMM", eff.cor = T, var.adj = F),
-    "ECVA1"   = DDCq.test(cic.tmp, method = "LMM", eff.cor = T, var.adj = T),
-    "ECVA2"   = DDCq.test(cic.tmp, method = "LMM", eff.cor = T, var.adj = T,
-                          var.type = "monte"),
+    "ECVA1"  = DDCq.test(cic.tmp, method = "LMM", eff.cor = T, var.adj = T),
+    "ECVA2"  = DDCq.test(cic.tmp, method = "LMM", eff.cor = T, var.adj = T,
+                         var.type = "monte"),
     "Bootstrap" = as.numeric(cic.boot[[i]]),
-    "PBootstrap" = as.numeric(cic.pboot[[i]])
+    "Par.~bootstr." = as.numeric(cic.pboot[[i]])
     )
 
   toTeX <- rbind(toTeX, results)
 }
+sink()
+
+
 
 
 #
@@ -102,8 +112,10 @@ toTeX      <- signif(toTeX, 4)
 toTeX[, 5] <- sn(toTeX[, 5])
 colnames(toTeX) <- gsub("Pr(>|t|)", "$p$-value", colnames(toTeX), fixed = TRUE)
 colnames(toTeX) <- gsub("t ", "$t$-", colnames(toTeX), fixed = TRUE)
-rownames(toTeX) <- gsub("EC", "Eff. Corr.", rownames(toTeX))
-rownames(toTeX) <- gsub("VA", " \\\\& Var. Adj.", rownames(toTeX))
+
+rownames(toTeX) <- gsub("LMEM", "LMM", rownames(toTeX))
+rownames(toTeX) <- gsub("t.", "$t$-", rownames(toTeX), fixed = TRUE)
+rownames(toTeX) <- gsub("ECVA", "EC\\\\&VA", rownames(toTeX))
 
 grps <-
   sapply(grps.list.cic, function(x) ifelse(length(x)==3,
@@ -111,18 +123,21 @@ grps <-
                                            paste(x[1], "vs", x[2])))
 
 caption.txt <- "CIC data: Method comparison for estimating the
-  $\\ddcq$-value. $t$-test shows results from a simple
-  $t$-test using only undiluted data. LMEM signifies the regular
-  $\\ddcq$ method using a linaer mixed effects model
-  without using dilution data and thus without efficiency correction.
-  Eff.\\ corr.\\ denotes use of the plugin-estimator.
-  Var.\\ adj.\\ denotes that the efficiency correction was variance adjusted.
-  Bootstrap shows the mean and standard deviation of %d bootstrap samples."
+  $\\ddcq$-value. $t$-test shows results from a simple unpaired
+  $t$-test ignoring dilution data. LMM signifies the regular
+  $\\ddcq$ method using a linear mixed effects model ignoring
+  dilution.
+  EC denotes use of the plugin-estimator.
+  VA denotes that the efficiency correction was variance adjusted using the
+  delta method (1) or monte carlo integration (2).
+  (Par.) bootstrap shows the mean and standard deviation of %d (parametric)
+  bootstrap samples using EC estimate. The last two columns shows the $95%s$
+  lower and upper confidence interval limits."
 w <- latex(toTeX,
            file    = "../output/Table1.tex",
            title   = "",
            label   = "table:cic",
-           caption = sprintf(caption.txt, n.boots),
+           caption = sprintf(caption.txt, n.boots, "\\%"),
            caption.loc = "top",
            rgroup  = grps,
            center  = "center",

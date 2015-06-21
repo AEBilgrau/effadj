@@ -74,24 +74,35 @@ if (!exists("testis.boot") || !exists("testis.pboot") || recompute) {
   resave(testis.boot, testis.pboot, file = save.file)
 }
 
+
+# Combine results
+sink("../output/fit_summary_testis.txt")
 toTeX <- NULL
 for (i in 1:length(grps.list)) {
   # Subset data
   testis.tmp <- subset(testis, geneName %in% grps.list[[i]])
 
+  # Print fit information
+  fit <- qPCRfit(as.data.qPCR(cic.tmp))
+  cat("\n\n\n\n\n===", paste(grps.list[[i]], collapse = " vs. "),"===\n")
+  print(summary(fit))
+
+  # Create results for table
   results <- rbind(
     "t-test" = DDCq.test(testis.tmp, method = "N"),
     "LMEM"   = DDCq.test(testis.tmp, method = "LMM", eff.cor = F),
     "EC"     = DDCq.test(testis.tmp, method = "LMM", eff.cor = T, var.adj = F),
-    "ECVA"   = DDCq.test(testis.tmp, method = "LMM", eff.cor = T, var.adj = T),
+    "ECVA1"  = DDCq.test(testis.tmp, method = "LMM", eff.cor = T, var.adj = T),
     "ECVA2"  = DDCq.test(testis.tmp, method = "LMM", eff.cor = T, var.adj = T,
                          var.type = "montecarlo"),
     "Bootstrap" = testis.boot[[i]],
-    "PBootstrap" = testis.pboot[[i]]
+    "Par.~bootstr." = testis.pboot[[i]]
     )
 
   toTeX <- rbind(toTeX, results)
 }
+sink()
+
 
 #
 # Writing LaTeX table
@@ -99,10 +110,14 @@ for (i in 1:length(grps.list)) {
 
 toTeX      <- signif(toTeX, 4)
 toTeX[, 5] <- sn(toTeX[, 5])
+
 colnames(toTeX) <- gsub("Pr(>|t|)", "$p$-value", colnames(toTeX), fixed = TRUE)
 colnames(toTeX) <- gsub("t ", "$t$-", colnames(toTeX), fixed = TRUE)
-rownames(toTeX) <- gsub("EC", "Eff. Corr.", rownames(toTeX))
-rownames(toTeX) <- gsub("VA", " \\\\& Var. Adj.", rownames(toTeX))
+
+rownames(toTeX) <- gsub("LMEM", "LMM", rownames(toTeX))
+rownames(toTeX) <- gsub("t.", "$t$-", rownames(toTeX), fixed = TRUE)
+rownames(toTeX) <- gsub("ECVA", "EC\\\\&VA", rownames(toTeX))
+
 
 grps <-
   sapply(grps.list, function(x) ifelse(length(x)==3,
@@ -110,19 +125,21 @@ grps <-
                                        paste(x[1], "vs", x[2])))
 
 caption.txt <- "Testis data: Method comparison for estimating the
-  $\\ddcq$-value. $t$-test shows results from a simple
-  $t$-test using only undiluted data. LMEM signifies the regular
-  $\\ddcq$ method using a linaer mixed effects model
-  without using dilution data and thus without efficiency correction.
-  Eff.\\ corr.\\ denotes use of the plugin-estimator.
-  Var.\\ adj.\\ denotes that the efficiency correction was variance adjusted.
-  Bootstrap shows the mean and standard deviation of %d bootstrap samples."
-
+  $\\ddcq$-value. $t$-test shows results from a simple unpaired
+  $t$-test ignoring dilution data. LMM signifies the regular
+  $\\ddcq$ method using a linear mixed effects model ignoring
+  dilution.
+  EC denotes use of the plugin-estimator.
+  VA denotes that the efficiency correction was variance adjusted using the
+  delta method (1) or monte carlo integration (2).
+  (Par.) bootstrap shows the mean and standard deviation of %d (parametric)
+  bootstrap samples using EC estimate. The last two columns shows the $95%s$
+  lower and upper confidence interval limits."
 w <- latex(toTeX,
            file    = "../output/Table2.tex",
            title   = "",
            label   = "table:tesits",
-           caption = sprintf(caption.txt, length(testis.boot)),
+           caption = sprintf(caption.txt, length(testis.boot), "\\%"),
            caption.loc = "top",
            rgroup  = grps,
            center  = "center",

@@ -268,8 +268,8 @@ The degrees of freedom of multilevel mixed effects models are highly non-trivial
 For the purposes of this paper, we do not pursue this further and restrict ourselves to case of a balance experimental design where $\eta$ is obtain relatively straight-forwardly.
 
 Alternatively to \eqref{eq:tstat}, the variance $\Var\!\bigl[c(\hat{\vtheta})\bigr]$ can be evaluated by Monte Carlo integration.
-One way is to simulate a large number $N$ of parameters $\vtheta_1, \ldots, \vtheta_N$ from a multivariate normal distribution using the esimated parameters ${\cal{N}}_6(\hat{\vtheta}, \hat{\vec{\Sigma}})$ and computing the sample variance of $c(\vtheta_1), \ldots, c(\vtheta_N)$.
-This is closely related to the (parametric) boostrap discussed in the following section.
+One way is to simulate a large number $N$ of parameters $\vtheta_1, \ldots, \vtheta_N$ from a multivariate normal distribution using the estimated parameters ${\cal{N}}_6(\hat{\vtheta}, \Var[\hat{\vtheta}]\)$ and computing the sample variance of $c(\vtheta_1), \ldots, c(\vtheta_N)$.
+This is closely related to the (parametric) bootstrap discussed in the following section.
 
 On the basis of \eqref{eq:tstat}, an approximate $(1 - \alpha) 100\%$ confidence interval of $c(\vtheta)$ can then given by
 \begin{equation*}
@@ -296,7 +296,7 @@ If $\gamma_\tgt^{-1}$ and $\gamma_\rref^{-1}$ is assumed be one (or otherwise kn
 This corresponds to leaving out the terms in \eqref{eq:model} involving these parameters and thus ignoring the dilution data.
 If $\gamma_\tgt^{-1} = \gamma_\rref^{-1} = 1$ is assumed, we later refer to the obtained estimate as the na\"{i}ve LMM.
 If $\gamma_\tgt^{-1}$ and $\gamma_\rref^{-1}$ are assumed known (i.e.~disregarding the standard error hereof) we refer to the obtained estimate as the efficiency corrected (EC) estimate.
-The $\ddcq$ estimate where the uncertainty of the AE is considered is refered to as efficiency corrected and variance adjusted by either the delta method (EC\&VA1) or Monte Carlo integraion (EC\&VA2).
+The $\ddcq$ estimate where the uncertainty of the AE is considered is referred to as efficiency corrected and variance adjusted by either the delta method (EC\&VA1) or Monte Carlo integration (EC\&VA2).
 
 
 

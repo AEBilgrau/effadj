@@ -205,7 +205,7 @@ ex.tab <- rbind(rowSums(!significant),
                 rowSums(significant))
 colnames(ex.tab) <- gsub("H0:.+","$H_0$",gsub("H1:.+","$H_A$",colnames(ex.tab)))
 rownames(ex.tab) <- sprintf(c("$p \\geq %.2f$", "$p < %.2f$"), p.cut)
-ex.cgroup <- c("LMM", "EC", "EC\\&VA", "Bootstr.", "P.~Bootstr.")
+ex.cgroup <- c("LMM", "EC", "EC\\&VA", "Bootstr.", "Par.~bootstr.")
 tmp.caption <- "Contingency tables for the different estimators for at
   5 \\% $p$-value threshold. The used estimators are the linear
   mixed effect model (LMM), the LMM with efficiency correction (EC), the LMM
@@ -221,8 +221,8 @@ w <- latex(ex.tab, file = "../output/Table3.tex", title = "",
 #
 
 get <- seq(1, 9, by = 2)
-ex.fpr <- ex.tab[1,get+1]/colSums(ex.tab[,get+1])
-ex.tpr <- ex.tab[1,get]/colSums(ex.tab[,get])
+ex.fpr <- ex.tab["$p < 0.05$", get]/colSums(ex.tab[,get])
+ex.tpr <- ex.tab["$p < 0.05$", get + 1]/colSums(ex.tab[,get + 1])
 names(ex.fpr) <- names(ex.tpr) <- ex.cgroup
 
 #

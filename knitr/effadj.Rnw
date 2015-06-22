@@ -75,16 +75,17 @@ Aalborg \O{}, Denmark %Fredrik Bajers Vej 7G, 9220 Aalborg \O{}, Denmark
 \footnotetext{To whom correspondence should be addressed.}
 
 \begin{abstract}
-{Accurate estimation of the amplification efficiency (AE) is an important prerequisite in quantitative real-time polymerase chain reaction (qPCR).
-The most commonly used correction strategy is to estimate the AE by dilution experiments and use this as a plug-in when efficiency correcting the $\ddcq$-value.
-Currently it is recommended to determine the AE with a high precision as the plug-in approach do not account for its uncertainty,
-implicitly assuming an infinitely precise estimate of the AE.
-Determining the AE with such high precision, however, require tedious laboratory work and vast amounts of biological material.%, an often scarce resource in e.g.~molecular cancer biology.
+{Accurate estimation of the amplification efficiency (AE) is an important prerequisite in real-time quantitative polymerase chain reaction (qPCR).
+The most commonly used correction strategy is to estimate the AE by dilution experiments and use this as a plug-in when efficiency correcting the $\ddcq$.
+Currently it is recommended to determine the AE with high precision as the plug-in approach do not account for its uncertainty,
+implicitly assuming an infinitely precise AE estimate.
+Determining the AE with such precision, however, require tedious laboratory work and vast amounts of biological material.
 Violation of the assumption leads to overly optimistic standard errors of the $\ddcq$, confidence intervals, and $p$-values which ultimately increases the type I error probability beyond the expected significance level.
 As qPCR frequently is used for validation it should be a high priority to estimate and account for the uncertainty of the AE estimate to properly bound the type I error rate and achieve the desired significance level.
-We provide methods founded in a linear mixed effects model (LMM) to obtain variance approximations of the efficiency adjusted $\ddcq$-value based on statistical modelling in combination with either the statistical delta method, Monte Carlo, or bootstrapping.
-The LMM can used to obtain more reliable statistical inference and power calculations and enables simultaneous estimation of the AE and $\ddcq$.
-We validate recent findings which suggests that MGST1 is differentially expressed between multiple myeloma cell lines with high and low abundance of culture initiating cells and that miRNA-127 is differentially expressed between testicular and nodal diffuse large B-cell lymphoma.
+We provide methods founded in a linear mixed effects model (LMM) to obtain variance approximations of the efficiency adjusted $\ddcq$ using the statistical delta method, Monte Carlo, or bootstrapping.
+The LMM can used to obtain more reliable statistical inference and power calculations.
+We validate recent findings suggesting that MGST1 is differentially expressed between myeloma cell lines with high and low abundance of culture initiating cells and that miRNA-127 is differentially expressed between testicular and nodal lymphomas.
+Lastly, the methods are benchmarked in a simulation study.
 }
 % Keywords
 {amplification efficiency; delta-delta Cq; $\ddcq$; efficiency adjusted; power calculation; qPCR}
@@ -109,8 +110,7 @@ Like all experiments in molecular biology and chemistry, qPCR is sensitive not o
 There is an incredible amount sources of systematic and non-systematic variation including temperature variations, concentration differences by pipetting errors, primer affinity, in addition to the genuine biological variations of interest across case and control.
 Laboratory guidelines and increasingly sophisticated statistical modelling have been established to combat many of these systematic errors \citep{Bustin2010, Bustin2009}.
 
-The regular $\ddcq$ method is commonly estimated by a normalized relative expression of a target gene of interest between treated (case) and untreated samples (control).
-The double difference accounts for unwanted variations using one or more endogenous reference genes assumed to be approximately unchanged due to the treatment.
+The regular so-called $\ddcq$ method is the normalized relative expression of a target gene of interest between treated (case) and untreated samples (control) accounting for undesired variations using one or more endogenous reference genes (also called housekeeping gene) assumed to be approximately unchanged due to the treatment.
 However, the target and reference genes might be subject to different amplification efficiencies (AE) which yield biased $\ddcq$ values.
 In turn, the $\ddcq$ was modified to an AE corrected version.
 
@@ -118,8 +118,8 @@ Despite the tremendous success of qPCR, ``statistical inference considerations a
 We find this particular true for the estimation of the amplification efficiency.
 Although efficiency calibration has been extensively treated by \cite{Pfaffl2001} or the more generalized model presented by \cite{Yuan2008}, there still seems to lack a systematic study of the unavoidable influence of uncertainty in the efficiency amplification estimate on the conclusions of qPCR experiments based on formal statistical inference.
 The current AE adjusted $\ddcq$ methods do not account for the uncertainty of the estimated AE and thus effectively assumes the AE to be estimated with infinite precision.
-This assumption implies a systematic underestimation of the standard error of $\ddcq$ leading to too narrow confidence intervals and decreased $p$-values under inference for $\ddcq$.
-If the AE is poorly determined this underestimation can drastically increase the standard error of $\ddcq$ thereby decreasing the $p$-values and increasing the type I error probability.
+This assumption implies a systematic underestimation of the standard error of $\ddcq$ leading to too narrow confidence intervals, decreased $p$-values, and lastly increased the type I error probabilities.
+If the AE is poorly determined this underestimation can drastically increase the standard error of $\ddcq$ and the derived quantities.
 
 % Precise aims of the paper
 The aim of the paper is to formulate a mathematical model which allows us to draw formal statistical inference about qPCR experiments with non-efficient amplifications.
@@ -143,7 +143,7 @@ Lastly, in a simulation study, we show that the methods control the false postiv
 \subsection{Observational model}
 
 In order to approximate the standard error of the efficiency adjusted
-$\ddcq$-value we model the amplification process
+$\ddcq$ we model the amplification process
 in the following way
 \begin{equation}
   \label{eq:fluorescencemodel}
@@ -196,9 +196,9 @@ Thus we have the well-known $2^{-\ddcq}$ as the relative abundance of the origin
 For ease of notation we use the abbreviations
 $i\in\{\tgt,\rref\}$ for gene types target and reference;
 $j\in\{\case,\ctrl,\std\}$ for sample types case, control, and standard curve;
-$k\in\{1,\dots,K\}$ for dilution step; and $l\in\{1,\dots,L\}$ for technical replicate.
+$k\in\{1,\dots,K\}$ for dilution step.
 To estimate $\ddcq$, we need estimates of $\alpha_i$ and the expected $C_{q,i,j}$.
-A popular way of estimating the AE $\alpha_i$ is by dilution curves,
+A popular way of estimating the AE is by dilution curves,
 i.e.\ by regressing $C_{q,i,j}$ against a series of decreasing
 $N_{0,i,j}$-values, denoted by $N_{0,i,j,k} = N_{0,i,j,1}2^{-x_k}$, where
 $0 = x_1 < \cdots < x_K < \infty$, and na\"{i}vely plugging $\hat{\alpha}_i$ into \eqref{eq:ddcq} thus disregarding its uncertainty.
@@ -208,12 +208,14 @@ The estimation of the expected $C_{q,i,j}$-values and $\alpha_i$ can however be 
   C_{q,i,j,s,k} = \mu_{i,j} + A_{j/s} + \gamma_{i} x_k + \epsilon_{i,j,s,k},
 \end{equation}
 where $A_{j/s}$ is a random effect from sample $s$ nested under the $j$'th sample type,
-$\gamma_{i} = \alpha_i^{-1}$ and
+$\gamma_{i} = \alpha_i^{-1}$, and
 $\mu_{i,j} = \alpha_i^{-1}(\log_2 F_{C_q} - \log_2 \kappa \sigma_j N_{0,i,j})$.
 The random effects $A_{j/s}$ are ${\cal{N}}(0,\sigma_S^2)$-distributed and
 the error terms $\epsilon_{i,j,s,k}$ are independent and ${\cal{N}}(0,\sigma^2)$-distributed.
-LMMs provide a more correct quantification of the sources of variation and more correct evaluation of the uncertainty of $\mu_{i,j}$ and its derived quantities.
+LMMs provide a more correct quantification of the sources of variation and thereby a more correct evaluation of the uncertainty of $\mu_{i,j}$ and their derived quantities.
 
+In this paper, we assume that technical replicates to be averaged out for simplicity.
+The technical variation could be modeled in \eqref{eq:model} as an additional random effect term, however.
 
 
 \subsection[Inference for DDCq by the delta method and Monte Carlo]{Inference for $\ddcq$ by the delta method and Monte Carlo}
@@ -267,18 +269,19 @@ $t$-distributed with $\eta$ degrees of freedom.
 The degrees of freedom of multilevel mixed effects models are highly non-trivial to obtain in general, however.
 For the purposes of this paper, we do not pursue this further and restrict ourselves to case of a balance experimental design where $\eta$ is obtain relatively straight-forwardly.
 
-Alternatively to \eqref{eq:tstat}, the variance $\Var\!\bigl[c(\hat{\vtheta})\bigr]$ can be evaluated by Monte Carlo integration.
-One way is to simulate a large number $N$ of parameters $\vtheta_1, \ldots, \vtheta_N$ from a multivariate normal distribution using the estimated parameters ${\cal{N}}_6(\hat{\vtheta}, \Var[\hat{\vtheta}])$ and computing the sample variance of $c(\vtheta_1), \ldots, c(\vtheta_N)$.
-This is closely related to the (parametric) bootstrap discussed in the following section.
-
 On the basis of \eqref{eq:tstat}, an approximate $(1 - \alpha) 100\%$ confidence interval of $c(\vtheta)$ can then given by
 \begin{equation*}
      c(\hat{\vtheta}) \pm
      t_{\alpha/2,\eta}\sqrt{\nabla c(\hat{\vtheta})^{\top}\Var[\hat{\vtheta}]\nabla c(\hat{\vtheta})}.
 \end{equation*}
 Likewise, $p$-values can be obtained by computing $P(\lvert t \rvert > T)$ where $T$ is $t$-distributed with $\eta$ degrees of freedom.
-Both maximum likelihood (ML) and restricted maximum likelihood estimation (REML) of LMMs have been implemented by the R-package \texttt{lme4} based on the \texttt{nlme} package of  \cite{Pinheiro2000a}.
-Based on this package we compute the estimates $\hat{\vtheta}$ and $\Var[\hat{\vtheta}]$ and use these in the construction of test and confidence intervals for the $\ddcq$-values as described above.
+
+Alternatively to \eqref{eq:tstat}, the variance $\Var\!\bigl[c(\hat{\vtheta})\bigr]$ can be evaluated by Monte Carlo integration.
+One way is to simulate a large number $N$ of parameters $\vtheta_1, \ldots, \vtheta_N$ from a multivariate normal distribution using the estimated parameters ${\cal{N}}_6(\hat{\vtheta}, \Var[\hat{\vtheta}])$ and computing the sample variance of $c(\vtheta_1), \ldots, c(\vtheta_N)$.
+This is closely related to the (parametric) bootstrap discussed in the following section.
+
+Both maximum likelihood (ML) and restricted maximum likelihood estimation (REML) of LMMs have been implemented by the R-package \texttt{lme4} \citep{Bates2014} based on the package \texttt{nlme} \citep{Pinheiro2000a}.
+The packages readily provide the estimates $\hat{\vtheta}$ and $\Var[\hat{\vtheta}]$ and we use these in the construction of test and confidence intervals for the $\ddcq$ as described above.
 The needed gradient in \eqref{eq:tstat} is computed straight-forwardly from \eqref{eq:c} as
 \begin{equation*}
   \nabla c(\hat{\vtheta}) =
@@ -294,9 +297,9 @@ The needed gradient in \eqref{eq:tstat} is computed straight-forwardly from \eqr
 
 If $\gamma_\tgt^{-1}$ and $\gamma_\rref^{-1}$ is assumed be one (or otherwise known) then \eqref{eq:c} becomes a simple linear hypothesis for which the standard error is easily calculated.
 This corresponds to leaving out the terms in \eqref{eq:model} involving these parameters and thus ignoring the dilution data.
-If $\gamma_\tgt^{-1} = \gamma_\rref^{-1} = 1$ is assumed, we later refer to the obtained estimate as the na\"{i}ve LMM.
+If $\gamma_\tgt^{-1} = \gamma_\rref^{-1} = 1$ is assumed, we shall refer to the obtained estimate as the na\"{i}ve LMM.
 If $\gamma_\tgt^{-1}$ and $\gamma_\rref^{-1}$ are assumed known (i.e.~disregarding the standard error hereof) we refer to the obtained estimate as the efficiency corrected (EC) estimate.
-The $\ddcq$ estimate where the uncertainty of the AE is considered is referred to as efficiency corrected and variance adjusted by either the delta method (EC\&VA1) or Monte Carlo integration (EC\&VA2).
+The estimate where the uncertainty of the AE is considered is referred to as efficiency corrected and variance adjusted by either the delta method (EC\&VA1) or Monte Carlo integration (EC\&VA2).
 
 
 
@@ -308,19 +311,26 @@ We now consider hypothesis testing and confidence intervals for $\ddcq$ by boots
 A simple alternative to the statistical delta method in assessing the standard error of the $\ddcq$ estimate is the bootstrap which avoids calculating gradients and is often cited to perform better in small sample situations.
 
 The basic idea of bootstrapping is that inference of $\ddcq$ can be can conducted by re-sampling the sample data and performing inference on the re-sampled data.
-
-Non-parametric block bootstrap samples for the case-control data are generated by sampling matched pairs of target/reference genes with replacement for cases and controls, respectively.
+In the usual qPCR setup with paired samples and dilution data, straight-forward bootstrapping will quickly fail.
+We propose non-parametric block bootstrap samples for the case-control data generated by sampling matched pairs of tgt/ref genes with replacement for cases and controls, respectively.
 However, as we have only got a single observation for each dilution step we chose to re-sample residuals from a simple linear regression model and subsequently adding the residuals to the fitted values from the linear regression.
-Hence a bootstrapped data set consists of the re-sampled matched pairs and the bootstrapped standard curve.
-For each dataset the $\ddcq$ is calculated and confidence intervals and $p$-values can be obtained from the bootstrap distribution.
+Hence a large number $B$ of bootstrapped datasets consists of the re-sampled matched pairs and the residual bootstrapped standard curve.
+For each dataset, $\hat{\delta}_1 = \ddcq^{(1)}, \ldots, \hat{\delta}_B = \ddcq^{(B)}$ is computed to obtain the bootstrap distribution from which confidence intervals and $p$-values can be obtained.
+The standard error of $\ddcq$ is estimated by the sample standard deviation of the bootstrap distribution.
+A $(1-\alpha)100\%$ confidence interval can computed as
+\begin{equation*}
+  ( \hat{\delta}_{(\alpha/2)} , \hat{\delta}_{(1-\alpha/2)} )
+\end{equation*}
+where e.g.\ $\hat{\delta}_{(\alpha/2)}$ denote the $\alpha/2$-percentile of $\hat{\delta}_1, \ldots \hat{\delta}_B$.
+The $p$-values for the null hypotehsis of $\delta = 0$ is computed by $2\min(\hat{F}(0), 1 - \hat{F}(0))$,
+where $\hat{F}$ is the empirical cumulative distribution function of $\hat{\delta}_1, \ldots \hat{\delta}_B$.
 
-Alternatively, parametric bootstrap could be made by simulating datasets from the fitted model.
-Here, both new random effects and noise terms are realized and added to the fitted parameters.
+Alternatively, parametric bootstrap can be used by simulating datasets from the fitted model.
+Here, both new random effects and noise terms are realized and added to the fitted values to generate new datasets.
 
-In the analysis of the CIC and Testis data we draw \Sexpr{n.boots} bootstrap samples (both parametric and non-parametric) and used them to carry out statistical inference.
-First, the standard error of $\ddcq$ is calculated by the sample standard deviation of the boostrap distribution.
-Secondly, the $p$-value for the test for the null hypothesis of a vanishing $\ddcq$ is calculated as the minimum of two times the percentile and two times one minus the percentile of 0 in the bootstrapped sample.
-
+% In the following real data data applications, we draw \Sexpr{n.boots} bootstrap samples (both parametric and non-parametric) and used them to carry out statistical inference.
+% First, the standard error of $\ddcq$ is calculated by the sample standard deviation of the bootstrap distribution.
+% Secondly, the $p$-value for the test for the null hypothesis of a vanishing $\ddcq$ is calculated as the minimum of two times the percentile and two times one minus the percentile of 0 in the bootstrapped sample.
 
 
 
@@ -425,7 +435,7 @@ Based on the above statistical model, we estimate the FPR and the TPR for each d
 
 \subsection{CIC study}
 The raw $C_q$-values and dilution curves are depicted in Fig.~\ref{fig:cqCIC} panels A--B, respectively.
-The difference in gene expression assessed by the $\ddcq$-values for the target genes MGST1 and MMSNET and each reference genes GAPDH and ACTB were estimated using 7 different methods:
+The difference in gene expression assessed by the $\ddcq$ for the target genes MGST1 and MMSNET and each reference genes GAPDH and ACTB were estimated using 7 different methods:
 \begin{enumerate}
   \item $t$-test: Unpaired $t$-tests of the differences between the target and reference in case and control groups.
   \item LMM: Regular $\ddcq$ estimate without efficiency correction using LMM and disregarding the dilution data.
@@ -460,7 +470,7 @@ The $p$-value is zero, probably due to the resolution provided by \Sexpr{n.boots
 \subsection{DLBCL study}
 
 The raw $C_q$-values and dilution curves are depicted in Fig.~\ref{fig:cqTestis}, panels A--B, respectively.
-Analogously to the previous section, the differences in gene expressions assessed by the $\ddcq$-values for the target genes mir127 and mir143 and each reference rnu6b and rnu24 gene as well the combination of the reference genes, were estimated using the 7 different methods. Again $\Sexpr{n.boots}$ bootstrapped samples were used. The results are seen in Table~\ref{table:tesits}.
+Analogously to the previous section, the differences in gene expressions assessed by the $\ddcq$ for the target genes mir127 and mir143 and each reference rnu6b and rnu24 gene as well the combination of the reference genes, were estimated using the 7 different methods. Again $\Sexpr{n.boots}$ bootstrapped samples were used. The results are seen in Table~\ref{table:tesits}.
 
 Like before, the the effect estimates for unpaired t-test and LMM without efficiency correction are exactly equal however with a lower standard error for LMM.
 The efficiency corrected estimates are likewise exactly equal with and without variance adjustment with the standard deviation of estimate and the $p$-values are higher for the adjusted values as expected.
@@ -475,7 +485,7 @@ The bootstrap again provides a standard deviation slightly higher than the delta
 
 \subsection{Simulation study}
 
-First we present results of a simulation example for a two-sided test for the null hypothesis of a vanishing $\ddcq$-value at $5\%$ significance level.
+First we present results of a simulation example for a two-sided test for the null hypothesis of a vanishing $\ddcq$ at $5\%$ significance level.
 We simulated \Sexpr{n.sims} datasets under both the null and alternative hypothesis with 6 samples in each case and control groups and 6 dilution steps.
 The effect size under the alternative was set to $\delta = 10/9$.
 The sample and experimental standard deviations were set to $\sigma_{S} = 1$ and $\sigma = 0.5$, respectively.
@@ -508,21 +518,21 @@ Finally as expected a decrease in FPR usually correspond to a decrease in TPR.
 % Main message
 The common efficiency corrected $\ddcq$ approach to analysis qPCR data disregard the uncertainty of the estimated amplification efficiency leading to increased false positive rates.
 As qPCR experiments are often used for validation this is highly undesirable.
-Our primary approach based on the statistical delta-method to approximate the variance of efficiency adjusted $\ddcq$-values, shows that it is possible to draw statistical inference about qPCR experiments whilst more properly accounting for the AE uncertainty.
+Our primary approach based on the statistical delta-method to approximate the variance of efficiency adjusted $\ddcq$, shows that it is possible to draw statistical inference about qPCR experiments whilst more properly accounting for the AE uncertainty.
 This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation.
 The approach was used to validate that
 (1) MGST1 is differentially expressed between multiple myeloma cell lines of high and low abundance of culture initiating cells and
 (2) design and analyze a study with the hypothesis that miRNA-127 is differentially expressed between testicular and nodal DLBCL.
 
 % Comparison with other studies
-We noticed a dramatic increase in the standard error of the estimate when the
-variance approximation was introduced, potentially leading to a change of significance for the presented data set depending on the desired significance level.
+In some cases we noticed a dramatic increase in the standard error of the estimate when the
+variance approximation was introduced, potentially leading to a change of significance for the presented dataset depending on the desired significance level.
 This illustrates that it is important to consider all aspects of uncertainty when conducting efficiency correction of qPCR experiments.
 Problems with uncertainty in efficiency estimates should be handled by establishing well-estimated dilution curves as argued elsewhere \cite{Bustin2010}, however even in this case the presented method also allows for design guidelines for power calculations and assessing the influence of the estimated dilution curves.
 Model based estimation of the $\ddcq$ also allows for model checking.
 
 % Conclusions
-Despite the recent success of qPCR much more statistical methodological research is needed, in our opinion, in order to establish qPCR even more firmly as a reliable quantitative method to assess the amount of nucleic acids.
+Despite the success of qPCR much more statistical methodological research is needed, in our opinion, in order to establish qPCR even more firmly as a gold standard and reliable quantitative method to assess the abundances of nucleic acids.
 
 
 \section*{Software and supplementary Material}

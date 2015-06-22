@@ -10,6 +10,18 @@
 # Plot raw data
 #
 
+mypanel <- function(x, y, ...) {
+
+  panel.lmlineq(x, y, adj = c(1,0), lty = 2, col.line = "darkgrey", digits = 2,
+                at = 0.5, rot = TRUE, cex = 0.7, style = 2, pos = 1,
+                varNames = alist(y = C[q], x = k), offset = 1)
+  panel.xyplot(x, y, ...)
+  aa <- lm(y ~ x)
+  panel.text(2, 40, labels = sprintf("se = %.3f", sqrt(vcov(aa)[2,2])),
+             cex = 0.7)
+}
+
+
 # Trellis plot of all data
 testis.data <- subset(testis, sampleType != "Standard")
 fig2a <- dotplot(sampleName ~ Cq | geneType:sampleType,
@@ -24,6 +36,7 @@ fig2a <- dotplot(sampleName ~ Cq | geneType:sampleType,
 testis.std <- subset(testis, sampleType == "Standard")
 fig2b <- xyplot(Cq ~ l2con | geneName,
                 data = testis.std,
+                panel = mypanel,
                 xlab = as.expression(bquote(-log[2]*N["0,i,j,k"])),
                 ylab = expression(C[q]),
                 main = "", col = "tomato",
@@ -33,12 +46,11 @@ fig2b <- xyplot(Cq ~ l2con | geneName,
                            cex = 1.5, font = "bold"))
 
 setEPS()
-postscript("../output/fig2.eps", width = 1.5*7, height = 0.5*7)
+postscript("../output/fig2.eps", width = 1.5*7, height = 0.5*7, font = "serif")
   trellis.par.set(strip.background=list(col="lightgrey"))
   print(fig2a, position=c(0, 0, 0.5, 1), more = TRUE)
   print(fig2b, position=c(0.5, 0, 1, 1))
 dev.off()
-
 
 rm(testis.data, testis.std)
 

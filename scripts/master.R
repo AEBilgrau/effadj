@@ -28,6 +28,7 @@ n.cpus <- 4
 
 # install.packages(c("lattice", "Hmisc", "lme4", "epiR"))
 library("lattice") # For plots
+library("latticeExtra")
 library("lme4")    # For mixed effects models > 1.1-8
 library("Hmisc")   # For LaTeX tables
 library("epiR")    # For performance measures and CI hereof

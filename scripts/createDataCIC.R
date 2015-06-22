@@ -49,9 +49,9 @@ cic <- aggregate(Cq ~ sampleName + geneType + sampleType + geneName +
                    copyNumber + l2con, data = cic, FUN = mean)
 
 # Ordering
+cic <- cic[order(cic$sampleName), ]
 cic <- cic[order(cic$geneType), ]
 cic <- cic[order(cic$sampleType), ]
-cic <- cic[order(cic$sampleName), ]
 
 # Changing sample name  (to avoid fitting issue due to AMO-1 also being used
 # as a case sample type)

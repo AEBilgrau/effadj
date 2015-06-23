@@ -103,7 +103,7 @@ SimqPCRData <-
 
 qPCRfit <- function(data, ...) {
   # data is a "data.qPCR" object
-  # ... arguments passed to lmer
+  # ... arguments passed to lme
 
   if (!is.data.qPCR(data)) {
     data <- as.data.qPCR(data)
@@ -111,16 +111,30 @@ qPCRfit <- function(data, ...) {
 
   if (std.curve(data)) {
 
-    fit <- lmer(Cq ~ -1 + sampleType:geneType + l2con:geneType +
-                  (1 | sampleType:sampleName),
-                data = data, REML = FALSE)
+#     fit <- lmer(Cq ~ -1 + sampleType:geneType + l2con:geneType +
+#                   (1 | sampleType:sampleName),
+#                 data = data, REML = FALSE)
+
+    data$RE <- with(data, sampleType:sampleName)
+    data$std.d <- ifelse(data$sampleType == "Standard", 1, 0)
+    data$nstd.d <- 1 - data$std.d
+    data$VI <- factor(data$nstd.d) #with(data, paste0(std.d, ifelse(std.d, geneType, "")))
+
+    fit <- lme(Cq ~ -1 + sampleType:geneType + l2con:geneType,
+               random = ~ -1 + nstd.d | RE,
+               weights = varIdent(form = ~ 1 | VI),
+               data = data, method = "ML",
+               control = lmeControl(returnObject = TRUE), ...)
 
   } else {
 
-    fit <- lmer(Cq ~ -1 + sampleType:geneType + (1 | sampleType:sampleName),
-                data = data, REML = FALSE, ...)
+    data$RE <- with(data, factor(sampleType:sampleName))
+
+    fit <- lme(Cq ~ -1 + sampleType:geneType, random = ~ 1 | RE,
+               data = data, method = "ML", ...)
 
   }
+
   return(fit)
 }
 
@@ -208,6 +222,7 @@ Var.cHyp.monte.carlo <- function(fit, n = 1e6) {
   return(var.chyp)
 }
 
+
 DDCq <- function(data, var.adj, alpha = 0.05,
                  var.type = c("deltamethod", "montecarlo")) {
   # Function to calculate efficiency corrected with or without
@@ -218,7 +233,7 @@ DDCq <- function(data, var.adj, alpha = 0.05,
 
   var.type <- match.arg(var.type)
 
-  if (inherits(data, "lmerMod")) {
+  if (inherits(data, "lmerMod") || inherits(data, "lme")) {
     fit <- data
     std.data <- any(grepl("Standard", names(fixef(fit))))
   } else if (is.data.qPCR(data)) {
@@ -229,7 +244,7 @@ DDCq <- function(data, var.adj, alpha = 0.05,
   }
 
   # Perform t test using above functions
-  con     <- cHyp(fit)
+  con <- cHyp(fit)
   if (var.type == "deltamethod") {
     var.con <- Var.cHyp(fit, var.adj)
   }
@@ -242,7 +257,9 @@ DDCq <- function(data, var.adj, alpha = 0.05,
 
   # Assumes paired samples
   # df <- getME(fit, "q") - 2 - 2 - 2*std.data
-  df <- getME(fit, "q") - 2 - 2*std.data
+  if (inherits(fit, "lme")) df <- unique(summary(fit)$tTable[,"DF"])
+  if (inherits(fit, "lmerMod")) df <- getME(fit, "q") - 2 - 2*std.data
+  stopifnot(length(df) == 1)
 
   stopifnot(df > 0)
   p.val   <- 2*(1 - pt(abs(t), df))
@@ -344,6 +361,7 @@ DDCq.test <- function (data,
 
   } else if (method == "pBootstrap") {
 
+    warning("The parametric boostrap estimate only works with lmerMod objects")
     return(parametricBootstrapEstimate(data, n.boots, alpha, ...))
 
   } else {
@@ -413,7 +431,7 @@ PowerSim <-
 # Bootstrapping method and faclilities
 #
 
-Bootstrap.qPCR <- function(data,               # A data.qPCR object
+Bootstrap.qPCR <- function(data, # A data.qPCR object
                            start.sample   = 3,
                            n.samples      = 5,
                            start.dilution = 3,
@@ -480,6 +498,7 @@ Bootstrap.qPCR <- function(data,               # A data.qPCR object
 }
 
 
+
 bootstrapSample <- function(data) {
   # Function to get one bootstrap sample
   # data should be aggregated
@@ -490,7 +509,13 @@ bootstrapSample <- function(data) {
   # Bootstrap the standard dilution curve data
   residualBootstrap <- function(data) {
     lin.fit <- lm(Cq ~ l2con, data = data)
-    return(fitted(lin.fit) + sample(resid(lin.fit), replace = TRUE))
+    n <- nrow(data)
+    repeat { # make sure
+      ind <- sample(seq_len(n), replace = TRUE)
+      if (length(unique(ind)) != 1L) break
+    }
+    new.resid <- resid(lin.fit)[ind]
+    return(fitted(lin.fit) + new.resid)
   }
 
   for (gtype in unique(data$geneType)) {
@@ -512,24 +537,23 @@ bootstrapSample <- function(data) {
   # Bootstrap the case/ctrl data
   data$sampleName <- as.character(data$sampleName)
   for (stype in setdiff(unique(data$sampleType), "Standard")) {
-    get <- !std & data$sampleType == stype
-    nms <- sample(unique(data$sampleName[get]), replace = TRUE)
-    nms <- paste0(nms, "_BSS", seq_along(nms))
 
-    ind <- numeric()
-    new.sampleName <- character()
-    for (nm in nms) {
-      i <- which(get & data$sampleName == gsub("_BSS[0-9]+$", "", nm))
-      ind <- c(ind, i)
-      new.sampleName <- c(new.sampleName, rep(nm, length(i)))
-    }
-    data[get, ] <- data[ind, ]
-    data$sampleName[get] <- new.sampleName
+      get.tgt <- with(data, geneType == "tgt" & sampleType == stype)
+      get.ref <- with(data, geneType == "ref" & sampleType == stype)
+
+      repeat { # make sure
+        ind <- sample(seq_len(sum(get.tgt)), replace = TRUE)
+        if (length(unique(ind)) != 1L) break
+      }
+
+      data[get.tgt, "Cq"] <- data[get.tgt, "Cq_old"][ind]
+      data[get.ref, "Cq"] <- data[get.ref, "Cq_old"][ind]
+
   }
   data$sampleName <- as.factor(data$sampleName)
 
   data <- subset(data, select = -Cq_old)
-  return(data)
+  return(as.data.qPCR(data))
 }
 
 twoSideP <- function(bdist){
@@ -541,7 +565,6 @@ twoSideP <- function(bdist){
   p <- 2*min(p1, p2)
   return(p)
 }
-
 
 bootstrapEstimate <- function(data, n.boots, alpha = 0.05) {
   # Aggregate data
@@ -556,7 +579,8 @@ bootstrapEstimate <- function(data, n.boots, alpha = 0.05) {
   }
 
   # Create bootstrap samples
-  bs.samples <- replicate(n.boots, bootstrapSample(data), simplify = FALSE)
+  bs.samples <- replicate(n.boots, attachWarning(bootstrapSample(data)),
+                          simplify = FALSE)
 
   # Apply DDCq estimate
   res <- sapply(bs.samples, DDCq.test, eff.cor = TRUE, var.adj = FALSE)
@@ -569,6 +593,7 @@ bootstrapEstimate <- function(data, n.boots, alpha = 0.05) {
            "LCL" = quantile(ddcq, alpha/2), "UCL" = quantile(ddcq, 1-alpha/2))
 
   attr(ans, "extra") <- res
+  attr(ans, "warnings") <- lapply(bs.samples, function(x) attr(x, "warnings"))
 
   return(ans)
 }
@@ -580,6 +605,7 @@ parametricBootstrapEstimate <- function(data, n.boots, alpha = 0.05, ...) {
   ddcq <- function(x) {
     catchBootstrapWarning(DDCq(x, var.adj = FALSE, alpha = alpha)["Estimate"])
   }
+
   r <- bootMer(fit, ddcq, nsim = n.boots)
   t <- r$t[!is.na(r$t)] # Omit NAs
 
@@ -696,6 +722,20 @@ is.data.qPCR <- function(object) {
 }
 
 #
+# sort qPCR data
+#
+
+sort.data.qPCR <- function(data) {
+  data <- data[order(data$sampleType), ]
+  data <- data[order(data$geneType), ]
+  if (std.curve(data)) {
+    data <- data[order(data$sampleType == "Standard"), ]
+  }
+  return(data)
+}
+
+
+#
 # Formatting p-values function
 #
 
@@ -730,19 +770,34 @@ resave <- function(..., list = character(), file) {
 }
 
 
+attachWarning <- function(expr) {
+  # Function to handle  warnings (attach as attribute)
+  w.handler <- function(w) { # warning handler
+    W <<- w
+    invokeRestart("muffleWarning")
+  }
+  W <- NULL
+  value <- withCallingHandlers(tryCatch(expr), warning = w.handler)
+  attr(value, "warnings") <- W
+  return(value)
+}
+
+
 catchBootstrapWarning <- function(expr) {
   warningHandler <- function(w) {
-    out <- NA #rep(NA, 7)
-    # attr(out, "warning") <- w
+    out <- NA
+    attr(out, "warning") <- w
     return(out)
   }
   return(tryCatch(expr, warning = warningHandler))
 }
 
+catchBootstrapWarning(log(-1))
 
 export <- # Function names to export to parallel clusters
   c("SimqPCRData", "qPCRfit", "is.data.qPCR", "cHyp", "DcHyp", "Var.cHyp",
     "std.curve", "DDCq.test", "DDCq", "as.data.qPCR", "bootstrapEstimate",
     "parametricBootstrapEstimate", "bootstrapSample", "twoSideP",
-    "catchBootstrapWarning")
+    "catchBootstrapWarning", "attachWarning")
+
 

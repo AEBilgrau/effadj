@@ -68,21 +68,21 @@ grps.list.cic <- list(c("MGST1", "GAPDH"),
                       c("MMSET", "GAPDH"),
                       c("MMSET", "ACTB"))
 
-if (!exists("cic.boot") || !exists("cic.pboot") || recompute) {
-  message("CIC boostraps")
-  cic.boot <- cic.pboot <- list()
+
+if (!exists("cic.boot") || recompute) {
+  message("CIC boostrap")
+  cic.boot <- list()
   for (i in 1:length(grps.list.cic)) {
     # Subset data
     cic.tmp <- as.data.qPCR(subset(cic, geneName %in% grps.list.cic[[i]]))
 
     # Compute bootstrap estimate
     cic.boot[[i]]  <- bootstrapEstimate(cic.tmp, n.boots = n.boots)
-    cic.pboot[[i]] <- parametricBootstrapEstimate(cic.tmp, n.boots = n.boots)
 
     message(sprintf("i = %d", i))
   }
 
-  # resave(cic.boot, cic.pboot, file = save.file)
+  resave(cic.boot, file = save.file)
 }
 
 # Combine results
@@ -105,8 +105,7 @@ for (i in 1:length(grps.list.cic)) {
     "ECVA1"  = DDCq.test(cic.tmp, method = "LMM", eff.cor = T, var.adj = T),
     "ECVA2"  = DDCq.test(cic.tmp, method = "LMM", eff.cor = T, var.adj = T,
                          var.type = "monte"),
-    "Bootstrap" = as.numeric(cic.boot[[i]]),
-    "Par.~bootstr." = as.numeric(cic.pboot[[i]])
+    "Bootstrap" = as.numeric(cic.boot[[i]])
     )
 
   toTeX <- rbind(toTeX, results)
@@ -142,7 +141,7 @@ caption.txt <- "CIC data: Method comparison for estimating the
   EC denotes use of the plugin-estimator.
   VA denotes that the efficiency correction was variance adjusted using the
   delta method (1) or monte carlo integration (2).
-  (Par.) bootstrap shows the mean and standard deviation of %d (parametric)
+  Bootstrap shows the mean and standard deviation of %d
   bootstrap samples using EC estimate. The last two columns shows the $95%s$
   lower and upper confidence interval limits."
 w <- latex(toTeX,

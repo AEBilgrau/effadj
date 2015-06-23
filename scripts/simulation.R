@@ -33,17 +33,15 @@ SimFunc <- function(nd, ns, n.boots = 101) {
       DDCq(qfit0, var.adj = FALSE),
       DDCq(qfit0, var.adj = TRUE),
       bs0 <- DDCq.test(data$H0, method =  "Bootstrap", n.boots = n.boots),
-      pbs0 <- DDCq.test(data$H0, method = "pBootstrap", n.boots = n.boots),
       # Under the alternative
       DDCq.test(data$HA, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
       DDCq(qfitA, var.adj = FALSE),
       DDCq(qfitA, var.adj = TRUE),
-      bs1 <- DDCq.test(data$HA, method =  "Bootstrap", n.boots = n.boots),
-      pbs1 <- DDCq.test(data$HA, method = "pBootstrap", n.boots = n.boots)
+      bs1 <- DDCq.test(data$HA, method =  "Bootstrap", n.boots = n.boots)
     ))
 
   # Sanity checks:
-  i <- c(2,7)
+  i <- c(2,6)
   stopifnot(all.equal(res$Estimate[i], res$Estimate[i+1]))
   if (!all(res$"Std. Error"[i] <= res$"Std. Error"[i+1])) {
     stop("The standard error in EC+VA is not increased!")
@@ -53,26 +51,19 @@ SimFunc <- function(nd, ns, n.boots = 101) {
   }
 
   rownames(res) <-
-    paste0(rep(c("H0:", "H1:"), each = 5),
-           rep(c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot", "LMM.pboot"), 2))
+    paste0(rep(c("H0:", "H1:"), each = 4),
+           rep(c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot"), 2))
 
   res <- as.matrix(res)
   attr(res, "bootstrapDist") <-
-    data.frame(pbs0 = attributes(pbs0)$extra$t[,1],
-               bs0  = attributes(bs0)$extra["Estimate", ],
-               pbs1 = attributes(pbs1)$extra$t[,1],
+    data.frame(bs0  = attributes(bs0)$extra["Estimate", ],
                bs1  = attributes(bs1)$extra["Estimate", ])
+  attr(res, "bs0.warnings") <-  attr(bs0, "warnings")
+  attr(res, "bs1.warnings") <-  attr(bs1, "warnings")
   return(res)
 }
 
-# res <- SimFunc(6, 6, n.boots = 1000)
-# dists <- attributes(res)$bootstrapDist
-# plot( density(dists[,1]), col = "blue", lwd = 2, xlim = range(dists))
-# lines(density(dists[,3]), col = "red", lwd = 2)
-# lines(density(dists[,2]), col = "darkblue", lwd = 2)
-# lines(density(dists[,4]), col = "darkred", lwd = 2)
-# abline(v = c(0, 10/9), lwd = 2, col = "orange")
-# abline(v = colMeans(dists), lwd = 2, col = "darkgrey")
+
 
 #
 # Perform simulation example
@@ -88,11 +79,12 @@ if (!exists("res.ex") || recompute) {
 
   sfInit(parallel, cpus = n.cpus)
   sfLibrary(lme4)
+  sfLibrary(nlme)
   sfExport("wrapperSimFunc", "SimFunc", list = export)
 
   set.seed(2028674731)  # "Meta-seed": Seed for the seeds
   seeds <- sample.int(2^31, n.sims) # seed for each simulation
-
+  for (i in seq_along(seeds)) wrapperSimFunc(seeds[i])
   # Do the computation
   res.ex <- sfClusterApplyLB(seeds, wrapperSimFunc)
 
@@ -123,13 +115,13 @@ if (!exists("sim.results") || recompute) {
 
   wrapperSimFunc2 <- function(seed) {
     set.seed(seed)
-    return(SimFunc(nd = nd, ns = ns))
+    return(SimFunc(nd = nd, ns = ns, n.boots = 101))
   }
-
   st <- proc.time()
 
   sfInit(parallel, cpus = n.cpus)
   sfLibrary(lme4)
+  sfLibrary(nlme)
   sfExport("wrapperSimFunc2", "SimFunc", list = export)
 
   sim.results        <- vector("list", length(dilutions))
@@ -198,14 +190,14 @@ get.2by2.table <-  function(subdata, estimator = "LMM.EC", p.cut = 0.05) {
 #
 
 p.cut <- 0.05
-est <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot", "LMM.pboot")
+est <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot")
 getr <- paste(rep(c("H0", "H1"), length(est)), rep(est, each = 2), sep = ":")
 significant <- res.ex[getr, "Pr(>|t|)", ] < p.cut
 ex.tab <- rbind(rowSums(!significant),
                 rowSums(significant))
 colnames(ex.tab) <- gsub("H0:.+","$H_0$",gsub("H1:.+","$H_A$",colnames(ex.tab)))
 rownames(ex.tab) <- sprintf(c("$p \\geq %.2f$", "$p < %.2f$"), p.cut)
-ex.cgroup <- c("LMM", "EC", "EC\\&VA", "Bootstr.", "Par.~bootstr.")
+ex.cgroup <- c("LMM", "EC", "EC\\&VA", "Bootstr.")
 tmp.caption <- "Contingency tables for the different estimators for at
   5 \\% $p$-value threshold. The used estimators are the linear
   mixed effect model (LMM), the LMM with efficiency correction (EC), the LMM
@@ -220,7 +212,7 @@ w <- latex(ex.tab, file = "../output/Table3.tex", title = "",
 # To use in the knitr document
 #
 
-get <- seq(1, 9, by = 2)
+get <- seq(1, 7, by = 2)
 ex.fpr <- ex.tab["$p < 0.05$", get]/colSums(ex.tab[,get])
 ex.tpr <- ex.tab["$p < 0.05$", get + 1]/colSums(ex.tab[,get + 1])
 names(ex.fpr) <- names(ex.tpr) <- ex.cgroup
@@ -363,7 +355,7 @@ for (i in seq_along(dilutions)) {
     for (h in seq_along(methods)) {
       for (hyp in c("H0", "H1")) {
         get   <- paste0(hyp, ":", methods[h])
-        df    <- dat[get, "df.q", 1]
+        df    <- dat[get, "df", 1]
         est   <- dat[get, 1, ]
         sd    <- dat[get, 2, ]
         lower <- est + qt(p.cuts[g]/2, df)*sd

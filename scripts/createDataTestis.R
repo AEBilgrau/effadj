@@ -96,9 +96,6 @@ testis <- testis[order(testis$geneType), ]
 testis <- testis[order(testis$sampleType), ]
 testis <- testis[order(testis$sampleName), ]
 
-
-
 # Making the data.frame into a data.qPCR class object
 names(testis) <- gsub("replicateNumber", "replicate", names(testis))
-class(testis) <- c("data.qPCR", "data.frame")
-attr(testis, "std.curve") <- TRUE
+testis <- as.data.qPCR(testis)

@@ -70,20 +70,19 @@ grps.list <- list(c("mir127", "rnu6b"),
                   c("mir143", "rnu24"))
 
 # Do boostrap
-if (!exists("testis.boot") || !exists("testis.pboot") || recompute) {
+if (!exists("testis.boot") || recompute) {
   message("Testis boostrap")
-  testis.boot <- testis.pboot <- list()
+  testis.boot <- list()
   for (i in 1:length(grps.list)) {
     # Subset data
     testis.tmp <- as.data.qPCR(subset(testis, geneName %in% grps.list[[i]]))
 
     # Compute bootstrap estimate and results
     testis.boot[[i]] <- bootstrapEstimate(testis.tmp, n.boots = n.boots)
-    testis.pboot[[i]]<- parametricBootstrapEstimate(testis.tmp, n.boots=n.boots)
 
     message(sprintf("i = %d", i))
   }
-  resave(testis.boot, testis.pboot, file = save.file)
+  resave(testis.boot, file = save.file)
 }
 
 
@@ -107,8 +106,7 @@ for (i in 1:length(grps.list)) {
     "ECVA1"  = DDCq.test(testis.tmp, method = "LMM", eff.cor = T, var.adj = T),
     "ECVA2"  = DDCq.test(testis.tmp, method = "LMM", eff.cor = T, var.adj = T,
                          var.type = "montecarlo"),
-    "Bootstrap" = testis.boot[[i]],
-    "Par.~bootstr." = testis.pboot[[i]]
+    "Bootstrap" = testis.boot[[i]]
     )
 
   toTeX <- rbind(toTeX, results)
@@ -144,7 +142,7 @@ caption.txt <- "Testis data: Method comparison for estimating the
   EC denotes use of the plugin-estimator.
   VA denotes that the efficiency correction was variance adjusted using the
   delta method (1) or monte carlo integration (2).
-  (Par.) bootstrap shows the mean and standard deviation of %d (parametric)
+  Bootstrap shows the mean and standard deviation of %d
   bootstrap samples using EC estimate. The last two columns shows the $95%s$
   lower and upper confidence interval limits."
 w <- latex(toTeX,

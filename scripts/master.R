@@ -30,6 +30,7 @@ n.cpus <- 4
 library("lattice") # For plots
 library("latticeExtra")
 library("lme4")    # For mixed effects models > 1.1-8
+library("nlme")
 library("Hmisc")   # For LaTeX tables
 library("epiR")    # For performance measures and CI hereof
 library("snowfall") # For parallel computing
@@ -38,7 +39,7 @@ library("GMCM")    # For multivariate simulations
 # Saved R binary output
 save.file <- "../output/saved.RData"
 if (file.exists(save.file) && !recompute) {
-  load(save.file)
+  loaded <- load(save.file)
 }
 
 # 1. Load auxillary functions

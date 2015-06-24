@@ -221,7 +221,7 @@ names(ex.fpr) <- names(ex.tpr) <- ex.cgroup
 #
 
 setEPS()
-postscript("../output/fig3.eps", width = 2*7/1.5, height = 2*7/1.5)
+postscript("../output/fig4.eps", width = 2*7/1.5, height = 2*7/1.5)
 
 par(mar = c(0, 0, 0, 0), mfrow = c(2, 2), oma = c(5,5.5,2,4),xpd=TRUE)
 h <- 1

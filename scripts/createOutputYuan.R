@@ -111,9 +111,9 @@ ds1 <- subset(yuan, geneName %in% g1)
 ds2 <- subset(yuan, geneName %in% g2)
 
 # Assuming different slope for each i, j.
-toTeX <- rbind(EC = DDCq.test2(ds1, eff.cor = TRUE, var.adj = FALSE),
+toTeX <- rbind(EC    = DDCq.test2(ds1, eff.cor = TRUE, var.adj = FALSE),
                ECVA1 = DDCq.test2(ds1, eff.cor = TRUE, var.adj = TRUE),
-               EC = DDCq.test2(ds2, eff.cor = TRUE, var.adj = FALSE),
+               EC    = DDCq.test2(ds2, eff.cor = TRUE, var.adj = FALSE),
                ECVA1 = DDCq.test2(ds2, eff.cor = TRUE, var.adj = TRUE))
 
 

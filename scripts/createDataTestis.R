@@ -82,7 +82,8 @@ testis$sampleName <- gsub(" ", "-", testis$sampleName)
 # Remove missing Cq-values and take only cDNA synthesis 4
 # Round threshold to equal size -- should be done in MX-Pro
 testis <- testis[!is.na(testis$Cq), ]
-testis <- testis[testis$cDNAMix == 4 & testis$sampleName != "H420", ]
+testis <- testis[testis$cDNAMix == 4, ]
+# testis <- testis[testis$sampleName != "H420", ]
 testis$threshold <- round(testis$threshold, 1)
 
 testis$l2con <- round(-log2(testis$copyNumber))

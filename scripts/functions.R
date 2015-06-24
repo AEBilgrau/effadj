@@ -111,17 +111,13 @@ qPCRfit <- function(data, ...) {
 
   if (std.curve(data)) {
 
-#     fit <- lmer(Cq ~ -1 + sampleType:geneType + l2con:geneType +
-#                   (1 | sampleType:sampleName),
-#                 data = data, REML = FALSE)
-
     data$RE <- with(data, sampleType:sampleName)
     data$std.d <- ifelse(data$sampleType == "Standard", 1, 0)
     data$nstd.d <- 1 - data$std.d
-    data$VI <- factor(data$nstd.d) #with(data, paste0(std.d, ifelse(std.d, geneType, "")))
+    data$VI <- factor(data$nstd.d)
 
     fit <- lme(Cq ~ -1 + sampleType:geneType + l2con:geneType,
-               random = ~ -1 + nstd.d | RE,
+               random = ~ 1 | sampleName,
                weights = varIdent(form = ~ 1 | VI),
                data = data, method = "ML",
                control = lmeControl(returnObject = TRUE), ...)
@@ -142,14 +138,13 @@ qPCRfit <- function(data, ...) {
 # Delta delta Cq analysis method
 #
 
-cHyp <- function(fit) {
+cHyp <- function(fit, eff.cor) {
   # Function for evaluating the mapping into DDCq
   e <- fixef(fit)
   names(e) <- gsub("sample|gene|Type", "", names(e))
   eff <- e[c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref")]
-  std.data <- any(grepl("Standard", names(e)))
 
-  if (std.data) {
+  if (eff.cor) {
     gam <- e[rep(c("tgt:l2con","ref:l2con"), 2)]
   } else {
     gam <- rep(1, length(eff))
@@ -162,7 +157,7 @@ DcHyp <- function(fit, var.adj) {
   e <- fixef(fit)
   names(e) <- gsub("sample|gene|Type", "", names(e))
   eff <- e[c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref")]
-  std.data <- any(grepl("Standard", names(e)))
+  std.data <- any(grepl("Standard|l2con", names(e)))
 
   if (std.data) {
     M <- cbind(c(-1, 0, 1, 0), c(0, 1, 0, -1))
@@ -180,10 +175,12 @@ Var.cHyp <- function(fit, var.adj) {
   names(e) <- gsub("sample|gene|Type", "", names(e))
   v <- vcov(fit)
   rownames(v) <- colnames(v) <- names(e)
-  std.data <- any(grepl("Standard", names(e)))
+
+  std.data <- any(grepl("Standard|l2con", names(e)))
 
   get <- c("case:tgt", "case:ref", "ctrl:tgt", "ctrl:ref",
            if (std.data) {c("tgt:l2con", "ref:l2con")})
+
   grad <- DcHyp(fit, var.adj)
   return(as.numeric(t(grad) %*% v[get, get] %*% grad))
 }
@@ -195,7 +192,7 @@ Var.cHyp.monte.carlo <- function(fit, n = 1e6) {
   names(e) <- gsub("sample|gene|Type", "", names(e))
   v <- vcov(fit)
   rownames(v) <- colnames(v) <- names(e)
-  std.data <- any(grepl("Standard", names(e)))
+  std.data <- any(grepl("Standard|l2con", names(e)))
 
   rmvn <- rmvnormal(n, e, as.matrix(v))
   colnames(rmvn) <- names(e)
@@ -223,7 +220,7 @@ Var.cHyp.monte.carlo <- function(fit, n = 1e6) {
 }
 
 
-DDCq <- function(data, var.adj, alpha = 0.05,
+DDCq <- function(data, eff.cor, var.adj, alpha = 0.05,
                  var.type = c("deltamethod", "montecarlo")) {
   # Function to calculate efficiency corrected with or without
   # adjusted variance DDCq values in qPCR experiments
@@ -235,7 +232,7 @@ DDCq <- function(data, var.adj, alpha = 0.05,
 
   if (inherits(data, "lmerMod") || inherits(data, "lme")) {
     fit <- data
-    std.data <- any(grepl("Standard", names(fixef(fit))))
+    std.data <- any(grepl("Standard|l2con", names(fixef(fit))))
   } else if (is.data.qPCR(data)) {
     fit <- qPCRfit(data)
     std.data <- std.curve(data)
@@ -244,7 +241,7 @@ DDCq <- function(data, var.adj, alpha = 0.05,
   }
 
   # Perform t test using above functions
-  con <- cHyp(fit)
+  con <- cHyp(fit, eff.cor)
   if (var.type == "deltamethod") {
     var.con <- Var.cHyp(fit, var.adj)
   }
@@ -259,7 +256,10 @@ DDCq <- function(data, var.adj, alpha = 0.05,
   # df <- getME(fit, "q") - 2 - 2 - 2*std.data
   if (inherits(fit, "lme")) df <- unique(summary(fit)$tTable[,"DF"])
   if (inherits(fit, "lmerMod")) df <- getME(fit, "q") - 2 - 2*std.data
-  stopifnot(length(df) == 1)
+  if (length(df) != 1) {
+    warning("df is not unique in fit.")
+    df <- min(df)
+  }
 
   stopifnot(df > 0)
   p.val   <- 2*(1 - pt(abs(t), df))
@@ -318,7 +318,7 @@ DDCq.test <- function (data,
 
   if (method == "Naive") {    # Naive method
 
-    data  <- subset(data, sampleType != "Standard") # Ignoring dilution data
+    data  <- subset(data, l2con == 0 & sampleType != "Standard") # Ignoring dilution data
     hmean <- aggregate(Cq ~ sampleName + geneType + sampleType,
                        data = data, FUN = mean)
     wmean <- reshape(hmean, idvar = c("sampleName","sampleType"),
@@ -338,13 +338,16 @@ DDCq.test <- function (data,
   } else if (method == "LMM") {    # Linear mixed model method
 
     if (eff.cor == FALSE) {
-      # Simple DDCq method
-      data <- subset(data, sampleType != "Standard")  # Ignoring dilution data
+      # Simple DDCq method,  Ignoring dilution data
+      data <- subset(data, l2con == 0 & sampleType != "Standard")
+
       # Average over replicates
       data <-  aggregate(Cq ~ sampleName + geneType + sampleType +
                            copyNumber + l2con, data = data, FUN = mean)
 
-      return(DDCq(as.data.qPCR(data))) # Note, the use var.adj has no impact
+      # Note, the use var.adj has no impact
+      return(DDCq(as.data.qPCR(data), eff.cor = eff.cor, var.adj = var.adj,
+                  alpha = alpha, var.type = var.type))
 
     } else {
       # LMM DDCq method efficiency corr + variance adj. if var.adj == TRUE
@@ -352,7 +355,8 @@ DDCq.test <- function (data,
       data <- aggregate(Cq ~ sampleName + geneType + sampleType +
                           copyNumber + l2con, data = data, FUN = mean)
 
-      return(DDCq(as.data.qPCR(data), var.adj = var.adj, var.type = var.type))
+      return(DDCq(as.data.qPCR(data), eff.cor = eff.cor, var.adj = var.adj,
+                  alpha = alpha, var.type = var.type))
 
     }
   } else if (method == "Bootstrap") {
@@ -575,7 +579,7 @@ as.data.qPCR <- function (data) {
     if (!"replicate" %in% names(data)) {
       data$replicate <- 1
     }
-    if ("Standard" %in% data$sampleType) {
+    if ("Standard" %in% data$sampleType || length(unique(data$l2con)) != 1L) {
       attr(data, "std.curve") <- TRUE
     } else {
       attr(data, "std.curve") <- FALSE
@@ -587,7 +591,7 @@ as.data.qPCR <- function (data) {
     data$sampleType <- as.factor(as.character(data$sampleType))
     data$sampleName <- as.factor(as.character(data$sampleName))
     if ("geneName" %in% names(data)) {
-      data$geneName   <- as.factor(as.character(data$geneName))
+      data$geneName <- as.factor(as.character(data$geneName))
     }
   }
   return(data)
@@ -744,5 +748,8 @@ export <- # Function names to export to parallel clusters
     "std.curve", "DDCq.test", "DDCq", "as.data.qPCR", "bootstrapEstimate",
     "parametricBootstrapEstimate", "bootstrapSample", "twoSideP",
     "catchBootstrapWarning", "attachWarning")
+
+
+
 
 

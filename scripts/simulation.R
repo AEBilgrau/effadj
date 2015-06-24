@@ -30,13 +30,13 @@ SimFunc <- function(nd, ns, n.boots = 101) {
     rbind(
       # Under the null hypothesis
       DDCq.test(data$H0, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
-      DDCq(qfit0, var.adj = FALSE),
-      DDCq(qfit0, var.adj = TRUE),
+      DDCq(qfit0, eff.cor = TRUE, var.adj = FALSE),
+      DDCq(qfit0, eff.cor = TRUE, var.adj = TRUE),
       bs0 <- DDCq.test(data$H0, method =  "Bootstrap", n.boots = n.boots),
       # Under the alternative
       DDCq.test(data$HA, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
-      DDCq(qfitA, var.adj = FALSE),
-      DDCq(qfitA, var.adj = TRUE),
+      DDCq(qfitA, eff.cor = TRUE, var.adj = FALSE),
+      DDCq(qfitA, eff.cor = TRUE, var.adj = TRUE),
       bs1 <- DDCq.test(data$HA, method =  "Bootstrap", n.boots = n.boots)
     ))
 
@@ -62,7 +62,6 @@ SimFunc <- function(nd, ns, n.boots = 101) {
   attr(res, "bs1.warnings") <-  attr(bs1, "warnings")
   return(res)
 }
-
 
 
 #
@@ -202,7 +201,7 @@ tmp.caption <- "Contingency tables for the different estimators for at
   5 \\% $p$-value threshold. The used estimators are the linear
   mixed effect model (LMM), the LMM with efficiency correction (EC), the LMM
   with EC and variance adjustment (EC\\&VA), and the bootstrapped LMM approach."
-w <- latex(ex.tab, file = "../output/Table3.tex", title = "",
+w <- latex(ex.tab, file = "../output/Table4.tex", title = "",
            cgroup = ex.cgroup,
            rgroup = "$p$-values",
            caption = tmp.caption,

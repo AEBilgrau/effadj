@@ -12,13 +12,12 @@
 # Last revision: 10th of June, 2015                                            #
 ################################################################################
 
-
 # Initalizing and loading required packages
 if (!grepl("knitr", getwd())) setwd("./knitr")
 rm(list = ls())
 set.seed(987654321)
-n.boots <- 1000 # Bootstrap samples in data analysis
-n.sims  <- 1000 # Simulation replications
+n.boots <- 20 # Bootstrap samples in data analysis
+n.sims  <- 8 # Simulation replications
 
 recompute <- FALSE  # Recompute heavy computations if TRUE
 start.t <- proc.time()
@@ -48,10 +47,12 @@ source("../scripts/functions.R")
 # 2. Create data sets
 source("../scripts/createDataCIC.R")
 source("../scripts/createDataTestis.R")
+source("../scripts/createDataYuan.R")
 
 # 3. Analyse data sets and create output
 source("../scripts/createOutputCIC.R")
 source("../scripts/createOutputTestis.R")
+source("../scripts/createOutputYuan.R")
 
 # 4. Run simulation experiment
 source("../scripts/simulation.R")

@@ -44,7 +44,8 @@ accepted for publication November 1, 2010}
 \begin{document}
 
 % Title of paper
-\title{Variance approximation of efficiency corrected gene expression values in qPCR experiments}
+\title{Variance approximations of amplification efficiency corrected relative
+       gene expression values in qPCR experiments}
 
 
 % List of authors, with corresponding author marked by asterisk
@@ -85,7 +86,7 @@ As qPCR frequently is used for validation it should be a high priority to estima
 We provide methods founded in a linear mixed effects model (LMM) to obtain variance approximations of the efficiency adjusted $\ddcq$ using the statistical delta method, Monte Carlo, or bootstrapping.
 The LMM can used to obtain more reliable statistical inference and power calculations.
 We validate recent findings suggesting that MGST1 is differentially expressed between myeloma cell lines with high and low abundance of culture initiating cells and that miRNA-127 is differentially expressed between testicular and nodal lymphomas.
-Lastly, the methods are benchmarked in a simulation study.
+Lastly, the methods are bench-marked in a simulation study.
 }
 % Keywords
 {amplification efficiency; delta-delta Cq; $\ddcq$; efficiency adjusted; power calculation; qPCR}
@@ -322,7 +323,7 @@ A $(1-\alpha)100\%$ confidence interval can computed as
   ( \hat{\delta}_{(\alpha/2)} , \hat{\delta}_{(1-\alpha/2)} )
 \end{equation*}
 where e.g.\ $\hat{\delta}_{(\alpha/2)}$ denote the $\alpha/2$-percentile of $\hat{\delta}_1, \ldots \hat{\delta}_B$.
-The $p$-values for the null hypotehsis of $\delta = 0$ is computed by $2\min(\hat{F}(0), 1 - \hat{F}(0))$,
+The $p$-values for the null hypothesis of $\delta = 0$ is computed by $2\min(\hat{F}(0), 1 - \hat{F}(0))$,
 where $\hat{F}$ is the empirical cumulative distribution function of $\hat{\delta}_1, \ldots \hat{\delta}_B$.
 
 Alternatively, parametric bootstrap can be used by simulating datasets from the fitted model.
@@ -530,7 +531,9 @@ Problems with uncertainty in efficiency estimates should be handled by establish
 Model based estimation of the $\ddcq$ also allows for model checking.
 
 % Conclusions
-Despite the success of qPCR much more statistical methodological research is needed, in our opinion, in order to establish qPCR even more firmly as a gold standard and reliable quantitative method to assess the abundances of nucleic acids.
+Despite the success of qPCR much more statistical methodological research is needed to establish qPCR even more firmly as a gold standard for reliably quantifying abundances of nucleic acids.
+Researchers analyzing qPCR experiments need to model their experiment in detail, e.g.\ via linear or non-linear (mixed) models, as the propagation of uncertainty needs to be carefully assessed and accounted for.
+This is necessary in all qPCR experiments in order to draw valid inferences and uphold the common statistical guarantees often erroneously assumed to be automatically fulfilled.
 
 
 \section*{Software and supplementary Material}
@@ -554,6 +557,7 @@ The research is supported by MSCNET, a translational program studying cancer ste
 \input{../output/Table1.tex}
 \input{../output/Table2.tex}
 \input{../output/Table3.tex}
+\input{../output/Table4.tex}
 
 \newpage
 

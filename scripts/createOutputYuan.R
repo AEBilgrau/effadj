@@ -17,7 +17,7 @@ mypanel <- function(x, y, ...) {
                 varNames = alist(y = C[q], x = k), offset = 1)
   panel.xyplot(x, y, ...)
   aa <- lm(y ~ x)
-  panel.text(2, 31.5, labels = sprintf("se = %.3f", sqrt(vcov(aa)[2,2])),
+  panel.text(2, 28, labels = sprintf("se = %.3f", sqrt(vcov(aa)[2,2])),
              cex = 0.7)
 }
 
@@ -129,9 +129,8 @@ rownames(toTeX) <- gsub("ECVA", "EC\\\\&VA", rownames(toTeX))
 
 grps <- sapply(list(g1, g2), function(x) paste(x[1], "vs", x[2]))
 
-caption.txt <- "Yuan et. al. (2008) data: Method comparison for estimating the
-  $\\ddcq$-value.
-  EC denotes use of the plugin-estimator.
+caption.txt <- "\\citet{Yuan2008} data: Method comparison for estimating the
+  $\\ddcq$-value. EC denotes use of the plugin-estimator.
   VA denotes that the efficiency correction was variance adjusted using the
   delta method (1)."
 w <- latex(toTeX,

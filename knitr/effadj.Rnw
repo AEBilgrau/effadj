@@ -443,7 +443,6 @@ The difference in gene expression assessed by the $\ddcq$ for the target genes M
   \item EC\&VA1: Efficiency corrected and variance adjusted LMM estimate using 1.~order approximation.
   \item EC\&VA2: Efficiency corrected and variance adjusted LMM estimate using Monte Carlo integration.
   \item Bootstrap: Estimate by the bootstrap described in Section \ref{sec:bootstrap} fitting the LMM and computing the EC estimate above.
-  \item Par.~boostr.: Estimate by parametric bootstrapping as mentioned in Section \ref{sec:bootstrap} refitting the LMM and computing the EC estimate above.
 \end{enumerate}
 The results are seen in Table~\ref{table:cic}.
 Note, the both paired $t$-test and LMM completely ignores the dilution data.
@@ -458,7 +457,6 @@ The results, however, remain significant for the MGST1 gene.
 Very similar results are obtained if ACTB is used as reference.
 For MGST1 using either reference gene, the estimate is significantly different from zero and the $5\%$ significance level in all cases.
 At $1\%$ significance level been used, all methods but the variance adjustment leads to an rejection of the null hypothesis.
-Both the variance integration by Monte Carlo (EC \& VA2) and the parametric bootstrap fail here as the some efficiency is often realized to values near zero making \eqref{eq:ddcq} very large.
 
 For the target gene MMSET in combination with difference reference genes, all estimates are insignificantly different from zero.
 Hence we find no good evidence for differential expression of MMSET between cell lines of high and low abundance of CICs.

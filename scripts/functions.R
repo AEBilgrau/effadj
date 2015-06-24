@@ -373,61 +373,6 @@ DDCq.test <- function (data,
 
 
 #
-# Power simulation of standard curves
-#
-
-PowerSim <-
-  function (n.sims         = 400,
-            start.sample   = 5,
-            n.samples      = 2,
-            start.dilution = 3,
-            n.dilutions    = 2,
-            alpha.lvl      = 0.05,
-            ddcq           = 1.0,
-            std.curve      = TRUE,
-            method         = "LMM",
-            eff.cor        = TRUE,
-            var.adj        = TRUE,
-            ... ) {   # ... passed to SimqPCRData function
-
-    st <- proc.time()
-    if (std.curve == FALSE) {
-      start.dilution <- 1
-      n.dilutions    <- 1
-    }
-
-    pow.res           <- matrix(0, ncol = n.samples, nrow = n.dilutions)
-    colnames(pow.res) <- paste("samples =",   1:n.samples   + start.sample  -1)
-    rownames(pow.res) <- paste("dilutions =", 1:n.dilutions + start.dilution-1)
-
-    for (k in seq_len(n.dilutions)) {
-      tests <- matrix(0, nrow = n.sims, ncol = n.samples)
-
-      for (i in seq_len(n.samples)) {
-        cat("Computing power with", start.dilution + k - 1,
-            "dilutions and", start.sample + i - 1, "samples.\n")
-        flush.console()
-        for (j in seq_len(n.sims)) {
-          sim.data <- SimqPCRData(std.curve   = std.curve,
-                                  n.samples   = start.sample   + i - 1,
-                                  n.dilutions = start.dilution + k - 1,
-                                  ddcq        = ddcq,
-                                  ... )
-          sim.ddcq <- DDCq.test(sim.data, method = method,
-                                eff.cor = eff.cor, var.adj = var.adj)
-
-          tests[j,i] <- ifelse(sim.ddcq[5] < alpha.lvl, 1, 0)
-        }
-      }
-      pow.res[k, ] <- colMeans(tests)
-    }
-    cat("Simulation finished in", (proc.time()[3] - st[3])%/%60,
-        "minutes.\n"); flush.console()
-    return(pow.res)
-  }
-
-
-#
 # Bootstrapping method and faclilities
 #
 

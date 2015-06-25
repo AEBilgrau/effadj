@@ -392,7 +392,6 @@ For each target and reference transcripts a standard curve based on seven 2-fold
 [In the preprocessing of the data the sample H420 was deemed an outlier and omitted]
 
 
-<<<<<<< HEAD
 \subsection{Arabidopsis thaliana study}
 
 \subsubsection{Introduction}
@@ -400,14 +399,7 @@ In order to illustate the effect of applying variance approximations in a data s
 
 \subsection{Sample and data preparation}
 according to [xx]
-=======
-\subsection{\citet{Yuan2008} data}
-\subsubsection{Introduction}
-[Introduction to Yuan data]
-\subsubsection{Sample and data preparation}
-[Refer to Yuan for detail on sample and data prep.]
-[Explain model used]
->>>>>>> 522ce3abf939aa3631349e8378d4b7a05e299e7d
+
 
 \subsection{Simulation study}
 

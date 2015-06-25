@@ -344,13 +344,13 @@ In order to gauge the performance of the methods we subsequently performed a sim
 \subsection{CIC study}
 
 \subsubsection{Introduction}
+Cells are defined to be culture initiating if they can initiate a sutained production of cells when clutured in vitro. The viability potential of culture initiating cells (CIC) is measured by the limiting number of cells necessary to establish an in vitro culture. This number is typically estimated by limiting dilution assays and Poisson regression [xx].
 
-By a microarray screening of multiple myeloma, the genes MGST1 and MMSET have been detected to have a differential expression between cell lines with high and low abundance of so-called culture initiating cells (CIC).
-CICs are of particular interest in cancer research as they exhibit a high cellular resilience and ability to initiate repopulation.
-Such properties provide clues about the molecular drivers of cancer stem-cells and their aggressiveness.
-The purpose of this experiment was to validate the findings of MGST1 and MMSET.
+CICs are of particular interest in cancer research as it is believed that cells with high CIC potential have stem cell like properties making them resistant towards chemotherapy [xx].
 
-[Skriv noget mere om microarray-studiet, referencer!!??]
+In a search for identifying genes associated to a high culture initiating potential in multiple myeloma (MNM) we measured the gene expression of 16 MM cell lines by microarrays and identified the genes MGST1 and MMSET to be differentially expressed between between cell lines with high and low abundance of so-called culture initiating cells (CIC).
+
+As gene expression detection by microarrays can be hampered by high false positive rates, the purpose of this experiment was to validate the findings of MGST1 and MMSET by qPCR.
 
 \subsubsection{Sample and data preparation}
 
@@ -363,20 +363,10 @@ The following TaqMan Gene Expression Assays were used (Assay ID numbers in paren
 The two reference paraffines beta-actin (ACTB) and GAPDH were used as endogenous controls, assay IDs 4333762-0912030 and 4333764-1111036, respectively.
 For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of material from AMO-1.
 
-
-
 \subsection{DLBCL study}
 
 \subsubsection{Introduction}
-
-Prompted by the research of \citet{Robertus2009} as well as our own work,
-we wished to validate or falsify the differential expression of two specific so-called micro RNAs (miR) between testicular and nodal DLBCL cases.
-Micro RNAs are non-coding RNA transcripts with regulatory capabilities.
-\citet{Robertus2009} investigated in 50 cases of DLBCL the expression of 15 different miRs between two different DLBCL subtypes.
-In this experiment, we wished to validate or falsify the differential expression of miR-127 and miR-143.
-
-[Bedre introduktion!?, referencer!!??]
-
+The association between oncogenesis and micro RNAs (miRNAs), short non-coding RNA transcripts with regulatory capabilities, has recently prompted an immense research activity [xx]. The possibility to change treatment strageties by transfecting complementary oligos to anormally upregulated miRNAs in maligninant tissue is of particular interst [xx]. In that respect upregulated miR-127 and miR-143 in testicular Diffuse Large B-cell Lymphoma (DLBCL) has shown treatment changing potential \citet{Robertus2009}. However, as the number of screened miRNAs was high and the sample size was low in Robertus et al.'s work invoking high risk false discoveries we set out to validate the differential expression of miR-127 and miR-143 in tissues from our own laboratory using our improved qPCR analysis workflow.
 
 \subsubsection{Sample and data preparation}
 
@@ -388,7 +378,13 @@ For each target and reference transcripts a standard curve based on seven 2-fold
 [In the preprocessing of the data the sample H420 was deemed an outlier and omitted]
 
 
+\subsection{Arabidopsis thaliana study}
 
+\subsubsection{Introduction}
+In order to illustate the effect of applying variance approximations in a data set with a limited number of dilution steps we considered the arabidopsis thaliana data set published by Yuan et al. \cite{Yuan2008}. The data set contains one gene of interest, FAMT, and two reference genes ubiquiting (UBQ) and tublin.
+
+\subsection{Sample and data preparation}
+according to [xx]
 
 \subsection{Simulation study}
 

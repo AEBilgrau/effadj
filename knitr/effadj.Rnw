@@ -44,7 +44,7 @@ accepted for publication November 1, 2010}
 \begin{document}
 
 % Title of paper
-\title{Unaccounted uncertainty of qPCR efficiency estimates imply uncontrolled false positive rates}
+\title{Unaccounted uncertainty from qPCR efficiency estimates imply uncontrolled false positive rates}
 % Poorly determined qPCR efficiencies increase false discoveries
 % Variance approximations of efficiency corrected relative gene expression in qPCR experiments
 

@@ -17,7 +17,7 @@ if (!grepl("knitr", getwd())) setwd("./knitr")
 rm(list = ls())
 set.seed(987654321)
 n.boots <- 1000 # Bootstrap samples in data analysis
-n.sims  <- 500 # Simulation replications
+n.sims  <- 1000 # Simulation replications
 
 recompute <- FALSE  # Recompute heavy computations if TRUE
 start.t <- proc.time()

@@ -10,7 +10,7 @@
 # Function to perform a simulation
 #
 
-SimFunc <- function(nd, ns, n.boots = 101) {
+SimFunc <- function(nd, ns, n.boots = 101, alpha = 0.05) {
 
   data <- structure(vector("list", 2), names = c("H0", "HA"))
   for (i in 1:2) {
@@ -19,34 +19,37 @@ SimFunc <- function(nd, ns, n.boots = 101) {
                   n.samples = ns, n.replicates = 1, n.dilutions = nd,
                   tech.sd = 0.5, sample.sd = 1,
                   alpha.tgt = 0.80, alpha.ref = 0.95,
-                  ddcq = ifelse(i==1, 0, 10/9))
+                  ddcq = ifelse(i == 1, 0, 10/9))
   }
 
   # Aggregate replicates
-  qfit0 <- qPCRfit(data$H0)
-  qfitA <- qPCRfit(data$HA)
+  w <- FALSE
+  qfit0 <- qPCRfit(data$H0, weighted = w)
+  qfitA <- qPCRfit(data$HA, weighted = w)
 
   res <- as.data.frame(
     rbind(
       # Under the null hypothesis
-      DDCq.test(data$H0, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
-      DDCq(qfit0, eff.cor = TRUE, var.adj = FALSE),
-      DDCq(qfit0, eff.cor = TRUE, var.adj = TRUE),
-      bs0 <- DDCq.test(data$H0, method =  "Bootstrap", n.boots = n.boots),
+      DDCq.test(data$H0, method = "LMM", eff.cor = FALSE, var.adj = FALSE),
+      DDCq(qfit0, eff.cor = TRUE, var.adj = FALSE, alpha = alpha, weighted = w),
+      DDCq(qfit0, eff.cor = TRUE, var.adj = TRUE, alpha = alpha, weighted = w),
+      bs0 <- DDCq.test(data$H0, method =  "Bootstrap", n.boots = n.boots,
+                       weighted = w),
       # Under the alternative
-      DDCq.test(data$HA, method = "LMM", eff.cor=FALSE, var.adj=FALSE),
-      DDCq(qfitA, eff.cor = TRUE, var.adj = FALSE),
-      DDCq(qfitA, eff.cor = TRUE, var.adj = TRUE),
-      bs1 <- DDCq.test(data$HA, method =  "Bootstrap", n.boots = n.boots)
+      DDCq.test(data$HA, method = "LMM", eff.cor = FALSE, var.adj = FALSE),
+      DDCq(qfitA, eff.cor = TRUE, var.adj = FALSE, alpha = alpha, weighted = w),
+      DDCq(qfitA, eff.cor = TRUE, var.adj = TRUE, alpha = alpha, weighted = w),
+      bs1 <- DDCq.test(data$HA, method =  "Bootstrap", n.boots = n.boots,
+                       weighted = w)
     ))
 
   # Sanity checks:
   i <- c(2,6)
-  stopifnot(all.equal(res$Estimate[i], res$Estimate[i+1]))
-  if (!all(res$"Std. Error"[i] <= res$"Std. Error"[i+1])) {
+  stopifnot(all.equal(res$Estimate[i], res$Estimate[i + 1]))
+  if (!all(res$"Std. Error"[i] <= res$"Std. Error"[i + 1])) {
     stop("The standard error in EC+VA is not increased!")
   }
-  if (!all(res[i, 5] <= res[i+1, 5])) {
+  if (!all(res[i, 5] <= res[i + 1, 5])) {
     stop("The p-values in EC+VA has not increased!")
   }
 
@@ -63,7 +66,6 @@ SimFunc <- function(nd, ns, n.boots = 101) {
   return(res)
 }
 
-
 #
 # Perform simulation example
 #  - Simulation for 6 samples, 6 dilutions
@@ -73,7 +75,7 @@ if (!exists("res.ex") || recompute) {
 
   wrapperSimFunc <- function(seed) {
     set.seed(seed)
-    return(as.matrix(SimFunc(nd = 6, ns = 6, n.boots = 21)))
+    return(as.matrix(SimFunc(nd = 6, ns = 6, n.boots = 21, alpha = 0.05)))
   }
 
   sfInit(parallel, cpus = n.cpus)
@@ -82,8 +84,9 @@ if (!exists("res.ex") || recompute) {
   sfExport("wrapperSimFunc", "SimFunc", list = export)
 
   set.seed(2028674731)  # "Meta-seed": Seed for the seeds
+
   seeds <- sample.int(2^31, n.sims) # seed for each simulation
-  for (i in seq_along(seeds)) wrapperSimFunc(seeds[i])
+
   # Do the computation
   res.ex <- sfClusterApplyLB(seeds, wrapperSimFunc)
 
@@ -114,7 +117,7 @@ if (!exists("sim.results") || recompute) {
 
   wrapperSimFunc2 <- function(seed) {
     set.seed(seed)
-    return(SimFunc(nd = nd, ns = ns, n.boots = 101))
+    return(SimFunc(nd = nd, ns = ns, n.boots = 101, alpha = 0.05))
   }
   st <- proc.time()
 
@@ -136,6 +139,7 @@ if (!exists("sim.results") || recompute) {
 
       set.seed(840896246)  # "Meta-seed": Seed for the seeds
       seeds <- sample.int(2^31, n.sims) # Seed for each simulation
+
       res <- sfClusterApplyLB(seeds, wrapperSimFunc2)
 
       names(res) <- paste0("Sim", seq_along(res))
@@ -223,7 +227,7 @@ names(ex.fpr) <- names(ex.tpr) <- ex.cgroup
 setEPS()
 postscript("../output/fig4.eps", width = 2*7/1.5, height = 2*7/1.5)
 
-par(mar = c(0, 0, 0, 0), mfrow = c(2, 2), oma = c(5,5.5,2,4),xpd=TRUE)
+par(mar = c(0, 0, 0, 0), mfrow = c(2, 2), oma = c(5,5.5,2,4), xpd = TRUE)
 h <- 1
 for (i in seq_along(dilutions)) {
   for (j in seq_along(samples)) {
@@ -259,7 +263,8 @@ for (i in seq_along(dilutions)) {
 
     # FPR
     x.fpr <- 1:nrow(fpr) - 0.01
-    plot.default(x.fpr, type = "n", axes = FALSE, ylab="", xlab="", ylim = 0:1)
+    plot.default(x.fpr, type = "n", axes = FALSE,
+                 ylab = "", xlab = "", ylim = 0:1)
     rect(0.5, 0, 4.5, 1, col = "grey99", border = NA, xpd = TRUE)
     rect(4.5, 0, 8.5, 1, col = "grey95", border = NA, xpd = TRUE)
     rect(8.5, 0, 12.5, 1, col = "grey90", border = NA, xpd = TRUE)
@@ -305,7 +310,7 @@ for (i in seq_along(dilutions)) {
     lab <- gsub("\\.", "&", lab)
     lab <- gsub("boot", "Boostrap", lab)
     for (d in 1:3) {
-      ind <- 4*(d-1) + 1:4
+      ind <- 4*(d - 1) + 1:4
       if (i != 1) {
         # lab[] <- ""
         axis(1, at = ind, labels = lab[ind], las = 2, font = 2)
@@ -314,7 +319,7 @@ for (i in seq_along(dilutions)) {
 
       # Significance thresholds
       tw <- 0.2
-      segments(ind[1]-tw, p.cuts[d], rev(ind)[1]+tw, col = "red", lwd = 1.5)
+      segments(ind[1] - tw, p.cuts[d], rev(ind)[1] + tw, col = "red", lwd = 1.5)
     }
 
     # title(main = sprintf("n.samples = %d   n.dilutions = %d", samp, dil))
@@ -339,7 +344,7 @@ get.est.info <- function(data, estimator = "LMM.EC") {
 setEPS()
 postscript("../output/figS1_simCIs.eps", width = 1.5*7, height = 1*7)
 
-par(mfcol = c(6,4), mar = c(0,0,0,0)+0.2, oma = c(0,4,2,0)+0.1)
+par(mfcol = c(6,4), mar = c(0,0,0,0) + 0.2, oma = c(0,4,2,0) + 0.1)
 for (i in seq_along(dilutions)) {
   for (j in seq_along(samples)) {
     dil <- dilutions[i]
@@ -402,7 +407,7 @@ for (i in seq_along(dilutions)) {
     }
   }
 }
-title(paste(100*(1-p.cuts[g]), "% CIs"), outer = TRUE)
+title(paste(100*(1 - p.cuts[g]), "% CIs"), outer = TRUE)
 dev.off()
 
 

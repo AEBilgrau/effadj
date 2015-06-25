@@ -29,7 +29,7 @@ fig2a <- dotplot(sampleName ~ Cq | geneType:sampleType,
                  main = "", col = "tomato",
                  xlab = expression(C[q]),
                  pch = 16,
-                 key = list(text=list(title="A"),
+                 key = list(text = list(title = "A"),
                             corner = c(-0.1,1.1),
                             cex = 1.5, font = "bold"))
 
@@ -41,15 +41,15 @@ fig2b <- xyplot(Cq ~ l2con | geneName,
                 ylab = expression(C[q]),
                 main = "", col = "tomato",
                 pch = 16,
-                key = list(text=list(title="B"),
+                key = list(text = list(title = "B"),
                            corner = c(-0.1,1.1),
                            cex = 1.5, font = "bold"))
 
 setEPS()
-postscript("../output/fig2.eps", width = 1.5*7, height = 0.5*7, font = "serif")
-  trellis.par.set(strip.background=list(col="lightgrey"))
-  print(fig2a, position=c(0, 0, 0.5, 1), more = TRUE)
-  print(fig2b, position=c(0.5, 0, 1, 1))
+postscript("../output/fig2.eps", width = 1.5*7, height = 0.5*7, fonts = "serif")
+  trellis.par.set(strip.background = list(col = "lightgrey"))
+  print(fig2a, position = c(0, 0, 0.5, 1), more = TRUE)
+  print(fig2b, position = c(0.5, 0, 1, 1))
 dev.off()
 
 rm(testis.data, testis.std)
@@ -78,7 +78,8 @@ if (!exists("testis.boot") || recompute) {
     testis.tmp <- as.data.qPCR(subset(testis, geneName %in% grps.list[[i]]))
 
     # Compute bootstrap estimate and results
-    testis.boot[[i]] <- bootstrapEstimate(testis.tmp, n.boots = n.boots)
+    testis.boot[[i]] <- bootstrapEstimate(testis.tmp, n.boots = n.boots,
+                                          weighted = TRUE, alpha = 0.05)
 
     message(sprintf("i = %d", i))
   }
@@ -88,31 +89,39 @@ if (!exists("testis.boot") || recompute) {
 
 # Combine results
 sink("../output/fit_summary_testis.txt")
+pdf("../output/modelchecks_testis.pdf", onefile = TRUE)
 toTeX <- NULL
+we <- TRUE
 for (i in 1:length(grps.list)) {
   # Subset data
   testis.tmp <- subset(testis, geneName %in% grps.list[[i]])
 
   # Print fit information
-  fit <- qPCRfit(as.data.qPCR(cic.tmp))
-  cat("\n\n\n\n\n===", paste(grps.list[[i]], collapse = " vs. "),"===\n")
-  print(summary(fit))
+  m <- paste(grps.list[[i]], collapse = " vs. ")
+  cat("\n\n\n\n\n===", m, "===\n")
+  print(summary(fit <- qPCRfit(as.data.qPCR(testis.tmp), weighted = we)))
+  print(plot(fit, col = testis.tmp$sampleName, pch = testis.tmp$sampleType,
+             main = m))
 
   # Create results for table
   results <- rbind(
     "t-test" = DDCq.test(testis.tmp, method = "N"),
-    "LMEM"   = DDCq.test(testis.tmp, method = "LMM", eff.cor = F),
-    "EC"     = DDCq.test(testis.tmp, method = "LMM", eff.cor = T, var.adj = F),
-    "ECVA1"  = DDCq.test(testis.tmp, method = "LMM", eff.cor = T, var.adj = T),
-    "ECVA2"  = DDCq.test(testis.tmp, method = "LMM", eff.cor = T, var.adj = T,
-                         var.type = "montecarlo"),
+    "LMEM"   = DDCq.test(testis.tmp, method = "LMM",
+                         eff.cor = F, weighted = we),
+    "EC"     = DDCq.test(testis.tmp, method = "LMM",
+                         eff.cor = T, var.adj = F, weighted = we),
+    "ECVA1"  = DDCq.test(testis.tmp, method = "LMM",
+                         eff.cor = T, var.adj = T, weighted = we),
+    "ECVA2"  = DDCq.test(testis.tmp, method = "LMM",
+                         eff.cor = T, var.adj = T,
+                         var.type = "montecarlo", weighted = we),
     "Bootstrap" = testis.boot[[i]]
     )
 
   toTeX <- rbind(toTeX, results)
 }
+dev.off()
 sink()
-
 
 #
 # Writing LaTeX table
@@ -130,7 +139,7 @@ rownames(toTeX) <- gsub("ECVA", "EC\\\\&VA", rownames(toTeX))
 
 
 grps <-
-  sapply(grps.list, function(x) ifelse(length(x)==3,
+  sapply(grps.list, function(x) ifelse(length(x) == 3,
                                        paste(x[1], "vs", x[2], "+", x[3]),
                                        paste(x[1], "vs", x[2])))
 

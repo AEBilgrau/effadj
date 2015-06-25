@@ -64,8 +64,6 @@ SimqPCRData <-
   rnd.eff  <- rep(rnorm(2*n, 0, sample.sd), each = m, times = 2)
   effi     <- rep(c(alpha.tgt, alpha.ref), each = 2*n*m)
 
-  # cbind(sim.data, mus.gene, mus.type, rnd.eff, error, effi)
-
   sim.data$Cq <- (mus.gene + mus.type)/effi + rnd.eff + error
 
   if (std.curve) {
@@ -92,7 +90,11 @@ SimqPCRData <-
     sim.data$copyNumber <- 1
     attr(sim.data, "std.curve") <- FALSE
   }
+
+  sim.data$geneName <-
+    gsub("ref", "GOI", gsub("tgt", "house", as.character(sim.data$geneType)))
   class(sim.data) <- c("data.qPCR", "data.frame")
+
   return(sim.data)
 }
 
@@ -101,7 +103,7 @@ SimqPCRData <-
 # Fitting a qPCRData object
 #
 
-qPCRfit <- function(data, ...) {
+qPCRfit <- function(data, weighted, ...) {
   # data is a "data.qPCR" object
   # ... arguments passed to lme
 
@@ -116,9 +118,15 @@ qPCRfit <- function(data, ...) {
     data$nstd.d <- 1 - data$std.d
     data$VI <- factor(data$nstd.d)
 
+    if (weighted) {
+      weights <- varIdent(form = ~1 | VI)
+    } else {
+      weights <- NULL
+    }
+
     fit <- lme(Cq ~ -1 + sampleType:geneType + l2con:geneType,
-               random = ~ 1 | sampleName,
-               weights = varIdent(form = ~ 1 | VI),
+               random = ~1 | sampleName,
+               weights = weights,
                data = data, method = "ML",
                control = lmeControl(returnObject = TRUE), ...)
 
@@ -126,7 +134,7 @@ qPCRfit <- function(data, ...) {
 
     data$RE <- with(data, factor(sampleType:sampleName))
 
-    fit <- lme(Cq ~ -1 + sampleType:geneType, random = ~ 1 | RE,
+    fit <- lme(Cq ~ -1 + sampleType:geneType, random = ~1 | RE,
                data = data, method = "ML", ...)
 
   }
@@ -220,8 +228,9 @@ Var.cHyp.monte.carlo <- function(fit, n = 1e6) {
 }
 
 
-DDCq <- function(data, eff.cor, var.adj, alpha = 0.05,
-                 var.type = c("deltamethod", "montecarlo")) {
+DDCq <- function(data, eff.cor, var.adj, alpha,
+                 var.type = c("deltamethod", "montecarlo"),
+                 weighted) {
   # Function to calculate efficiency corrected with or without
   # adjusted variance DDCq values in qPCR experiments
   # data is a qPCR.data object but can also be a fit from lmer
@@ -234,7 +243,7 @@ DDCq <- function(data, eff.cor, var.adj, alpha = 0.05,
     fit <- data
     std.data <- any(grepl("Standard|l2con", names(fixef(fit))))
   } else if (is.data.qPCR(data)) {
-    fit <- qPCRfit(data)
+    fit <- qPCRfit(data, weighted = weighted)
     std.data <- std.curve(data)
   } else {
     stop("data should be a data.qPCR dataset or a lmer fit.")
@@ -263,7 +272,7 @@ DDCq <- function(data, eff.cor, var.adj, alpha = 0.05,
 
   stopifnot(df > 0)
   p.val   <- 2*(1 - pt(abs(t), df))
-  conf.int <- con + c(-1, 1)*qt(1-alpha/2, df)*se.con
+  conf.int <- con + c(-1, 1)*qt(1 - alpha/2, df)*se.con
   result  <- c("Estimate" = con, "Std. Error" = se.con,
                "t value" = t, "df" = round(df), "Pr(>|t|)" = p.val,
                "LCL" = conf.int[1], "UCL" = conf.int[2])
@@ -275,23 +284,24 @@ DDCq <- function(data, eff.cor, var.adj, alpha = 0.05,
 #
 
 addCI <- function(x, alpha = 0.05) {
-  t <- qt(1-alpha/2, df = x["df.n"])
+  t <- qt(1 - alpha/2, df = x["df.n"])
   nms <- names(x)
   res <- c(x, x["Estimate"] + c(-1, 1)*t*x["Std. Error"])
   names(res) <- c(nms, "LCL", "UCL")
   return(res)
 }
 
-DDCq.test <- function (data,
-                       method = c("LMM", "Naive", "Bootstrap", "pBootstrap"),
-                       eff.cor = TRUE,
-                       var.adj = eff.cor,
-                       subset.cols,
-                       subset.rows,
-                       n.boots = 100,
-                       alpha = 0.05,
-                       var.type = c("deltamethod", "montecarlo"),
-                       ...) {
+DDCq.test <- function(data,
+                      method = c("LMM", "Naive", "Bootstrap", "pBootstrap"),
+                      eff.cor = TRUE,
+                      var.adj = eff.cor,
+                      subset.cols,
+                      subset.rows,
+                      n.boots = 100,
+                      alpha = 0.05,
+                      var.type = c("deltamethod", "montecarlo"),
+                      weighted = FALSE,
+                      ...) {
   # method; character, either "Naive" (i.e a simple t-test) or "LMM"
   # eff.cor; logical, Should the data be efficiency corrected?
   # var.adj; logical, Should the eff. corrected estimate be variace corrected?
@@ -318,8 +328,8 @@ DDCq.test <- function (data,
 
   if (method == "Naive") {    # Naive method
 
-    data  <- subset(data, l2con == 0 & sampleType != "Standard") # Ignoring dilution data
-    hmean <- aggregate(Cq ~ sampleName + geneType + sampleType,
+    data  <- subset(data, l2con == 0 & sampleType != "Standard") # Ignore dil.
+    hmean <- aggregate(Cq ~ sampleName + sampleType + geneName + geneType,
                        data = data, FUN = mean)
     wmean <- reshape(hmean, idvar = c("sampleName","sampleType"),
                      timevar = c("geneType"), direction = "wide")
@@ -337,31 +347,28 @@ DDCq.test <- function (data,
 
   } else if (method == "LMM") {    # Linear mixed model method
 
+    # Average over replicates
+    data <-  aggregate(Cq ~ sampleName + sampleType + geneName + geneType +
+                         copyNumber + l2con, data = data, FUN = mean)
+
     if (eff.cor == FALSE) {
       # Simple DDCq method,  Ignoring dilution data
       data <- subset(data, l2con == 0 & sampleType != "Standard")
 
-      # Average over replicates
-      data <-  aggregate(Cq ~ sampleName + geneType + sampleType +
-                           copyNumber + l2con, data = data, FUN = mean)
-
       # Note, the use var.adj has no impact
       return(DDCq(as.data.qPCR(data), eff.cor = eff.cor, var.adj = var.adj,
-                  alpha = alpha, var.type = var.type))
+                  alpha = alpha, var.type = var.type, weighted = weighted))
 
     } else {
       # LMM DDCq method efficiency corr + variance adj. if var.adj == TRUE
-      # Average over replicates
-      data <- aggregate(Cq ~ sampleName + geneType + sampleType +
-                          copyNumber + l2con, data = data, FUN = mean)
 
       return(DDCq(as.data.qPCR(data), eff.cor = eff.cor, var.adj = var.adj,
-                  alpha = alpha, var.type = var.type))
+                  alpha = alpha, var.type = var.type, weighted = weighted))
 
     }
   } else if (method == "Bootstrap") {
 
-    return(bootstrapEstimate(data, n.boots, alpha))
+    return(bootstrapEstimate(data, n.boots, alpha, weighted = weighted))
 
   } else if (method == "pBootstrap") {
 
@@ -396,7 +403,7 @@ Bootstrap.qPCR <- function(data, # A data.qPCR object
                          "mean.pval", "0.05quan.pval", "97.5quan.pval")
 
   # Internal sampling function
-  samp <- function (data, sampleType, geneType, j) {
+  samp <- function(data, sampleType, geneType, j) {
     tmp.data <- data[data$sampleType ==  sampleType &
                        data$geneType   ==  geneType, ]
     nsamp    <- sample(nrow(tmp.data), j, replace = TRUE)
@@ -515,24 +522,14 @@ twoSideP <- function(bdist){
   return(p)
 }
 
-bootstrapEstimate <- function(data, n.boots, alpha = 0.05) {
-  # Aggregate data
-  if (is.null(data$geneName)) {
-    data <- aggregate(Cq ~ sampleName + geneType + sampleType +
-                        geneType + l2con + copyNumber,
-                      data = data, FUN = mean)
-  } else {
-    data <- aggregate(Cq ~ sampleName + geneType + sampleType +
-                        geneType + l2con + copyNumber + geneName,
-                      data = data, FUN = mean)
-  }
-
+bootstrapEstimate <- function(data, n.boots, alpha, weighted) {
   # Create bootstrap samples
   bs.samples <- replicate(n.boots, attachWarning(bootstrapSample(data)),
                           simplify = FALSE)
 
   # Apply DDCq estimate
-  res <- sapply(bs.samples, DDCq.test, eff.cor = TRUE, var.adj = FALSE)
+  res <- sapply(bs.samples, DDCq.test, eff.cor = TRUE, var.adj = FALSE,
+                weighted = weighted)
 
   # Compute the statistics
   ddcq <- res["Estimate", ]
@@ -542,17 +539,19 @@ bootstrapEstimate <- function(data, n.boots, alpha = 0.05) {
            "LCL" = quantile(ddcq, alpha/2), "UCL" = quantile(ddcq, 1-alpha/2))
 
   attr(ans, "extra") <- res
-  attr(ans, "warnings") <- lapply(bs.samples, function(x) attr(x, "warnings"))
+  # attr(ans, "warnings") <- lapply(bs.samples, function(x) attr(x, "warnings"))
 
   return(ans)
 }
 
 
-parametricBootstrapEstimate <- function(data, n.boots, alpha = 0.05, ...) {
+parametricBootstrapEstimate <- function(data, n.boots, alpha, weighted) {
 
-  fit <- qPCRfit(data)
+  fit <- qPCRfit(data, weighted = weighted)
   ddcq <- function(x) {
-    catchBootstrapWarning(DDCq(x, var.adj = FALSE, alpha = alpha)["Estimate"])
+    catchBootstrapWarning(DDCq(x, var.adj = FALSE, alpha = alpha,
+                               eff.cor = TRUE, var.adj = FALSE,
+                               weighted = weighted)["Estimate"])
   }
 
   r <- bootMer(fit, ddcq, nsim = n.boots)
@@ -560,7 +559,7 @@ parametricBootstrapEstimate <- function(data, n.boots, alpha = 0.05, ...) {
 
   ans <- c("Estimate" = mean(t), "Std. Error" = sd(t),
            "t value" = NA, "df" = NA, "Pr(>|t|)" = twoSideP(t),
-           "LCL" = quantile(t, alpha/2), "UCL" = quantile(t, 1-alpha/2))
+           "LCL" = quantile(t, alpha/2), "UCL" = quantile(t, 1 - alpha/2))
 
   attr(ans, "extra") <- r
   return(ans)
@@ -572,7 +571,7 @@ parametricBootstrapEstimate <- function(data, n.boots, alpha = 0.05, ...) {
 # Function to coerce data.frame into data.qPCR object
 #
 
-as.data.qPCR <- function (data) {
+as.data.qPCR <- function(data) {
   if (!suppressMessages(is.data.qPCR(data))) {
     class(data) <- c("data.qPCR", "data.frame")
 
@@ -607,13 +606,13 @@ as.data.qPCR <- function (data) {
 # Function to get and set "std.curve" attribute
 #
 
-std.curve <- function (data) {
+std.curve <- function(data) {
   if (!is.data.qPCR(data))
     stop("data is not a data.qPCR object.")
   attr(data, "std.curve")
 }
 
-`std.curve<-` <- function (value, data) {
+`std.curve<-` <- function(value, data) {
   if (!is.data.qPCR(data))
     stop("data is not a data.qPCR object.")
   data <- structure(data, std.curve = value)

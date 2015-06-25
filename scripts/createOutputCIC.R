@@ -28,7 +28,7 @@ fig1a <- dotplot(sampleName ~ Cq | geneType:sampleType,
                  main = "", col = "steelblue",
                  xlab = expression(C[q]),
                  pch = 16,
-                 key = list(text=list(title="A"),
+                 key = list(text = list(title = "A"),
                             corner = c(-0.1,1.1),
                             cex = 1.5, font = "bold"))
 
@@ -40,15 +40,15 @@ fig1b <- xyplot(Cq ~ l2con | as.factor(geneName),
                 ylab = expression(C[q]),
                 pch = 16,
                 main = "", col = "steelblue",
-                key = list(text=list(title="B"),
+                key = list(text = list(title = "B"),
                            corner = c(-0.1,1.1),
                            cex = 1.5, font = "bold"))
 
 setEPS()
 postscript("../output/fig1.eps", width = 1.5*7, height = 0.5*7, fonts = "serif")
-  trellis.par.set(strip.background=list(col="lightgrey"))
-  print(fig1a, position=c(0, 0, 0.5, 1), more = TRUE)
-  print(fig1b, position=c(0.5, 0, 1, 1))
+  trellis.par.set(strip.background = list(col = "lightgrey"))
+  print(fig1a, position = c(0, 0, 0.5, 1), more = TRUE)
+  print(fig1b, position = c(0.5, 0, 1, 1))
 dev.off()
 
 rm(cic.data, cic.std)
@@ -77,7 +77,8 @@ if (!exists("cic.boot") || recompute) {
     cic.tmp <- as.data.qPCR(subset(cic, geneName %in% grps.list.cic[[i]]))
 
     # Compute bootstrap estimate
-    cic.boot[[i]]  <- bootstrapEstimate(cic.tmp, n.boots = n.boots)
+    cic.boot[[i]]  <- bootstrapEstimate(cic.tmp, n.boots = n.boots,
+                                        weighted = TRUE, alpha = 0.05)
 
     message(sprintf("i = %d", i))
   }
@@ -87,31 +88,39 @@ if (!exists("cic.boot") || recompute) {
 
 # Combine results
 sink("../output/fit_summary_cic.txt")
+pdf("../output/modelchecks_cic.pdf", onefile = TRUE)
 toTeX <- NULL
+we <- TRUE
 for (i in 1:length(grps.list.cic)) {
   # Subset data
   cic.tmp <- subset(cic, geneName %in% grps.list.cic[[i]])
 
   # Print fit information
-  fit <- qPCRfit(as.data.qPCR(cic.tmp))
-  cat("\n\n\n\n\n===", paste(grps.list.cic[[i]], collapse = " vs. "), "===\n")
-  print(summary(fit))
+  m <- paste(grps.list.cic[[i]], collapse = " vs. ")
+  cat("\n\n\n\n\n===", m,"===\n")
+  print(summary(fit <- qPCRfit(as.data.qPCR(cic.tmp), weighted = we)))
+  print(plot(fit, col = cic.tmp$sampleName, pch = cic.tmp$sampleType),
+        main = m)
 
   # Create results for table
   results <- rbind(
     "t-test" = DDCq.test(cic.tmp, method = "N"),
-    "LMM"    = DDCq.test(cic.tmp, method = "LMM", eff.cor = F),
-    "EC"     = DDCq.test(cic.tmp, method = "LMM", eff.cor = T, var.adj = F),
-    "ECVA1"  = DDCq.test(cic.tmp, method = "LMM", eff.cor = T, var.adj = T),
-    "ECVA2"  = DDCq.test(cic.tmp, method = "LMM", eff.cor = T, var.adj = T,
-                         var.type = "monte"),
+    "LMM"    = DDCq.test(cic.tmp, method = "LMM",
+                         eff.cor = F, weighted = we),
+    "EC"     = DDCq.test(cic.tmp, method = "LMM",
+                         eff.cor = T, var.adj = F, weighted = we),
+    "ECVA1"  = DDCq.test(cic.tmp, method = "LMM",
+                         eff.cor = T, var.adj = T, weighted = we),
+    "ECVA2"  = DDCq.test(cic.tmp, method = "LMM",
+                         eff.cor = T, var.adj = T,
+                         var.type = "montecarlo", weighted = we),
     "Bootstrap" = as.numeric(cic.boot[[i]])
     )
 
   toTeX <- rbind(toTeX, results)
 }
+dev.off()
 sink()
-
 
 
 
@@ -129,7 +138,7 @@ rownames(toTeX) <- gsub("t.", "$t$-", rownames(toTeX), fixed = TRUE)
 rownames(toTeX) <- gsub("ECVA", "EC\\\\&VA", rownames(toTeX))
 
 grps <-
-  sapply(grps.list.cic, function(x) ifelse(length(x)==3,
+  sapply(grps.list.cic, function(x) ifelse(length(x) == 3,
                                            paste(x[1], "vs", x[2], "+", x[3]),
                                            paste(x[1], "vs", x[2])))
 

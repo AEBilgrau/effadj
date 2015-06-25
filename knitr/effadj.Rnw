@@ -44,8 +44,9 @@ accepted for publication November 1, 2010}
 \begin{document}
 
 % Title of paper
-\title{Variance approximations of efficiency corrected relative
-       gene expression in qPCR experiments}
+\title{Unaccounted uncertainty of qPCR efficiency estimates imply uncontrolled false positive rates}
+% Poorly determined qPCR efficiencies increase false discoveries
+% Variance approximations of efficiency corrected relative gene expression in qPCR experiments
 
 
 % List of authors, with corresponding author marked by asterisk
@@ -338,7 +339,7 @@ The $p$-values for the null hypothesis of $\delta = 0$ is computed by $2\min(\ha
 where $\hat{F}$ is the empirical cumulative distribution function of $\hat{\delta}_1, \ldots \hat{\delta}_B$.
 
 While the bootstrap is an intuitive and excellent method for estimating the standard error, it quickly becomes computationally heavy.
-The rather complicated designs of qPCR experiments with paired setups, dilution data, and other random effects also makes the bootstrap less attractive as a good resampling schemes are hard to produce
+The rather complicated designs of qPCR experiments with paired samples, dilution data, and other random effects also makes the bootstrap less attractive as good bootstrap sampling schemes are hard to produce.
 
 Alternatively, parametric bootstrap can be used by simulating datasets from the fitted model.
 Here, both new random effects and noise terms are realized and added to the fitted values to generate new datasets.

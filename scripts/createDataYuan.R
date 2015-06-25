@@ -39,6 +39,6 @@ for (i in unique(yuan$sampleType)) {
 }
 
 # Aggregate, mean over technical replicates
-# yuan <- aggregate(Cq ~ ., FUN = mean, data = yuan)
+yuan <- aggregate(Cq ~ ., FUN = mean, data = yuan)
 
 

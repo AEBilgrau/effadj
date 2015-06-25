@@ -193,18 +193,19 @@ get.2by2.table <-  function(subdata, estimator = "LMM.EC", p.cut = 0.05) {
 #
 
 p.cut <- 0.05
-est <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot")
+est <- c("LMM.EC", "LMM.EC.VA", "LMM.boot")
 getr <- paste(rep(c("H0", "H1"), length(est)), rep(est, each = 2), sep = ":")
 significant <- res.ex[getr, "Pr(>|t|)", ] < p.cut
 ex.tab <- rbind(rowSums(!significant),
                 rowSums(significant))
 colnames(ex.tab) <- gsub("H0:.+","$H_0$",gsub("H1:.+","$H_A$",colnames(ex.tab)))
 rownames(ex.tab) <- sprintf(c("$p \\geq %.2f$", "$p < %.2f$"), p.cut)
-ex.cgroup <- c("LMM", "EC", "EC\\&VA", "Bootstr.")
+ex.cgroup <- c("EC", "EC\\&VA1", "Bootstr.")
 tmp.caption <- "Contingency tables for the different estimators for at
-  5 \\% $p$-value threshold. The used estimators are the linear
-  mixed effect model (LMM), the LMM with efficiency correction (EC), the LMM
+  5 \\% $p$-value threshold. The used estimators are the LMM
+  with efficiency correction (EC), the LMM
   with EC and variance adjustment (EC\\&VA), and the bootstrapped LMM approach."
+
 w <- latex(ex.tab, file = "../output/Table4.tex", title = "",
            cgroup = ex.cgroup,
            rgroup = "$p$-values",
@@ -215,7 +216,7 @@ w <- latex(ex.tab, file = "../output/Table4.tex", title = "",
 # To use in the knitr document
 #
 
-get <- seq(1, 7, by = 2)
+get <- seq(1, ncol(ex.tab) - 1, by = 2)
 ex.fpr <- ex.tab["$p < 0.05$", get]/colSums(ex.tab[,get])
 ex.tpr <- ex.tab["$p < 0.05$", get + 1]/colSums(ex.tab[,get + 1])
 names(ex.fpr) <- names(ex.tpr) <- ex.cgroup
@@ -228,6 +229,9 @@ setEPS()
 postscript("../output/fig4.eps", width = 2*7/1.5, height = 2*7/1.5)
 
 par(mar = c(0, 0, 0, 0), mfrow = c(2, 2), oma = c(5,5.5,2,4), xpd = TRUE)
+methods <- c("LMM.EC", "LMM.EC.VA", "LMM.boot")
+nm <- length(methods)
+
 h <- 1
 for (i in seq_along(dilutions)) {
   for (j in seq_along(samples)) {
@@ -236,7 +240,7 @@ for (i in seq_along(dilutions)) {
     dat <- sim.results[[i]][[j]]
 
     # Organize data for i and j
-    methods <- c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot")
+
     p.cuts <- c(0.01, 0.05, 0.1)
     fpr <- tpr <- as.data.frame(matrix(NA, length(methods)*length(p.cuts), 5))
     names(fpr) <- names(tpr) <- c("p.cut", "est", "rate", "upper", "lower")
@@ -263,11 +267,10 @@ for (i in seq_along(dilutions)) {
 
     # FPR
     x.fpr <- 1:nrow(fpr) - 0.01
-    plot.default(x.fpr, type = "n", axes = FALSE,
-                 ylab = "", xlab = "", ylim = 0:1)
-    rect(0.5, 0, 4.5, 1, col = "grey99", border = NA, xpd = TRUE)
-    rect(4.5, 0, 8.5, 1, col = "grey95", border = NA, xpd = TRUE)
-    rect(8.5, 0, 12.5, 1, col = "grey90", border = NA, xpd = TRUE)
+    plot.default(x.fpr, type = "n", axes = FALSE, ylab = "", xlab = "", ylim = 0:1)
+    rect(0.5, 0, 1*nm + .5, 1, col = "grey99", border = NA, xpd = TRUE)
+    rect(1*nm + .5, 0, 2*nm + .5, 1, col = "grey95", border = NA, xpd = TRUE)
+    rect(2*nm + .5, 0, 3*nm + .5, 1, col = "grey90", border = NA, xpd = TRUE)
 
     segments(x.fpr, fpr$upper, y1 = fpr$lower)
     points(x.fpr, fpr$upper, pch = "-")
@@ -309,14 +312,12 @@ for (i in seq_along(dilutions)) {
     lab <- gsub("0.[0-9]+ : ", "", gsub("LMM\\.", "", tpr$est))
     lab <- gsub("\\.", "&", lab)
     lab <- gsub("boot", "Boostrap", lab)
+    lab <- gsub("VA", "VA1", lab)
     for (d in 1:3) {
-      ind <- 4*(d - 1) + 1:4
+      ind <- nm*(d - 1) + 1:nm
       if (i != 1) {
-        # lab[] <- ""
         axis(1, at = ind, labels = lab[ind], las = 2, font = 2)
       }
-
-
       # Significance thresholds
       tw <- 0.2
       segments(ind[1] - tw, p.cuts[d], rev(ind)[1] + tw, col = "red", lwd = 1.5)

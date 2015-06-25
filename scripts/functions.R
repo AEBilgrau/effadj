@@ -517,8 +517,8 @@ twoSideP <- function(bdist){
   # From
   #  http://stats.stackexchange.com/questions/83012/
   #   how-to-obtain-p-values-of-coefficients-from-bootstrap-regression
-  p1 <- sum(bdist > 0)/length(bdist)
-  p2 <- sum(bdist < 0)/length(bdist)
+  p1 <- (sum(bdist >= 0) + 1)/(length(bdist) + 1)
+  p2 <- (sum(bdist <= 0) + 1)/(length(bdist) + 1)
   p <- 2*min(p1, p2)
   return(p)
 }
@@ -537,7 +537,7 @@ bootstrapEstimate <- function(data, n.boots, alpha, weighted) {
 
   ans <- c("Estimate" = mean(ddcq), "Std. Error" = sd(ddcq),
            "t value" = NA, "df" = NA, "Pr(>|t|)" = twoSideP(ddcq),
-           "LCL" = quantile(ddcq, alpha/2), "UCL" = quantile(ddcq, 1-alpha/2))
+           "LCL" = quantile(ddcq, alpha/2), "UCL" = quantile(ddcq, 1 - alpha/2))
 
   attr(ans, "extra") <- res
   # attr(ans, "warnings") <- lapply(bs.samples, function(x) attr(x, "warnings"))

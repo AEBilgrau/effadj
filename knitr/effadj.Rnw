@@ -359,13 +359,13 @@ In order to gauge the performance of the methods we subsequently performed a sim
 \subsection{CIC study}
 
 \subsubsection{Introduction}
-Cells are defined to be culture initiating if they can initiate a sutained production of cells when clutured in vitro. The viability potential of culture initiating cells (CIC) is measured by the limiting number of cells necessary to establish an in vitro culture. This number is typically estimated by limiting dilution assays and Poisson regression [xx].
+A cells is defined to be culture initiating if it can initiate a sutained production of cells when cultured in vitro. The viability potential of a cell population can be assessed by measuring the number of culture initiating cells (CICs). This number is typically estimated by a limiting dilution experiment where the number of cells are seeded with decreasing numbers. The ratio of CICs can then be estimated by e.g. Poisson regression \cite{Lefkovits1999}.
 
-CICs are of particular interest in cancer research as it is believed that cells with high CIC potential have stem cell like properties making them resistant towards chemotherapy [xx].
+CICs are of particular interest in cancer research as it is believed that cells with high CIC potential have stem cell like properties making them invisible to towards chemotherapy [xx].
 
-In a search for identifying genes associated to a high culture initiating potential in multiple myeloma (MNM) we measured the gene expression of 16 MM cell lines by microarrays and identified the genes MGST1 and MMSET to be differentially expressed between between cell lines with high and low abundance of so-called culture initiating cells (CIC).
+In a search for genes associated to a high culture initiating potential in multiple myeloma (MM) we made limiting dilution experiments of of 14 MM cell lines and divided them into 7 cell lines with low and 7 cell lines with high culture initiating potential. Gene expressions were profiled by Affymetrix HG-U133 plus 2 microarrays and by the limma R-package [xx] we identified the genes MGST1 and MMSET to be differentially expressed between between cell lines with high and low abundance of so-called culture initiating cells (CIC).
 
-As gene expression detection by microarrays can be hampered by high false positive rates, the purpose of this experiment was to validate the findings of MGST1 and MMSET by qPCR.
+As gene expression detection by microarrays can be hampered by high false positive rates, the purpose of this experiment was to validate the findings of the association of MGST1 and MMSET with culture initiating potential by qPCR.
 
 \subsubsection{Sample and data preparation}
 
@@ -396,11 +396,10 @@ For each target and reference transcripts a standard curve based on seven 2-fold
 \subsection{Arabidopsis thaliana study}
 
 \subsubsection{Introduction}
-In order to illustate the effect of applying variance approximations in a data set with a limited number of dilution steps we considered the arabidopsis thaliana data set published by Yuan et al. \cite{Yuan2008}. The data set contains one gene of interest, FAMT, and two reference genes ubiquiting (UBQ) and tublin.
+In order to illustate the effect of applying variance approximations in a data set with a limited number of dilution steps we considered the arabidopsis thaliana data set published by Yuan et al. \cite{Yuan2008}. The data set contains one gene of interest, MT7, potentially differentially expressed under two growth conditions and two reference genes ubiquiting (UBQ) and tublin.
 
 \subsection{Sample and data preparation}
-according to [xx]
-
+The arabidopsis thaliana plant growth, RNA extraction, and qPCR experiments were carried out as described in [xx]. The cDNA was diluted into one to four and one to sixteen serial dilutions. Real-time PCR experiments were carried out with duplication for each concentration \cite{Yuan2008}.
 
 \subsection{Simulation study}
 

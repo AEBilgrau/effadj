@@ -22,8 +22,10 @@ mypanel <- function(x, y, ...) {
 }
 
 # Trellis plot of all data
-cic.data <- subset(cic, sampleType != "Standard")
-fig1a <- dotplot(sampleName ~ Cq | geneType:sampleType,
+cic.data <- subset(cic, l2con == 0)
+levels(cic.data$sampleType) <-
+  gsub("Standard", "case", levels(cic.data$sampleType))
+fig1a <- dotplot(sampleName ~ Cq | droplevels(geneType:sampleType),
                  data = cic.data,
                  main = "", col = "steelblue",
                  xlab = expression(C[q]),
@@ -32,7 +34,7 @@ fig1a <- dotplot(sampleName ~ Cq | geneType:sampleType,
                             corner = c(-0.1,1.1),
                             cex = 1.5, font = "bold"))
 
-cic.std <- subset(cic, sampleType == "Standard")
+cic.std <- subset(cic, sampleName == "AMO-1")
 fig1b <- xyplot(Cq ~ l2con | as.factor(geneName),
                 panel = mypanel,
                 data = cic.std,

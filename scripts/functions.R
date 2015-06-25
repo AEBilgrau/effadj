@@ -111,9 +111,11 @@ qPCRfit <- function(data, weighted, ...) {
     data <- as.data.qPCR(data)
   }
 
+  # data$RE <- with(data, droplevels(sampleType:sampleName))
+  data$RE <- data$sampleName
+
   if (std.curve(data)) {
 
-    data$RE <- with(data, sampleType:sampleName)
     data$std.d <- ifelse(data$sampleType == "Standard", 1, 0)
     data$nstd.d <- 1 - data$std.d
     data$VI <- factor(data$nstd.d)
@@ -125,16 +127,15 @@ qPCRfit <- function(data, weighted, ...) {
     }
 
     fit <- lme(Cq ~ -1 + sampleType:geneType + l2con:geneType,
-               random = ~1 | sampleName,
+               random = ~1 | RE,
                weights = weights,
                data = data, method = "ML",
                control = lmeControl(returnObject = TRUE), ...)
 
   } else {
 
-    data$RE <- with(data, factor(sampleType:sampleName))
-
-    fit <- lme(Cq ~ -1 + sampleType:geneType, random = ~1 | RE,
+    fit <- lme(Cq ~ -1 + sampleType:geneType,
+               random = ~1 | RE,
                data = data, method = "ML", ...)
 
   }

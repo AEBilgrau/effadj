@@ -309,9 +309,9 @@ The needed gradient in \eqref{eq:tstat} is computed straight-forwardly from \eqr
 \end{equation*}
 
 We note that the division of $\gamma_j$ in \eqref{eq:c} is theoretically problematic as $\hat{\gamma}_j$ is normally distributed.
-In practice, this is only problematic if the standard error of $\hat{\gamma}_j$ is sufficently large.
-Some solve this prolem using the $\log_2$ concentration as the response and the $C_q$-values as the explanatory variables in regression of the standard curve to estiamte $\alpha_j$ directly.
-This appoarch is however also not without theoretical problems as this puts the errors on the expanatory variables.
+In practice, this is only problematic if the standard error of $\hat{\gamma}_j$ is sufficiently large.
+Some solve this problem using the $\log_2$ concentration as the response and the $C_q$-values as the explanatory variables in regression of the standard curve to estimate $\alpha_j$ directly.
+This approach is however also not without theoretical problems as this puts the errors on the explanatory variables.
 To this end, we note that one could equivalently test the hypothesis
 \begin{equation*}
   H_0: \gamma_\tgt\gamma_\rref c(\hat{\vtheta}) = 0,
@@ -394,7 +394,7 @@ For each target and reference transcripts a standard curve based on seven 2-fold
 \subsection{DLBCL study}
 
 \subsubsection{Introduction}
-The association between oncogenesis and micro RNAs (miRNAs), short non-coding RNA transcripts with regulatory capabilities, has recently prompted an immense research activity. The possibility to change treatment strategies by transfecting antisense oligonuclotides to control abnormally up-regulated miRNAs in malignant tissue is of particular interest \cite{Garzon2010}. In that respect up-regulated miR-127 and miR-143 in testicular Diffuse Large B-cell Lymphoma (DLBCL) has shown treatment changing potential \citet{Robertus2009}. However, as the number of screened miRNAs was high and the sample size was low in Robertus et al.'s work invoking high risk false discoveries we set out to validate the differential expression of miR-127 and miR-143 in tissues from our own laboratory using our improved qPCR analysis workflow.
+The association between oncogenesis and micro RNAs (miRNAs), short non-coding RNA transcripts with regulatory capabilities, has recently prompted an immense research activity. The possibility to change treatment strategies by transfecting antisense oligonucleotide to control abnormally up-regulated miRNAs in malignant tissue is of particular interest \cite{Garzon2010}. In that respect up-regulated miR-127 and miR-143 in testicular Diffuse Large B-cell Lymphoma (DLBCL) has shown treatment changing potential \citet{Robertus2009}. However, as the number of screened miRNAs was high and the sample size was low in Robertus et al.'s work invoking high risk false discoveries we set out to validate the differential expression of miR-127 and miR-143 in tissues from our own laboratory using our improved qPCR analysis workflow.
 
 \subsubsection{Sample and data preparation}
 
@@ -406,11 +406,11 @@ For each target and reference transcripts a standard curve based on seven 2-fold
 \subsection{Arabidopsis thaliana study}
 
 \subsubsection{Introduction}
-In order to illustrate the effect of applying variance approximations in a data set with a limited number of dilution steps we considered the Arabidopsis thaliana data set published by Yuan et al. \cite{Yuan2008}. The data set contains one gene of interest, MT7, potentially differentially expressed under two growth conditions and two reference genes ubiquitin (UBQ) and tublin.
+In order to illustrate the effect of applying variance approximations in a data set with a limited number of dilution steps we considered the arabidopsis thaliana data set published by \citet{Yuan2008}. The data set contains one gene of interest, MT7, potentially differentially expressed under two growth conditions of the plant Arabidopsis thaliana and two reference genes ubiquitin (UBQ) and tublin.
 
 
-\subsection{Sample and data preparation}
-The Arabidopsis thaliana plant growth, RNA extraction, and qPCR experiments were carried out as described in \cite{Yang2006}. The cDNA was diluted into one to four and one to sixteen serial dilutions. Real-time PCR experiments were carried out with duplication for each concentration \cite{Yuan2008}.
+\subsubsection{Sample and data preparation}
+The arabidopsis thaliana plant growth, RNA extraction, and qPCR experiments were carried out as described in \citet{Yang2006}. The cDNA was diluted into one to four and one to sixteen serial dilutions. Real-time PCR experiments were carried out with duplication for each concentration \citep{Yuan2008}.
 
 Due to the the study design, we naturally fitted estimation efficiencies $\gamma_{ij} = \alpha_{ij}^{-1}$ for each group.
 Because of the few samples we omitted the, in this case, meaningless random sample effect.

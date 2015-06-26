@@ -10,14 +10,14 @@
 # Function to perform a simulation
 #
 
-SimFunc <- function(nd, ns, n.boots = 101, alpha = 0.05) {
+SimFunc <- function(nd, ns, n.boots = 151, alpha = 0.05) {
 
   data <- structure(vector("list", 2), names = c("H0", "HA"))
   for (i in 1:2) {
     data[[i]] <-
       SimqPCRData(std.curve = TRUE, mu.tgt = 25, mu.ref = 30,
                   n.samples = ns, n.replicates = 1, n.dilutions = nd,
-                  tech.sd = 0.5, sample.sd = 1,
+                  tech.sd = 1, sample.sd = 1,
                   alpha.tgt = 0.80, alpha.ref = 0.95,
                   ddcq = ifelse(i == 1, 0, 10/9))
   }
@@ -75,7 +75,7 @@ if (!exists("res.ex") || recompute) {
 
   wrapperSimFunc <- function(seed) {
     set.seed(seed)
-    return(as.matrix(SimFunc(nd = 6, ns = 6, n.boots = 21, alpha = 0.05)))
+    return(as.matrix(SimFunc(nd = 6, ns = 6, n.boots = 201, alpha = 0.05)))
   }
 
   sfInit(parallel, cpus = n.cpus)
@@ -117,7 +117,7 @@ if (!exists("sim.results") || recompute) {
 
   wrapperSimFunc2 <- function(seed) {
     set.seed(seed)
-    return(SimFunc(nd = nd, ns = ns, n.boots = 101, alpha = 0.05))
+    return(SimFunc(nd = nd, ns = ns, n.boots = 201, alpha = 0.05))
   }
   st <- proc.time()
 

@@ -308,6 +308,16 @@ The needed gradient in \eqref{eq:tstat} is computed straight-forwardly from \eqr
  \right)^\top.
 \end{equation*}
 
+We note that the division of $\gamma_j$ in \eqref{eq:c} is theoretically problematic as $\hat{\gamma}_j$ is normally distributed.
+In practice, this is only problematic if the standard error of $\hat{\gamma}_j$ is sufficently large.
+Some solve this prolem using the $\log_2$ concentration as the response and the $C_q$-values as the explanatory variables in regression of the standard curve to estiamte $\alpha_j$ directly.
+This appoarch is however also not without theoretical problems as this puts the errors on the expanatory variables.
+To this end, we note that one could equivalently test the hypothesis
+\begin{equation*}
+  H_0: \gamma_\tgt\gamma_\rref c(\hat{\vtheta}) = 0,
+\end{equation*}
+for which the standard error of the test-statistic can be worked out exactly.
+
 If $\gamma_\tgt^{-1}$ and $\gamma_\rref^{-1}$ is assumed be one (or otherwise known) then \eqref{eq:c} becomes a simple linear hypothesis for which the standard error is easily calculated.
 This corresponds to leaving out the terms in \eqref{eq:model} involving these parameters and thus ignoring dilution data.
 If $\gamma_\tgt^{-1} = \gamma_\rref^{-1} = 1$ is assumed, we shall refer to the obtained estimate as the na\"{i}ve LMM.
@@ -524,17 +534,17 @@ While this example was selected as a worst-case scenario, it should illustrate t
 
 \subsection{Simulation study}
 
-First we present results of a simulation example for a two-sided test for the null hypothesis of a vanishing $\ddcq$ at $5\%$ significance level.
-We simulated \Sexpr{n.sims} datasets under both the null and alternative hypothesis with 6 samples in each case and control groups and 6 dilution steps.
+First we present results of a simulation example for a two-sided test for the null hypothesis of a vanishing $\ddcq$ at a $5\%$ significance level.
+We simulated \Sexpr{n.sims} datasets under both the null and alternative hypothesis with 6 samples in each case and control group and standard curves with 6 dilution steps.
 The effect size under the alternative was set to $\delta = 10/9$.
-The sample and experimental standard deviations were set to $\sigma_{S} = 1$ and $\sigma = 0.5$, respectively.
+The sample and experimental standard deviations were set to $\sigma_{S} = 1$ and $\sigma = 1$, respectively.
 The AE for the target and reference genes was set to 0.80 and 0.95, respectively.
 
-Five of the discussed methods were applied to the $2\times \Sexpr{n.sims}$ datasets and the $p$-value testing the null hypothesis was computed.
-The results of these tests are summarized in Table \ref{table:cic} from which the FPR and TPR can be computed at the 0.05 cutoff.
+The four discussed methods were applied to the $2\times \Sexpr{n.sims}$ datasets and the $p$-value testing the null hypothesis was computed.
+The results of these tests are summarized in Table \ref{table:cic} from which the FPR and TPR can be computed at the $0.05$ cutoff.
 Considering first the FPR of the test procedures.
-From Table \ref{table:cic}, we see that the estimated FPR is \Sexpr{ex.fpr} for the LMM, the efficiency corrected LMM (EC), the efficient corrected with variance adjustment LLM (EC\&VA), the bootstrap method and its parametric variant, respectively.
-We omitted the $t$-test and EC\&VA by Monte Carlo integration here.
+From Table \ref{table:cic}, we see that the estimated FPR is \Sexpr{ex.fpr} for the efficiency corrected LMM (EC), the efficient corrected with variance adjustment LLM using the delta method (EC\&VA1), the bootstrap method and its parametric variant, respectively.
+We omitted EC\&VA by Monte Carlo integration here due to the similar results with EC\&VA1.
 As expected, neither the naive LMM (assuming perfect amplification and ignoring dilution data) and LMM EC method controls the FPR at the $5\%$-level.
 The variance adjusted estimator is consistent with controlling the FPR at the $5\%$ level.
 By construction, the variance adjusted will always perform at least as good as the EC in terms of FPR.
@@ -596,11 +606,6 @@ The research is supported by MSCNET, a translational program studying cancer ste
 \newpage
 
 \input{../output/Table1.tex}
-\input{../output/Table2.tex}
-\input{../output/Table3.tex}
-\input{../output/Table4.tex}
-
-\newpage
 
 \begin{figure}
 \begin{center}
@@ -615,6 +620,8 @@ The research is supported by MSCNET, a translational program studying cancer ste
 \label{fig:cqCIC}
 \end{figure}
 
+\input{../output/Table2.tex}
+
 \begin{figure}
 \begin{center}
 \includegraphics[width=\textwidth]{fig2}
@@ -627,6 +634,8 @@ The research is supported by MSCNET, a translational program studying cancer ste
 }
 \label{fig:cqTestis}
 \end{figure}
+
+\input{../output/Table3.tex}
 
 \begin{figure}
 \begin{center}
@@ -641,13 +650,15 @@ The research is supported by MSCNET, a translational program studying cancer ste
 \label{fig:cqYuan}
 \end{figure}
 
+\input{../output/Table4.tex}
+
 \begin{figure}
 \begin{center}
 \includegraphics[width=\textwidth]{fig4}
 \end{center}
 \caption{
-  Plot of the false positive rates (FPR) and true positive rates (TPR) and 95 \% confidence intervals achieved by each method at various $p$-value cut-offs (0.05, 0.01, 0.1) by simulation experiments.
-  Computed from tables similar to Table~\ref{tab:simexample}.
+  Plot of the false positive rates (FPR, black) and true positive rates (TPR, grey) and 95 \% confidence intervals achieved by each method at various $p$-value cut-offs (0.05, 0.01, 0.1) shown in red by simulation experiments.
+  The FPR and TPR are computed completely analogous to Table~\ref{tab:simexample}.
   The rates are plotted for each combination of 4 or 8 samples with 4 or 8 fold dilution curves.
 }
 \label{fig:simstudy}

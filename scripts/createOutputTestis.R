@@ -154,6 +154,9 @@ caption.txt <- "Testis data: Method comparison for estimating the
   Bootstrap shows the mean and standard deviation of %d
   bootstrap samples using EC estimate. The last two columns shows the $95%s$
   lower and upper confidence interval limits."
+
+toTeX <- toTeX[!grepl("LMM|t-test", rownames(toTeX)), ]
+
 w <- latex(toTeX,
            file    = "../output/Table2.tex",
            title   = "",

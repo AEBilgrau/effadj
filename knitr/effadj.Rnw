@@ -374,9 +374,9 @@ In order to gauge the performance of the methods we subsequently performed a sim
 \subsubsection{Introduction}
 A cells is defined to be culture initiating if it can initiate a sustained production of cells when cultured in vitro. The viability potential of a cell population can be assessed by measuring the number of culture initiating cells (CICs). This number is typically estimated by a limiting dilution experiment where the number of cells are seeded with decreasing numbers. The ratio of CICs can then be estimated by e.g. Poisson regression \cite{Lefkovits1999}.
 
-CICs are of particular interest in cancer research as it is believed that cells with high CIC potential have stem cell like properties making them invisible to towards chemotherapy [xx].
+CICs are of particular interest in cancer research as it is believed that cells with high CIC potential have stem cell like properties making them resistant towards chemotherapy \cite{Chen2013}.
 
-In a search for genes associated to a high culture initiating potential in multiple myeloma (MM) we made limiting dilution experiments of of 14 MM cell lines and divided them into 7 cell lines with low and 7 cell lines with high culture initiating potential. Gene expressions were profiled by Affymetrix HG-U133 plus 2 microarrays and by the \texttt{limma} R-package [xx] we identified the genes MGST1 and MMSET to be differentially expressed between between cell lines with high and low abundance of so-called culture initiating cells (CIC).
+In a search for genes associated to a high culture initiating potential in multiple myeloma (MM) we made limiting dilution experiments of of 14 MM cell lines and divided them into 7 cell lines with low and 7 cell lines with high culture initiating potential. Gene expressions were profiled by Affymetrix HG-U133 plus 2 microarrays and we identified the genes MGST1 and MMSET to be differentially expressed between between cell lines with high and low abundance of so-called culture initiating cells (CIC).
 
 As gene expression detection by microarrays can be hampered by high false positive rates, the purpose of this experiment was to validate the findings of the association of MGST1 and MMSET with culture initiating potential by qPCR.
 
@@ -394,17 +394,14 @@ For each target and reference transcripts a standard curve based on seven 2-fold
 \subsection{DLBCL study}
 
 \subsubsection{Introduction}
-The association between oncogenesis and micro RNAs (miRNAs), short non-coding RNA transcripts with regulatory capabilities, has recently prompted an immense research activity [xx]. The possibility to change treatment strategies by transfecting complementary oligos to abnormally up-regulated miRNAs in malignant tissue is of particular interest [xx]. In that respect up-regulated miR-127 and miR-143 in testicular Diffuse Large B-cell Lymphoma (DLBCL) has shown treatment changing potential \citet{Robertus2009}. However, as the number of screened miRNAs was high and the sample size was low in Robertus et al.'s work invoking high risk false discoveries we set out to validate the differential expression of miR-127 and miR-143 in tissues from our own laboratory using our improved qPCR analysis workflow.
+The association between oncogenesis and micro RNAs (miRNAs), short non-coding RNA transcripts with regulatory capabilities, has recently prompted an immense research activity. The possibility to change treatment strategies by transfecting antisense oligonuclotides to control abnormally up-regulated miRNAs in malignant tissue is of particular interest \cite{Garzon2010}. In that respect up-regulated miR-127 and miR-143 in testicular Diffuse Large B-cell Lymphoma (DLBCL) has shown treatment changing potential \citet{Robertus2009}. However, as the number of screened miRNAs was high and the sample size was low in Robertus et al.'s work invoking high risk false discoveries we set out to validate the differential expression of miR-127 and miR-143 in tissues from our own laboratory using our improved qPCR analysis workflow.
 
 \subsubsection{Sample and data preparation}
 
 For this study, DLBCL samples were collected from 8 testicular (case) and 8 nodal (control) paraffin embedded lymphomas at Aalborg Hospital.
 Total RNA was isolated using a combined method of Trizol (Invitrogen) and Mirvana spin columns (Ambion). An amount of 10ng total RNA was synthesized into first strand cDNA in a 15$\mu$L reaction using TaqMan MicroRNA Reverse Transcription Kit (Applied Biosystems) according to the manufactures instruction. In total 1.33$\mu$L cDNA was used as template in the real time PCR amplification performed by Mx3000p QPCR system (Agilent Technologies/Stratgene) with sequence specific TaqMan primers (Applied Biosystems).
-The two microRNAs, hsa-miR-127 and  hsa-miR-143, were chosen for validation of differential expression between testicular and nodal manifestation of diffuse large B-cell lymphoma.
 As reference transcripts we chose RNU-6B and RNU-24, which were less variable and equally expressed across nodal and extra-nodal samples among a larger list of candidate reference genes.
-For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of a pooled material from all 16 lymphomas.
-[In the preprocessing of the data the sample H420 was deemed an outlier and omitted]
-
+For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of a pooled material from all 16 lymphomas. In the preprocessing of the data the sample H420 was deemed an outlier and omitted.
 
 \subsection{Arabidopsis thaliana study}
 
@@ -413,7 +410,7 @@ In order to illustrate the effect of applying variance approximations in a data 
 
 
 \subsection{Sample and data preparation}
-The Arabidopsis thaliana plant growth, RNA extraction, and qPCR experiments were carried out as described in [xx]. The cDNA was diluted into one to four and one to sixteen serial dilutions. Real-time PCR experiments were carried out with duplication for each concentration \cite{Yuan2008}.
+The Arabidopsis thaliana plant growth, RNA extraction, and qPCR experiments were carried out as described in \cite{Yang2006}. The cDNA was diluted into one to four and one to sixteen serial dilutions. Real-time PCR experiments were carried out with duplication for each concentration \cite{Yuan2008}.
 
 Due to the the study design, we naturally fitted estimation efficiencies $\gamma_{ij} = \alpha_{ij}^{-1}$ for each group.
 Because of the few samples we omitted the, in this case, meaningless random sample effect.

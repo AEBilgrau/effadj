@@ -77,17 +77,17 @@ Aalborg \O{}, Denmark %Fredrik Bajers Vej 7G, 9220 Aalborg \O{}, Denmark
 \footnotetext{To whom correspondence should be addressed.}
 
 \begin{abstract}
-{Accurate estimation of the amplification efficiency (AE) is an important prerequisite in real-time quantitative polymerase chain reaction (qPCR).
+{Accurate adjustment for the amplification efficiency (AE) has become an important part of real-time quantitative polymerase chain reaction (qPCR) experiments.
 The most commonly used correction strategy is to estimate the AE by dilution experiments and use this as a plug-in when efficiency correcting the $\ddcq$.
 Currently it is recommended to determine the AE with high precision as the plug-in approach do not account for its uncertainty,
 implicitly assuming an infinitely precise AE estimate.
-Determining the AE with such precision, however, require tedious laboratory work and vast amounts of biological material.
-Violation of the assumption leads to overly optimistic standard errors of the $\ddcq$, confidence intervals, and $p$-values which ultimately increases the type I error probability beyond the expected significance level.
-As qPCR often is used for validation it should be a high priority to account for the uncertainty of the AE estimate properly bounding the type I error rate and achieve the desired significance level.
-We provide methods founded in a linear mixed effects model (LMM) to obtain variance approximations of the efficiency adjusted $\ddcq$ using the statistical delta method, Monte Carlo, or bootstrapping.
-The LMM can used to obtain more reliable statistical inference and power calculations.
-We validate recent findings suggesting that MGST1 is differentially expressed between high and low abundance culture initiating cells in myeloma and that micro-RNA-127 is differentially expressed between testicular and nodal lymphomas.
-Lastly, we benchmark our methods in a simulation study.
+Determining the AE with such precision, however, requires tedious laboratory work and vast amounts of biological material.
+Violation of the assumption leads to overly optimistic standard errors of the $\ddcq$, confidence intervals, and $p$-values which ultimately increases the type I error rate beyond the expected significance level.
+As qPCR is often used for validation it should be a high priority to account for the uncertainty of the AE estimate and thereby properly bounding the type I error rate and achieve the desired significance level.
+We provide methods founded in a linear mixed effects model (LMM) to obtain variance approximations of the efficiency adjusted $\ddcq$ using the statistical delta method, Monte Carlo integration, or bootstrapping.
+The LMM approach can be used to obtain more reliable statistical inference and power calculations.
+We illustrate the impact of AE uncertainty in a public available qPPR data set and use the methods to validate recent findings suggesting that MGST1 is differentially expressed between high and low abundance culture initiating cells in multiple myeloma and that microRNA-127 is differentially expressed between testicular and nodal lymphomas.
+Finally, we benchmark our methods in a simulation study.
 }
 % Keywords
 {amplification efficiency; delta-delta Cq; $\ddcq$; efficiency adjusted; power calculation; qPCR}

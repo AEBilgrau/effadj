@@ -198,8 +198,8 @@ $i\in\{\tgt,\rref\}$ for gene types target and reference;
 $j\in\{\case,\ctrl,\std\}$ for sample types case, control, and standard curve;
 $s\in\{1,\dots,n_{ij}\}$ for samples in the $ij$'th group; and
 $k\in\{0,\dots,K_{ijs}\}$ for dilution steps for each sample.
-To estimate $\ddcq$, estimates of $\alpha_i$ and the expected $C_{q,i,j}$ are needed.
-A popular way of estimating the AE is by dilution curves,
+To estimate $\ddcq$, estimates of $\alpha_i$are needed.
+A popular way of estimating the AEs is by dilution curves,
 i.e.\ by regressing $C_{q,ij}$ against a series of decreasing
 $N_{0,ij}$-values (or conversely), denoted by $N_{0ijk} = N_{0,ij1}2^{-x_k}$, where
 $0 = x_1 < \cdots < x_K < \infty$, and na\"{i}vely plugging $\hat{\alpha}_i$ into \eqref{eq:ddcq} thus disregarding its uncertainty.
@@ -216,11 +216,10 @@ the error terms $\epsilon_{ijsk}$ are independent and ${\cal{N}}(0,\sigma^2)$-di
 The random effect model the paired samples across tgt/ref for each $j$.
 LMMs provide a more correct quantification of the sources of variation and thereby a more correct evaluation of the uncertainty of $\mu_{ij}$ and their derived quantities.
 
-In one of the applications, we shall relax the assumption AE is independent of $j$ and consider group-specific AEs $\alpha_{ij} = \gamma_{ij}^{-1}$.
+In one of the applications, we shall relax the assumption thet the AE is independent of $j$ and consider group-specific AEs $\alpha_{ij} = \gamma_{ij}^{-1}$.
 
-In this paper, we assume that technical replicates to be averaged out for simplicity.
-The technical variation could be modeled in \eqref{eq:model} as an additional random effect term, however.
-For simplicity, we also deemed the of multiple reference genes out-of-scope although the our framework extends easily.
+Although, variation due to technical recplicates could be modeled in \eqref{eq:model} as an additional random effect term, we average out technical replicates for simplicity.
+For simplicity, we also deemed the multiple reference genes out-of-scope of the present paper, although our framework extends easily.
 
 \subsection[Inference for DDCq by the delta method and Monte Carlo]{Inference for $\ddcq$ by the delta method and Monte Carlo}
 
@@ -250,7 +249,7 @@ fixed effects given by
                - (\mu_{\tgt,\ctrl}  \gamma_\tgt^{-1}
                -  \mu_{\rref,\ctrl} \gamma_\rref^{-1})\bigr\}.
 \end{equation}
-The main task of this paper is to approximate standard error of $c(\hat{\vtheta})$ and account for the uncertainty of $\ddcq$.
+The main task of this paper is to approximate the standard error of $c(\hat{\vtheta})$ and thereby account for the uncertainty of $\ddcq$.
 That is, the standard error,
 \begin{equation}
   \label{eq:se}
@@ -260,7 +259,7 @@ is of central interest.
 The standard error is used in the statistic for testing $H_0$ given by
 \begin{equation*}
   t = \frac{c(\hat{\vtheta})}
-           {\sqrt{\Var\!\bigl[c(\hat{\vtheta})\bigr]}}
+           {\sqrt{\Var\!\bigl[c(\hat{\vtheta})\bigr]}},
 \end{equation*}
 which according to a first order Taylor series expansion of $c$ can be
 approximated by
@@ -277,8 +276,8 @@ approximated by
 \end{equation}
 According to \citet[Section 2.4.2]{Pinheiro2000a}, $t$ is approximately
 $t$-distributed with $\eta$ degrees of freedom.
-The degrees of freedom of multilevel mixed effects models are highly non-trivial to obtain in general, however.
-For the purposes of this paper, we do not pursue this further and restrict ourselves to case of a balance experimental design where $\eta$ is obtain relatively straight-forwardly.
+The degrees of freedom of multilevel mixed effects models are non-trivial to obtain in general.
+For the purposes of this paper, we do not pursue this further and restrict ourselves to the case of balanced experimental designs where $\eta$ is obtained relatively straight-forward.
 
 On the basis of \eqref{eq:tstat}, an approximate $(1 - \alpha) 100\%$ confidence interval of $c(\vtheta)$ can then given by
 \begin{equation*}
@@ -288,7 +287,7 @@ On the basis of \eqref{eq:tstat}, an approximate $(1 - \alpha) 100\%$ confidence
 Likewise, $p$-values can be obtained by computing $P(\lvert t \rvert > T)$ where $T$ is $t$-distributed with $\eta$ degrees of freedom.
 
 Alternatively to \eqref{eq:tstat}, the variance $\Var\!\bigl[c(\hat{\vtheta})\bigr]$ can be evaluated by Monte Carlo integration.
-One way is to simulate a large number $N$ of parameters $\vtheta_1, \ldots, \vtheta_N$ from a multivariate normal distribution using the estimated parameters ${\cal{N}}_6(\hat{\vtheta}, \Var[\hat{\vtheta}])$ and computing the sample variance of $c(\vtheta_1), \ldots, c(\vtheta_N)$.
+One way is to simulate a large number $N$ of parameters $\vtheta_1, \ldots, \vtheta_N$ from a multivariate normal distribution using the estimated parameters ${\cal{N}}_6(\hat{\vtheta}, \Var[\hat{\vtheta}])$ and to compute the sample variance of $c(\vtheta_1), \ldots, c(\vtheta_N)$.
 This is closely related to the (parametric) bootstrap discussed in the following section.
 
 Both maximum likelihood (ML) and restricted maximum likelihood estimation (REML) of LMMs have been implemented by the R-package \texttt{lme4} \citep{Bates2014} based on the package \texttt{nlme} \citep{Pinheiro2000a}.
@@ -306,10 +305,10 @@ The needed gradient in \eqref{eq:tstat} is computed straight-forwardly from \eqr
  \right)^\top.
 \end{equation*}
 
-We note that the division of $\gamma_j$ in \eqref{eq:c} is theoretically problematic as $\hat{\gamma}_j$ is normally distributed.
+We note that the division by $\gamma_j$ in \eqref{eq:c} is computationalproblematic as $\hat{\gamma}_j$ is normally distributed and small values can increase the variance dramatic.
 In practice, this is only problematic if the standard error of $\hat{\gamma}_j$ is sufficiently large.
-Some solve this problem using the $\log_2$ concentration as the response and the $C_q$-values as the explanatory variables in regression of the standard curve to estimate $\alpha_j$ directly.
-This approach is however also not without theoretical problems as this puts the errors on the explanatory variables.
+One way to solve this problem is to use the $\log_2$ concentration as the response and the $C_q$-values as the explanatory variables in a regression model of the standard curve to estimate $\alpha_j$ directly.
+This approach is however also not without conceptual problems as this puts the errors on the explanatory variables.
 To this end, we note that one could equivalently test the hypothesis
 \begin{equation*}
   H_0: \gamma_\tgt\gamma_\rref c(\hat{\vtheta}) = 0,
@@ -321,7 +320,6 @@ This corresponds to leaving out the terms in \eqref{eq:model} involving these pa
 If $\gamma_\tgt^{-1} = \gamma_\rref^{-1} = 1$ is assumed, we shall refer to the obtained estimate as the na\"{i}ve LMM.
 If $\gamma_\tgt^{-1}$ and $\gamma_\rref^{-1}$ are assumed known (i.e.~disregarding the standard error hereof) we refer to the obtained estimate as the efficiency corrected (EC) estimate.
 The estimate where the uncertainty of the AE is considered is referred to as efficiency corrected and variance adjusted by either the delta method (EC\&VA1) or Monte Carlo integration (EC\&VA2).
-
 
 
 \subsection[Inference for DDCq by the bootstrap method]{Inference for $\ddcq$ by the bootstrap method}

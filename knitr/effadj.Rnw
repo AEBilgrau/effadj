@@ -460,11 +460,11 @@ Based on the above statistical model, we estimate the FPR and the TPR for each d
 The $C_q$-values and dilution curves for the CIC study are depicted in Fig.~\ref{fig:cqCIC} panels A--B, respectively.
 The simple linear regressions show well-determined standard curves with small standard errors on the estimate of the slope.
 
-The of the considered estimators are seen in Table~\ref{table:cic}.
-The table shows results of tests for difference in gene expression assessed by the $\ddcq$ for both target genes MGST1 and MMSNET normalized to each of reference genes GAPDH and ACTB.
+The values of the considered estimators for $\ddcq$ are seen in Table~\ref{table:cic}.
+The table also shows results of tests for difference in gene expression assessed by the $\ddcq$ for both target genes MGST1 and MMSET normalized to each of the reference genes GAPDH and ACTB.
 We used four different methods to estimate and perform inference:
 \begin{enumerate}
-  \item EC: Efficiency corrected LMM estimate ignoring uncertainty of efficiency estimates.
+  \item EC: Efficiency corrected LMM estimate ignoring the uncertainty of the efficiency estimates.
   \item EC\&VA1: EC and variance adjusted LMM estimate using 1.~order approximation.
   \item EC\&VA2: EC and variance adjusted LMM estimate using Monte Carlo integration.
   \item Bootstrap: Estimate by the bootstrap described in Section \ref{sec:bootstrap} fitting the LMM and using the EC estimate.
@@ -473,40 +473,38 @@ Consider the first section of Table~\ref{table:cic} regarding the target MGST1 n
 The tests for a vanishing $\ddcq$ are all highly significant with comparable $95\%$ CIs.
 As expected, the efficiency corrected estimates are unchanged due to the variance adjustment,
 and only the standard deviation of the estimate is increased.
-The increase in the standard error is very small resulting small but unimportant increases the absolute $t$- and $p$-values.
+The increase in the standard error is very small resulting small but unimportant increases of the absolute $t$- and $p$-values.
 The results remain significant for the MGST1 gene.
 Very similar results are obtained if ACTB is used as reference.
 In conclusion, there is good evidence that MGST1 is differentially expressed between cell lines with high and low abundance of CICs.
 
-For the target gene MMSET in combination with difference reference genes, all estimates are insignificantly different from zero.
-Again, the different methods all agree and no substantial inter-method differences are seen.
-Hence we find no good evidence for differential expression of MMSET between cell lines of high and low abundance of CICs.
+For the target gene MMSET normalized with respect to both reference genes, all estimates are not significantly different from zero.
+Again, the various methods all agree and no substantial inter-method differences are seen.
+Hence we find no evidence for differential expression of MMSET between cell lines with high and low abundance of CICs.
 
-In all cases, our bootstrap scheme provides a standard deviation larger than what is obtained using the delta-method or Monte Carlo method.
+In all instances, our bootstrap scheme provides a standard deviation larger than what is obtained using the delta or Monte Carlo methods.
 However, the mean of the bootstrap distribution is also consistently larger that the other methods.
 
-We see that the large number of dilution steps, as is recommended, ensures a low impact on the standard error and inference of the $\ddcq$.
-
+We see that the large number of dilution steps, as recommended, ensures a low impact of the AE induced standard error on the inference of the $\ddcq$.
 
 \subsection{DLBCL study}
 
 The $C_q$-values and dilution curves for the DLBCL study are depicted in Fig.~\ref{fig:cqTestis}, panels A--B, respectively.
-Analogously to the previous section, the differences in gene expressions assessed by the $\ddcq$ for the target genes miR-127 and miR-143 and each reference rnu6b and rnu24 gene as well the combination of the reference genes, were estimated using the four different methods.
+Analogous to the previous section, the differences in gene expressions assessed by the $\ddcq$ for the target genes miR-127 and miR-143 with respect to each reference gene rnu6b and rnu24 were estimated using the four different methods.
 Again $\Sexpr{n.boots}$ bootstrapped samples were used.
 The results are seen in Table~\ref{table:tesits}.
 
-Like previously, the efficiency corrected estimates are likewise exactly equal with and without variance adjustment with the standard deviation of estimate and the $p$-values are higher for the adjusted values as expected.
-The size of the increase again is undramatic as the previous example again hinting at well determined dilution curves.
+We notice the efficiency corrected estimates are exactly equal with and without variance adjustment, while the standard deviation of the estimate and the $p$-values are higher for the adjusted values as expected.
+The size of the increase is again undramatic hinting at well determined dilution curves.
 
-For all combinations of reference genes the estimates for miR-127 are significantly different from zero at the usual 5 \% significant level, but not that the 1 \% significance level.
+For all combinations of reference genes the estimates for miR-127 are significantly different from zero at the usual 5 \% significant level, but not at the 1 \% significance level.
 The miR-143 estimates are insignificantly different from zero.
-Despite the very small increase the standard error, the $p$-values increase on the second digit.
-While not much, had the standard curves been slightly worse, a change in significance is easily imagined in other cases.
+Despite the very small increase in standard error, the $p$-values increase at the second digit.
+While the AE estimate had no influence in these cases a change in significance is easily imagined in other cases.
 
-The bootstrap again provides a standard deviation similar to the delta method and Monte Carlo integration for both miR-127 and miR-143.
+The bootstrap method provides a standard deviation similar to the delta method and Monte Carlo integration for both miR-127 and miR-143.
 
-Regarding the biological interest, we conclude that there is evidence for a difference in expression of miR-126 between testicular and nodal DLBCL whilst the data is compatible with no difference in expression of miR-143.
-
+Regarding the biological interest, we conclude there is evidence for a difference in miR-127 expression between testicular and nodal DLBCL whilst the data is not compatible with difference in miR-143 expression.
 
 \subsection{Arabidopsis thaliana data}
 

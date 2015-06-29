@@ -206,13 +206,13 @@ $0 = x_1 < \cdots < x_K < \infty$, and na\"{i}vely plugging $\hat{\alpha}_i$ int
 The estimation of the expected $C_{q,ij}$-values and $\alpha_i$ can however be estimated simultaneously when formulated as a LMM \citep{Pinheiro2000a};
 \begin{equation}
   \label{eq:model}
-  C_{q,ijsk} = \mu_{ij} + A_{js} + \gamma_{i} x_k + \epsilon_{i,jsk},
+  C_{q,ijsk} = \mu_{ij} + A_{js} + \gamma_{i} x_k + \epsilon_{ijsk},
 \end{equation}
 where $A_{js}$ is a random effect from sample $s$ under the $j$'th sample type,
 $\gamma_{i} = \alpha_i^{-1}$, and
 $\mu_{ij} = \alpha_i^{-1}(\log_2 F_{C_q} - \log_2 \kappa \sigma_j N_{0ij})$.
 The random effects $A_{js}$ are ${\cal{N}}(0,\sigma_S^2)$-distributed and
-the error terms $\epsilon_{ijsk}$ are independent and ${\cal{N}}(0,\sigma^2)$-distributed.
+the error terms $\epsilon_{ijsk}$ are independent and ${\cal{N}}(0,\sigma^2_j)$-distributed with a sample type specific variance $\sigma^2_j$.
 The random effect model the paired samples across tgt/ref for each $j$.
 LMMs provide a more correct quantification of the sources of variation and thereby a more correct evaluation of the uncertainty of $\mu_{ij}$ and their derived quantities.
 
@@ -410,7 +410,7 @@ In order to illustrate the effect of applying variance approximations in a data 
 The arabidopsis thaliana plant growth, RNA extraction, and qPCR experiments were carried out as described in \citet{Yang2006}. The cDNA was diluted into one to four and one to sixteen serial dilutions. Real-time PCR experiments were carried out with duplication for each concentration \citep{Yuan2008}.
 
 Due to the the study design, we naturally fitted estimation efficiencies $\gamma_{ij} = \alpha_{ij}^{-1}$ for each group.
-Because of the few samples we omitted the, in this case, meaningless random sample effect.
+Because of the few samples we omitted the, in this case meaningless random sample effect.
 
 
 \subsection{Simulation study}
@@ -508,48 +508,46 @@ Regarding the biological interest, we conclude there is evidence for a differenc
 
 \subsection{Arabidopsis thaliana data}
 
-The $C_q$-values and dilution data for the Arabidopsis thaliana data is shown in Fig.~\ref{fig:cqYuan}.
+The $C_q$-values and dilution data for the arabidopsis thaliana data are shown in Fig.~\ref{fig:cqYuan}.
 
 The estimated difference in gene expression between case and control of the target gene MT7 normalized to either reference (Tublin or UBQ) is seen in Table~\ref{table:yuan}.
 The table shows results using the efficiency corrected method with and without variance adjustment by the delta method.
-In both cases, we seen dramatic increases in the standard error, $p$-values, and size of the confidence intervals.
-When using variance adjustment there is no longer a highly statistically significant difference in MT7 expression between case and ctrl.
+In both cases, we see a dramatic increase in the standard error, $p$-values, and size of the confidence intervals.
+When using variance adjustment there is no longer a highly statistical significant difference in MT7 expression between case and ctrl.
 
-These results may be consider somewhat surprising when considering the standard errors of the slope in simple linear regressions for each group, shown in Fig.~\ref{fig:cqYuan}, one might imagine that the uncertainty of the AE is negligible and thus perform the usual analysis.
-However, we seen the contrary for several reasons.
-First, using only 3 dilutions steps leaves very few degrees of freedom left in each group.
-The study is likely quite under-powered due to the very independent few samples and high number of parameters to be estimated.
-Secondly, as dilution data is present in each group the four group-specific AE estimates will all contribute to the standard error of $\ddcq$.
-While this example was selected as a worst-case scenario, it should illustrate that although the standard curves are seemingly well-determined, it is hard to intuitively predetermine the combined effect on the standard error of $\ddcq$.
+These results may be seem surprising at first sight when considering the standard errors of the slopes in the group specific simple linear regressions shown in Fig.~\ref{fig:cqYuan}. One might imagine that the uncertainty of the AE is negligible and thus perform the usual analysis.
+However, we see the contrary for several reasons.
+First, using only 3 dilutions steps leaves very few degrees of freedom left in each group as we are left few samples and a high number of parameters to be estimated.
+Secondly, as dilution curves are used for each group the four group-specific AE estimates will all contribute to the standard error of $\ddcq$.
+While this example was selected as a worst-case scenario, it should illustrate that although the standard curves are seemingly well determined, it is hard to intuitively predetermine the combined effect on the standard error of $\ddcq$.
 
 
 
 \subsection{Simulation study}
 
-First we present results of a simulation example for a two-sided test for the null hypothesis of a vanishing $\ddcq$ at a $5\%$ significance level.
+First, we present results of a simulation study for a two-sided test for the null hypothesis of a vanishing $\ddcq$ at a $5\%$ significance level.
 We simulated \Sexpr{n.sims} datasets under both the null and alternative hypothesis with 6 samples in each case and control group and standard curves with 6 dilution steps.
 The effect size under the alternative was set to $\delta = 10/9$.
 The sample and experimental standard deviations were set to $\sigma_{S} = 1$ and $\sigma = 1$, respectively.
-The AE for the target and reference genes was set to 0.80 and 0.95, respectively.
+The AE for the target and reference genes were set to 0.80 and 0.95, respectively.
 
-The four discussed methods were applied to the $2\times \Sexpr{n.sims}$ datasets and the $p$-value testing the null hypothesis was computed.
-The results of these tests are summarized in Table \ref{table:cic} from which the FPR and TPR can be computed at the $0.05$ cutoff.
+The four discussed methods were applied to the $2\times \Sexpr{n.sims}$ datasets and the $p$-value testing the null hypothesis were computed.
+The results of these tests are summarized in Table \ref{tab:simexample} from which the FPR and TPR can be computed at the $5$\% cutoff.
 Considering first the FPR of the test procedures.
-From Table \ref{table:cic}, we see that the estimated FPR is \Sexpr{ex.fpr} for the efficiency corrected LMM (EC), the efficient corrected with variance adjustment LLM using the delta method (EC\&VA1), the bootstrap method and its parametric variant, respectively.
+From Table \ref{tab:simexample}, we see the estimated FPR is \Sexpr{ex.fpr} for the efficiency corrected LMM (EC), the efficiency corrected LMM with variance adjustment using the delta method (EC\&VA1), and the bootstrap, respectively.
 We omitted EC\&VA by Monte Carlo integration here due to the similar results with EC\&VA1.
-As expected, neither the naive LMM (assuming perfect amplification and ignoring dilution data) and LMM EC method controls the FPR at the $5\%$-level.
+As expected, EC method does not control the FPR at the $5\%$-level.
 The variance adjusted estimator is consistent with controlling the FPR at the $5\%$ level.
 By construction, the variance adjusted will always perform at least as good as the EC in terms of FPR.
 Surprisingly, the bootstrap has the worst performance in terms of FPR.
 
-Secondarily, the TPR is estimated to be \Sexpr{ex.tpr} for methods \Sexpr{names(ex.tpr)}, respectively.
-As known and expected, the TPR is closely connected to the FPR where more conservative approach yield a lower TPR.
-An improved FPR comes a the cost of decreased TPR for a given statistical procedure.
+Secondly, the TPR is estimated to be \Sexpr{ex.tpr} for three methods \Sexpr{names(ex.tpr)}, respectively.
+As expected, we notice that an improved FPR comes a the cost of a decreased TPR for a given statistical procedure.
 
-The above was repeated for sample sizes 4 or 8 in both case and control groups in combination with 4 or 8 dilution steps with the same simulation parameters.
+The above simulations were repeated for sample sizes 4 or 8 in both case and control groups in combination with 4 or 8 dilution steps with the same simulation parameters.
 Fig.~\ref{fig:simstudy} shows the performance of the methods in terms of FPR and TPR.
-Each panel correspond to a given number of samples and dilutions.
-In each panel the $p$-value cut-off is varied between 0.01, 0.05 and 0.1.
+Each panel corresponds to a given number of samples and dilutions.
+In each panel the $p$-value cut-off is varied between 0.01, 0.05, and 0.1.
 Overall, we see that the EC\&VA adjusted estimate is the only procedure consistent with controlling the FPR at the nominal chosen significance level.
 Likewise, for many dilutions, the difference between the EC and EC\&VA procedures diminish as the uncertainty of the AE is relatively low.
 Finally as expected a decrease in FPR usually correspond to a decrease in TPR.
@@ -557,25 +555,25 @@ Finally as expected a decrease in FPR usually correspond to a decrease in TPR.
 
 \section{Discussion and conclusion}
 % Main message
-The common efficiency corrected $\ddcq$ approach to analysis qPCR data disregard the uncertainty of the estimated amplification efficiency leading to increased false positive rates.
+The commonly used efficiency corrected $\ddcq$ approach to analysis qPCR data disregards the uncertainty of the estimated amplification efficiency leading to increased false positive rates.
 As qPCR experiments are often used for validation this is highly undesirable.
 Our primary approach based on the statistical delta-method to approximate the variance of efficiency adjusted $\ddcq$, shows that it is possible to draw statistical inference about qPCR experiments whilst more properly accounting for the AE uncertainty.
-We also note that problem and results are not limited to the $\ddcq$ statistics.
-This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation.
-The approach was used to validate that
+We also note that the problem is not limited to the $\ddcq$ statistics.
+It also covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation.
+The approach was used to validate that:
 (1) MGST1 is differentially expressed between multiple myeloma cell lines of high and low abundance of culture initiating cells and
-(2) design and analyze a study with the hypothesis that miRNA-127 is differentially expressed between testicular and nodal DLBCL.
+(2) design and analyze a study with the hypothesis that miRNA-127 is differentially expressed between testicular and nodal DLBCL, and (3) illustrate the effect of a samll number of dilution steps .
 
 % Comparison with other studies
 In some cases we noticed a dramatic increase in the standard error of the estimate when the
 variance approximation was introduced, potentially leading to a change of significance for the presented dataset depending on the desired significance level.
 This illustrates that it is important to consider all aspects of uncertainty when conducting efficiency correction of qPCR experiments.
 Problems with uncertainty in efficiency estimates should be handled by establishing well-estimated dilution curves as argued elsewhere \cite{Bustin2010}, however even in this case the presented method also allows for design guidelines for power calculations and assessing the influence of the estimated dilution curves.
-Model based estimation of the $\ddcq$ also allows for model checking.
+It is also noteworthy that model based estimation of the $\ddcq$ also allows for model checking by e.g.\ residual plots.
 
 % Conclusions
-Despite the success of qPCR much more statistical methodological research is needed to establish qPCR even more firmly as a gold standard for reliably quantifying abundances of nucleic acids.
-Researchers analyzing qPCR experiments need to model their experiment in detail, e.g.\ via linear or non-linear (mixed) models, as the propagation of uncertainty needs to be carefully assessed and accounted for.
+Despite the success of qPCR much more statistical methodological research is needed to establish qPCR more firmly as a gold standard to reliably quantifying abundances of nucleic acids.
+Researchers analyzing qPCR experiments need to model their experiments in detail, e.g.\ via linear or non-linear (mixed) models, as the propagation of uncertainty needs to be carefully assessed and accounted for.
 This is necessary in all qPCR experiments in order to draw valid inferences and uphold the common statistical guarantees often erroneously assumed to be automatically fulfilled.
 We recommend the conservative approach of always accounting for the uncertainty of the estimates.
 

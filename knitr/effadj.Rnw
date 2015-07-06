@@ -45,8 +45,6 @@ accepted for publication November 1, 2010}
 
 % Title of paper
 \title{Unaccounted uncertainty from qPCR efficiency estimates imply uncontrolled false positive rates}
-% Poorly determined qPCR efficiencies increase false discoveries
-% Variance approximations of efficiency corrected relative gene expression in qPCR experiments
 
 
 % List of authors, with corresponding author marked by asterisk
@@ -79,14 +77,13 @@ Aalborg \O{}, Denmark %Fredrik Bajers Vej 7G, 9220 Aalborg \O{}, Denmark
 \begin{abstract}
 {Accurate adjustment for the amplification efficiency (AE) has become an important part of real-time quantitative polymerase chain reaction (qPCR) experiments.
 The most commonly used correction strategy is to estimate the AE by dilution experiments and use this as a plug-in when efficiency correcting the $\ddcq$.
-Currently it is recommended to determine the AE with high precision as the plug-in approach do not account for its uncertainty,
+Currently it is recommended to determine the AE with high precision as the plug-in approach does not account for its uncertainty,
 implicitly assuming an infinitely precise AE estimate.
 Determining the AE with such precision, however, requires tedious laboratory work and vast amounts of biological material.
-Violation of the assumption leads to overly optimistic standard errors of the $\ddcq$, confidence intervals, and $p$-values which ultimately increases the type I error rate beyond the expected significance level.
+Violation of the assumption leads to overly optimistic standard errors of the $\ddcq$, confidence intervals, and $p$-values which ultimately increase the type I error rate beyond the expected significance level.
 As qPCR is often used for validation it should be a high priority to account for the uncertainty of the AE estimate and thereby properly bounding the type I error rate and achieve the desired significance level.
-We provide methods founded in a linear mixed effects model (LMM) to obtain variance approximations of the efficiency adjusted $\ddcq$ using the statistical delta method, Monte Carlo integration, or bootstrapping.
-The LMM approach can be used to obtain more reliable statistical inference and power calculations.
-We illustrate the impact of AE uncertainty in a public available qPPR data set and use the methods to validate recent findings suggesting that MGST1 is differentially expressed between high and low abundance culture initiating cells in multiple myeloma and that microRNA-127 is differentially expressed between testicular and nodal lymphomas.
+We suggest methods founded in a linear mixed effects model (LMM) to obtain variance approximations of the efficiency adjusted $\ddcq$ using the statistical delta method, Monte Carlo integration, or bootstrapping.
+We illustrate the impact of AE uncertainty in a public available qPCR data set and use the methods to validate recent findings suggesting that MGST1 is differentially expressed between high and low abundance culture initiating cells in multiple myeloma and that microRNA-127 is differentially expressed between testicular and nodal lymphomas.
 Finally, we benchmark our methods in a simulation study.
 }
 % Keywords
@@ -109,7 +106,7 @@ Unfortunately, important details of the statistical analysis is often omitted re
 Validation without such an ability cannot be considered very meaningful and therefore conservative approaches should be taken.
 
 Like all experiments in molecular biology and chemistry, qPCR is sensitive not only to genes and gene transcripts of interest, but also laboratory settings and experimental conditions.
-There are an incredible amount of sources of systematic and non-systematic variation including temperature variations, concentration differences by pipetting errors, primer affinity, in addition to the genuine biological variations of interest across case and control samples.
+There are an incredible amount of sources of systematic and non-systematic variation including temperature variations, concentration differences by pipetting errors, and primer affinity, in addition to the genuine biological variations of interest across case and control samples.
 Laboratory guidelines and increasingly sophisticated statistical modelling have been established to combat many of these systematic errors \citep{Bustin2010, Bustin2009}.
 
 The regular so-called $\ddcq$ method is the normalized relative expression of a target gene of interest between treated (case) and untreated samples (control) accounting for undesired variations using one or more endogenous reference genes (also called housekeeping gene) assumed to be approximately unchanged due to the treatment.
@@ -187,7 +184,7 @@ This method of estimating the log relative abundance between case and controls i
     (\alpha_{ \tgt}C_{ q,\tgt,\case} - \alpha_{ \rref}C_{ q,\rref,\case})
       - (\alpha_{ \tgt}C_{ q,\tgt,\ctrl} - \alpha_{ \rref}C_{ q,\rref,\ctrl}).
 \end{align}
-Thus we have the well-known $2^{-\ddcq}$ as the relative abundance of the original target transcript.
+Thus we have $2^{-\ddcq}$ as the relative abundance of the original target transcript.
 
 
 
@@ -198,10 +195,10 @@ $i\in\{\tgt,\rref\}$ for gene types target and reference;
 $j\in\{\case,\ctrl,\std\}$ for sample types case, control, and standard curve;
 $s\in\{1,\dots,n_{ij}\}$ for samples in the $ij$'th group; and
 $k\in\{0,\dots,K_{ijs}\}$ for dilution steps for each sample.
-To estimate $\ddcq$, estimates of $\alpha_i$are needed.
+To estimate $\ddcq$, estimates of $\alpha_i$ are needed.
 A popular way of estimating the AEs is by dilution curves,
 i.e.\ by regressing $C_{q,ij}$ against a series of decreasing
-$N_{0,ij}$-values (or conversely), denoted by $N_{0ijk} = N_{0,ij1}2^{-x_k}$, where
+$N_{0,ij}$-values, denoted by $N_{0ijk} = N_{0,ij1}2^{-x_k}$, where
 $0 = x_1 < \cdots < x_K < \infty$, and na\"{i}vely plugging $\hat{\alpha}_i$ into \eqref{eq:ddcq} thus disregarding its uncertainty.
 The estimation of the expected $C_{q,ij}$-values and $\alpha_i$ can however be estimated simultaneously when formulated as a LMM \citep{Pinheiro2000a};
 \begin{equation}
@@ -216,12 +213,12 @@ the error terms $\epsilon_{ijsk}$ are independent and ${\cal{N}}(0,\sigma^2_j)$-
 The random effect model the paired samples across tgt/ref for each $j$.
 LMMs provide a more correct quantification of the sources of variation and thereby a more correct evaluation of the uncertainty of $\mu_{ij}$ and their derived quantities.
 
-In one of the applications, we shall relax the assumption thet the AE is independent of $j$ and consider group-specific AEs $\alpha_{ij} = \gamma_{ij}^{-1}$.
+In one of the applications, we shall relax the assumption that the AE is independent of $j$ and consider group-specific AEs $\alpha_{ij} = \gamma_{ij}^{-1}$.
 
-Although, variation due to technical recplicates could be modeled in \eqref{eq:model} as an additional random effect term, we average out technical replicates for simplicity.
+Although, variation due to technical replicates could be modeled in \eqref{eq:model} as an additional random effect term, we average out technical replicates for simplicity.
 For simplicity, we also deemed the multiple reference genes out-of-scope of the present paper, although our framework extends easily.
 
-\subsection[Inference for DDCq by the delta method and Monte Carlo]{Inference for $\ddcq$ by the delta method and Monte Carlo}
+\subsection[Inference for DDCq by the delta method and Monte Carlo integration]{Inference for $\ddcq$ by the delta method and Monte Carlo integration}
 
 We first consider hypothesis testing and confidence intervals for $\ddcq$ by the statistical delta method.
 Let the maximum likelihood estimates of the fixed effects
@@ -288,10 +285,9 @@ Likewise, $p$-values can be obtained by computing $P(\lvert t \rvert > T)$ where
 
 Alternatively to \eqref{eq:tstat}, the variance $\Var\!\bigl[c(\hat{\vtheta})\bigr]$ can be evaluated by Monte Carlo integration.
 One way is to simulate a large number $N$ of parameters $\vtheta_1, \ldots, \vtheta_N$ from a multivariate normal distribution using the estimated parameters ${\cal{N}}_6(\hat{\vtheta}, \Var[\hat{\vtheta}])$ and to compute the sample variance of $c(\vtheta_1), \ldots, c(\vtheta_N)$.
-This is closely related to the (parametric) bootstrap discussed in the following section.
 
-Both maximum likelihood (ML) and restricted maximum likelihood estimation (REML) of LMMs have been implemented by the R-package \texttt{lme4} \citep{Bates2014} based on the package \texttt{nlme} \citep{Pinheiro2000a}.
-The packages readily provide the estimates $\hat{\vtheta}$ and $\Var[\hat{\vtheta}]$ and we use these in the construction of test and confidence intervals for the $\ddcq$ as described above.
+Both maximum likelihood (ML) and restricted maximum likelihood estimation (REML) of LMMs have been implemented by the R-package \texttt{lme4} \citep{Bates2014} based on the \texttt{nlme} package \citep{Pinheiro2000a}.
+The packages readily provide the estimate $\hat{\vtheta}$ and $\Var[\hat{\vtheta}]$ and we use these in the construction of test and confidence intervals for the $\ddcq$ as described above.
 The needed gradient in \eqref{eq:tstat} is computed straight-forwardly from \eqref{eq:c} as
 \begin{equation*}
   \nabla c(\hat{\vtheta}) =
@@ -305,7 +301,7 @@ The needed gradient in \eqref{eq:tstat} is computed straight-forwardly from \eqr
  \right)^\top.
 \end{equation*}
 
-We note that the division by $\gamma_j$ in \eqref{eq:c} is computationalproblematic as $\hat{\gamma}_j$ is normally distributed and small values can increase the variance dramatic.
+We note that the division by $\gamma_j$ in \eqref{eq:c} is problematic as $\hat{\gamma}_j$ is normally distributed and values near zero can increase the variance dramatic.
 In practice, this is only problematic if the standard error of $\hat{\gamma}_j$ is sufficiently large.
 One way to solve this problem is to use the $\log_2$ concentration as the response and the $C_q$-values as the explanatory variables in a regression model of the standard curve to estimate $\alpha_j$ directly.
 This approach is however also not without conceptual problems as this puts the errors on the explanatory variables.
@@ -314,8 +310,11 @@ To this end, we note that one could equivalently test the hypothesis
   H_0: \gamma_\tgt\gamma_\rref c(\hat{\vtheta}) = 0,
 \end{equation*}
 for which the standard error of the test-statistic can be worked out exactly.
+% We omitted doing so for two reasons;
+% First, the $\ddcq$-values is the well-known and understood quantity for non-statistician researchers.
+% Secondly, the calculations involve higher-order tensors not easily understood.
 
-If $\gamma_\tgt^{-1}$ and $\gamma_\rref^{-1}$ is assumed be one (or otherwise known) then \eqref{eq:c} becomes a simple linear hypothesis for which the standard error is easily calculated.
+If $\gamma_\tgt^{-1}$ and $\gamma_\rref^{-1}$ are assumed be one (or otherwise known) then \eqref{eq:c} becomes a simple linear hypothesis for which the standard error is easily calculated.
 This corresponds to leaving out the terms in \eqref{eq:model} involving these parameters and thus ignoring dilution data.
 If $\gamma_\tgt^{-1} = \gamma_\rref^{-1} = 1$ is assumed, we shall refer to the obtained estimate as the na\"{i}ve LMM.
 If $\gamma_\tgt^{-1}$ and $\gamma_\rref^{-1}$ are assumed known (i.e.~disregarding the standard error hereof) we refer to the obtained estimate as the efficiency corrected (EC) estimate.
@@ -332,8 +331,8 @@ The basic idea of the bootstrap is that inference on $\ddcq$ can be can conducte
 In the usual qPCR setup with paired samples and dilution data, straight-forward bootstrapping will quickly fail.
 We propose non-parametric block bootstrap samples for the case-control data generated by sampling matched pairs of tgt/ref genes with replacement for cases and controls, respectively.
 However, as we have only got a single observation for each dilution step we chose to re-sample residuals from a simple linear regression model and subsequently adding the residuals to the fitted values from the linear regression.
-Hence a large number $B$ of bootstrapped datasets consists of the re-sampled matched pairs and the residual bootstrapped standard curve.
-For each dataset, $\hat{\delta}_1 = \ddcq^{(1)}, \ldots, \hat{\delta}_B = \ddcq^{(B)}$ aregexec computed to obtain the bootstrap distribution from which confidence intervals and $p$-values can be obtained.
+Hence the $B$ bootstrapped datasets consists of the re-sampled matched pairs and the residual bootstrapped standard curve.
+For each dataset, $\hat{\delta}_1 = \ddcq^{(1)}, \ldots, \hat{\delta}_B = \ddcq^{(B)}$ are computed to obtain the bootstrap distribution from which confidence intervals and $p$-values can be obtained.
 The standard error of $\ddcq$ is estimated by the sample standard deviation of the bootstrap distribution.
 A $(1-\alpha)100\%$ confidence interval can be computed as
 \begin{equation*}
@@ -369,11 +368,11 @@ In order to gauge the performance of the methods we subsequently performed a sim
 \subsection{CIC study}
 
 \subsubsection{Introduction}
-A cells is defined to be culture initiating if it can initiate a sustained production of cells when cultured in vitro. The viability potential of a cell population can be assessed by measuring the number of culture initiating cells (CICs). This number is typically estimated by a limiting dilution experiment where the number of cells are seeded in decreasing numbers. The ratio of CICs can then be estimated by e.g. Poisson regression \cite{Lefkovits1999}.
+A cell is defined to be culture initiating if it can initiate a sustained production of cells when cultured in vitro. The viability potential of a cell population can be assessed by measuring the number of culture initiating cells (CICs). This number is typically estimated by a limiting dilution experiment where the number of cells are seeded in decreasing numbers. The ratio of CICs can then be estimated by e.g. Poisson regression \cite{Lefkovits1999}.
 
 CICs are of particular interest in cancer research as it is believed that cells with high CIC potential have stem cell like properties making them resistant towards chemotherapy \cite{Chen2013}.
 
-In a search for genes associated to a high culture initiating potential in multiple myeloma (MM) we made limiting dilution experiments of 14 MM cell lines and divided them into 7 cell lines with low and 7 cell lines with high culture initiating potential. Gene expressions were profiled by Affymetrix HG-U133 plus 2 microarrays and we identified the genes MGST1 and MMSET to be differentially expressed between between cell lines with high and low abundance of so-called culture initiating cells (CIC).
+In a search for genes associated with a high culture initiating potential in multiple myeloma (MM) we made limiting dilution experiments of 14 MM cell lines and divided them into 7 cell lines with low and 7 cell lines with high culture initiating potential. Gene expressions were profiled by Affymetrix HG-U133 plus 2 microarrays and we identified the genes MGST1 and MMSET to be differentially expressed between between cell lines with high and low abundance of so-called culture initiating cells (CIC).
 
 As gene expression detection by microarrays can be hampered by high false positive rates, the purpose of this experiment was to validate the findings of the association of MGST1 and MMSET with culture initiating potential by qPCR.
 
@@ -382,7 +381,7 @@ As gene expression detection by microarrays can be hampered by high false positi
 For this, 8 multiple myeloma cell lines (AMO-1, KMM-1, KMS-11, KMS12-PE, KMS12-BM, MOLP8, L-363, RPMI-8226) with $>10\%$ culture initiating cells (CIC), and 8 MM cell lines (ANBL-1, KAS-6-1, LP-1, MOLP-2, NCI-H929, OPM-2, SK-MM-2, U-266) with $<1\%$ culture initiating cells were used.
 The fraction of culture initiating cells was determined by the limiting dilution method, see \cite{Lefkovits1999}. Total RNA was isolated from frozen cell culture pellets, using a combined method of Trizol (invitrogen) and Mirvana spin columns (Ambion).
 Isolated RNA was used in complementary DNA (cDNA) synthesis using SuperScript III First-Strand Synthesis Supermix (Invitrogen).
-As input into the total cDNA synthesis 250ng of total RNA was used. Equal amounts of random hexamers and oligo(dT) were used as primers.
+As input into the total cDNA synthesis of 250ng total RNA was used. Equal amounts of random hexamers and oligo(dT) were used as primers.
 Quantitative real-time reverse transcriptase polymerase chain reaction (qPCR) was performed on an Mx3000p qPCR system (Agilent Technologies/Stratgene) using the TaqMan UniversalPCR Master Mi, No AmpErase UNG, and TaqMan gene expression Assays (Applied Biosystems).
 The following TaqMan Gene Expression Assays were used (Assay ID numbers in parentheses): MGST1 (Hs00220393\_m1), MMSET (Hs00983716\_m1).
 The two reference paraffines beta-actin (ACTB) and GAPDH were used as endogenous controls, assay IDs 4333762-0912030 and 4333764-1111036, respectively.
@@ -391,14 +390,14 @@ For each target and reference transcripts a standard curve based on seven 2-fold
 \subsection{DLBCL study}
 
 \subsubsection{Introduction}
-The association between oncogenesis and micro RNAs (miRNAs), short non-coding RNA transcripts with regulatory capabilities, has recently prompted an immense research activity. The possibility to change treatment strategies by transfecting antisense oligonucleotide to control abnormally up-regulated miRNAs in malignant tissue is of particular interest \cite{Garzon2010}. In that respect up-regulated miR-127 and miR-143 in testicular Diffuse Large B-cell Lymphoma (DLBCL) has shown treatment changing potential \citet{Robertus2009}. However, as the number of screened miRNAs was high and the sample size was low in Robertus et al.'s work invoking high risk of false discoveries we set out to validate the differential expression of miR-127 and miR-143 in tissues from our own laboratory using our improved qPCR analysis workflow.
+The association between oncogenesis and micro RNAs (miRNAs), short non-coding RNA transcripts with regulatory capabilities, has recently prompted an immense research activity. The possibility to change treatment strategies by transfecting antisense oligonucleotide to control abnormally up-regulated miRNAs in malignant tissue is of particular interest \cite{Garzon2010}. In that respect up-regulated miR-127 and miR-143 in testicular Diffuse Large B-cell Lymphoma (DLBCL) have shown treatment changing potential \citet{Robertus2009}. However, as the number of screened miRNAs was high and the sample size was low in Robertus et al.'s work invoking high risk of false discoveries we set out to validate the differential expression of miR-127 and miR-143 in tissues from our own laboratory using our improved qPCR analysis workflow.
 
 \subsubsection{Sample and data preparation}
 
-For this study, DLBCL samples were collected from 8 testicular (case) and 8 nodal (control) paraffin embedded lymphomas at Aalborg Univeristy Hospital.
+For this study, DLBCL samples were collected from 8 testicular (case) and 8 nodal (control) paraffin embedded lymphomas at Aalborg University Hospital.
 Total RNA was isolated using a combined method of Trizol (Invitrogen) and Mirvana spin columns (Ambion). An amount of 10ng total RNA was synthesized into first strand cDNA in a 15$\mu$L reaction using TaqMan MicroRNA Reverse Transcription Kit (Applied Biosystems) according to the manufactures instruction. In total 1.33$\mu$L cDNA was used as template in the real time PCR amplification performed by Mx3000p QPCR system (Agilent Technologies/Stratgene) with sequence specific TaqMan primers (Applied Biosystems).
 As reference transcripts we chose RNU-6B and RNU-24, which were less variable and equally expressed across nodal and extra-nodal samples among a larger list of candidate reference genes.
-For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of a pooled material from all 16 lymphomas. In the preprocessing of the data the sample H420 was deemed an outlier and omitted.
+For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of pooled material from all 16 lymphomas. In the preprocessing of the data the sample H420 was deemed an outlier and omitted.
 
 \subsection{Arabidopsis thaliana study}
 
@@ -442,7 +441,7 @@ From these $t$-scores the TPR can estimated by
 where $\bbOne[\;\cdot\;]$ is the indicator function.
 Hence, the estimated TPR is the fraction of tests correctly declared significant.
 
-Likewise, an estimate of the FPR is to simulate $n$ datasets under the null hypothesis of $c(\theta) = 0$ and obtain $t$-values $t_1, \dots ,t_n$ from which FPR is estimated by
+Likewise, an estimate of the FPR is obtained by simulating $n$ datasets under the null hypothesis of $c(\theta) = 0$ and obtain $t$-values $t_1, \dots ,t_n$ from which FPR is estimated by
 \begin{equation*}
   \widehat{\mathrm{FPR}} =
     \frac{1}{n}\sum_{i=1}^n
@@ -473,7 +472,7 @@ Consider the first section of Table~\ref{table:cic} regarding the target MGST1 n
 The tests for a vanishing $\ddcq$ are all highly significant with comparable $95\%$ CIs.
 As expected, the efficiency corrected estimates are unchanged due to the variance adjustment,
 and only the standard deviation of the estimate is increased.
-The increase in the standard error is very small resulting small but unimportant increases of the absolute $t$- and $p$-values.
+The increase of the standard error is very small resulting in small but unimportant increases of the absolute $t$- and $p$-values.
 The results remain significant for the MGST1 gene.
 Very similar results are obtained if ACTB is used as reference.
 In conclusion, there is good evidence that MGST1 is differentially expressed between cell lines with high and low abundance of CICs.
@@ -483,7 +482,7 @@ Again, the various methods all agree and no substantial inter-method differences
 Hence we find no evidence for differential expression of MMSET between cell lines with high and low abundance of CICs.
 
 In all instances, our bootstrap scheme provides a standard deviation larger than what is obtained using the delta or Monte Carlo methods.
-However, the mean of the bootstrap distribution is also consistently larger that the other methods.
+The mean of the bootstrap distribution seems consistently larger that the other methods.
 
 We see that the large number of dilution steps, as recommended, ensures a low impact of the AE induced standard error on the inference of the $\ddcq$.
 
@@ -498,13 +497,13 @@ We notice the efficiency corrected estimates are exactly equal with and without 
 The size of the increase is again undramatic hinting at well determined dilution curves.
 
 For all combinations of reference genes the estimates for miR-127 are significantly different from zero at the usual 5 \% significant level, but not at the 1 \% significance level.
-The miR-143 estimates are insignificantly different from zero.
+The miR-143 estimates are not significantly different from zero.
 Despite the very small increase in standard error, the $p$-values increase at the second digit.
-While the AE estimate had no influence in these cases a change in significance is easily imagined in other cases.
 
 The bootstrap method provides a standard deviation similar to the delta method and Monte Carlo integration for both miR-127 and miR-143.
 
 Regarding the biological interest, we conclude there is evidence for a difference in miR-127 expression between testicular and nodal DLBCL whilst the data is not compatible with difference in miR-143 expression.
+While the AE estimate had no influence in these cases a change in significance is easily imagined in other cases.
 
 \subsection{Arabidopsis thaliana data}
 
@@ -518,7 +517,7 @@ When using variance adjustment there is no longer a highly statistical significa
 These results may be seem surprising at first sight when considering the standard errors of the slopes in the group specific simple linear regressions shown in Fig.~\ref{fig:cqYuan}. One might imagine that the uncertainty of the AE is negligible and thus perform the usual analysis.
 However, we see the contrary for several reasons.
 First, using only 3 dilutions steps leaves very few degrees of freedom left in each group as we are left few samples and a high number of parameters to be estimated.
-Secondly, as dilution curves are used for each group the four group-specific AE estimates will all contribute to the standard error of $\ddcq$.
+Secondly, as dilution curves are used for each group the four group-specific AE estimates will all contribute to the standard error of the $\ddcq$.
 While this example was selected as a worst-case scenario, it should illustrate that although the standard curves are seemingly well determined, it is hard to intuitively predetermine the combined effect on the standard error of $\ddcq$.
 
 
@@ -533,15 +532,14 @@ The AE for the target and reference genes were set to 0.80 and 0.95, respectivel
 
 The four discussed methods were applied to the $2\times \Sexpr{n.sims}$ datasets and the $p$-value testing the null hypothesis were computed.
 The results of these tests are summarized in Table \ref{tab:simexample} from which the FPR and TPR can be computed at the $5$\% cutoff.
-Considering first the FPR of the test procedures.
-From Table \ref{tab:simexample}, we see the estimated FPR is \Sexpr{ex.fpr} for the efficiency corrected LMM (EC), the efficiency corrected LMM with variance adjustment using the delta method (EC\&VA1), and the bootstrap, respectively.
-We omitted EC\&VA by Monte Carlo integration here due to the similar results with EC\&VA1.
-As expected, EC method does not control the FPR at the $5\%$-level.
+From Table \ref{tab:simexample}, we see the estimated FPRs are \Sexpr{ex.fpr[1:2]}, and \Sexpr{ex.fpr[3]} for the efficiency corrected LMM (EC), the efficiency corrected LMM with variance adjustment using the delta method (EC\&VA1), and the bootstrap, respectively.
+We omitted EC\&VA by Monte Carlo integration here due to the computational cost and the similar results with EC\&VA1 in the previous.
+As expected, the EC method does not control the FPR at the $5\%$-level.
 The variance adjusted estimator is consistent with controlling the FPR at the $5\%$ level.
 By construction, the variance adjusted will always perform at least as good as the EC in terms of FPR.
 Surprisingly, the bootstrap has the worst performance in terms of FPR.
 
-Secondly, the TPR is estimated to be \Sexpr{ex.tpr} for three methods \Sexpr{names(ex.tpr)}, respectively.
+Secondly, the TPR are estimated to be \Sexpr{ex.tpr[1:2]}, \Sexpr{ex.tpr[3]} for three methods \Sexpr{names(ex.tpr)}, respectively.
 As expected, we notice that an improved FPR comes a the cost of a decreased TPR for a given statistical procedure.
 
 The above simulations were repeated for sample sizes 4 or 8 in both case and control groups in combination with 4 or 8 dilution steps with the same simulation parameters.
@@ -550,25 +548,26 @@ Each panel corresponds to a given number of samples and dilutions.
 In each panel the $p$-value cut-off is varied between 0.01, 0.05, and 0.1.
 Overall, we see that the EC\&VA adjusted estimate is the only procedure consistent with controlling the FPR at the nominal chosen significance level.
 Likewise, for many dilutions, the difference between the EC and EC\&VA procedures diminish as the uncertainty of the AE is relatively low.
-Finally as expected a decrease in FPR usually correspond to a decrease in TPR.
+Finally as expected a decrease in FPR corresponds to a decrease in TPR.
 
 
 \section{Discussion and conclusion}
 % Main message
-The commonly used efficiency corrected $\ddcq$ approach to analysis qPCR data disregards the uncertainty of the estimated amplification efficiency leading to increased false positive rates.
+The commonly used efficiency corrected $\ddcq$ approach to analysis of qPCR data disregards the uncertainty of the estimated amplification efficiency leading to increased false positive rates.
 As qPCR experiments are often used for validation this is highly undesirable.
-Our primary approach based on the statistical delta-method to approximate the variance of efficiency adjusted $\ddcq$, shows that it is possible to draw statistical inference about qPCR experiments whilst more properly accounting for the AE uncertainty.
-We also note that the problem is not limited to the $\ddcq$ statistics.
-It also covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation.
+Our primary approach based on the statistical delta-method to approximate the variance of the efficiency adjusted $\ddcq$, shows that it is possible to draw statistical inference about qPCR experiments whilst more properly accounting for the AE uncertainty.
+We also note that the problem is not limited to the $\ddcq$ statistic.
+
 The approach was used to validate that:
 (1) MGST1 is differentially expressed between multiple myeloma cell lines of high and low abundance of culture initiating cells and
-(2) design and analyze a study with the hypothesis that miRNA-127 is differentially expressed between testicular and nodal DLBCL, and (3) illustrate the effect of a samll number of dilution steps .
+(2) analyze and study the hypothesis that miRNA-127 is differentially expressed between testicular and nodal DLBCL, and
+(3) illustrate the effect of a small number of dilution steps.
 
 % Comparison with other studies
 In some cases we noticed a dramatic increase in the standard error of the estimate when the
 variance approximation was introduced, potentially leading to a change of significance for the presented dataset depending on the desired significance level.
 This illustrates that it is important to consider all aspects of uncertainty when conducting efficiency correction of qPCR experiments.
-Problems with uncertainty in efficiency estimates should be handled by establishing well-estimated dilution curves as argued elsewhere \cite{Bustin2010}, however even in this case the presented method also allows for design guidelines for power calculations and assessing the influence of the estimated dilution curves.
+Problems with uncertainty in efficiency estimates should be handled by establishing well-estimated dilution curves as argued elsewhere \citep{Bustin2010}, however even in this case the presented method also allows for design guidelines for power calculations and assessing the influence of the estimated dilution curves.
 It is also noteworthy that model based estimation of the $\ddcq$ also allows for model checking by e.g.\ residual plots.
 
 % Conclusions
@@ -580,7 +579,7 @@ We recommend the conservative approach of always accounting for the uncertainty 
 \section*{Software and supplementary Material}
 
 All statistical analysis were done with R \citep{Rproj} version 3.1.3 and the contributed \texttt{lme4}-package \citep{Pinheiro2000a} was applied for random effects modelling.
-All data, R code, LaTeX, and instructions to reproduce present paper and results within is freely available at \url{http://www.github.org/AEBilgrau/effadj/} or upon personal request.
+All data, R code, LaTeX, and instructions to reproduce the present paper and results within are freely available at \url{http://www.github.org/AEBilgrau/effadj/} or upon personal request.
 The paper is generated using \texttt{knitr}, an improvement of Sweave \citep{Xie2013, Leisch2002}.
 
 

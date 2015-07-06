@@ -603,7 +603,7 @@ The research is supported by MSCNET, a translational program studying cancer ste
 \caption{
   Overview of CIC experiment data.
   A: Raw $C_q$-values for different cell lines for each gene type and sample type.
-  The individual genes are not visually differentiated.
+  The point type and colour differentiates the different genes.
   B: Dilution data for reference genes (ACTB, GAPDH) and target genes (MGST1, MMSET).
 }
 \label{fig:cqCIC}
@@ -618,7 +618,7 @@ The research is supported by MSCNET, a translational program studying cancer ste
 \caption{
   Overview of testis experiment data.
   A: Raw $C_q$-values for different patient samples for each gene type and sample type.
-  The individual genes are not visually differentiated here.
+  The point type and colour differentiates the different genes.
   B: Dilution data for reference genes (rnu24, rnu6b) and target genes (mir127, mir142).
 }
 \label{fig:cqTestis}
@@ -633,8 +633,8 @@ The research is supported by MSCNET, a translational program studying cancer ste
 \caption{
   Overview of \citet{Yuan2008} experiment data.
   $C_q$-values against the dilution step for case and control samples.
-  Dilution data is present for all both the target (MT7) and reference genes (Tublin, UBQ).
-  The technical duplicates has been averaged in the analysis.
+  Dilution data are present for both the target (MT7) and reference genes (Tublin, UBQ).
+  The technical duplicates have been averaged out in the analysis.
   }
 \label{fig:cqYuan}
 \end{figure}
@@ -646,7 +646,8 @@ The research is supported by MSCNET, a translational program studying cancer ste
 \includegraphics[width=\textwidth]{fig4}
 \end{center}
 \caption{
-  Plot of the false positive rates (FPR, black) and true positive rates (TPR, grey) and 95 \% confidence intervals achieved by each method at various $p$-value cut-offs (0.05, 0.01, 0.1) shown in red by simulation experiments.
+  Plot of the false positive rates (FPR, black) and true positive rates (TPR, grey) and 95 \% confidence intervals achieved simulation experiments for each method.
+  Various $p$-value cut-offs (0.05, 0.01, 0.1) are shown by solid red horizontal lines.
   The FPR and TPR are computed completely analogous to Table~\ref{tab:simexample}.
   The rates are plotted for each combination of 4 or 8 samples with 4 or 8 fold dilution curves.
 }

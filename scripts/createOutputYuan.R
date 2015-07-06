@@ -10,6 +10,8 @@
 # Plot Yuan et al. (2008) data
 #
 
+lime.colours <- c("#C4B582", "#65654D", "#B3938C")
+
 mypanel <- function(x, y, ...) {
 
   panel.lmlineq(x, y, adj = c(1,0), lty = 2, col.line = "darkgrey", digits = 2,
@@ -22,15 +24,16 @@ mypanel <- function(x, y, ...) {
 }
 
 fig3 <- xyplot(Cq ~ l2con | sampleType:geneName, data = yuan, panel = mypanel,
-               col = "purple", pch  = 16,
+               groups = yuan$geneName,
+               col = lime.colours, pch  = seq_along(lime.colours),
                xlab = as.expression(bquote(-log[2]*N["0,i,j,k"])),
                ylab = expression(C[q]),
                main = "")
 
 setEPS()
 postscript("../output/fig3.eps", width = 1.5*7, height = 0.5*7, fonts = "serif")
-  trellis.par.set(strip.background=list(col="lightgrey"))
-  print(fig3, position=c(0, 0, 1, 1))
+  trellis.par.set(strip.background = list(col = "lightgrey"))
+  print(fig3, position = c(0, 0, 1, 1))
 dev.off()
 
 
@@ -93,7 +96,7 @@ DDCq.test2 <- function(data, eff.cor = TRUE, var.adj = TRUE, alpha = 0.05) {
   df <- fit$df.residual
   # df <- unique(summary(fit)$tTable[,"DF"])
   p.val   <- 2*(1 - pt(abs(t.stat), df))
-  conf.int <- con + c(-1, 1)*qt(1-alpha/2, df)*se.con
+  conf.int <- con + c(-1, 1)*qt(1 - alpha/2, df)*se.con
   result  <- c("Estimate" = con, "Std. Error" = se.con,
                "t value" = t.stat, "df" = round(df), "Pr(>|t|)" = p.val,
                "LCL" = conf.int[1], "UCL" = conf.int[2])

@@ -23,27 +23,36 @@ mypanel <- function(x, y, ...) {
 
 
 # Trellis plot of all data
+red.colours <- c("#F82A1C", "#F59691", "#DF6F38", "#AA5455")
+stopifnot(nlevels(testis$geneName) == length(red.colours))
+
 testis.data <- subset(testis, sampleType != "Standard")
-fig2a <- dotplot(sampleName ~ Cq | geneType:sampleType,
-                 data = testis.data,
-                 main = "", col = "tomato",
-                 xlab = expression(C[q]),
-                 pch = 16,
-                 key = list(text = list(title = "A"),
-                            corner = c(-0.1,1.1),
-                            cex = 1.5, font = "bold"))
+fig2a <-
+  dotplot(sampleName ~ Cq | geneType:sampleType,
+          groups = geneName,
+          col = red.colours,
+          data = testis.data,
+          main = "",
+          xlab = expression(C[q]),
+          pch = seq_along(red.colours),
+          key = list(text = list(title = "A"),
+                     corner = c(-0.1,1.1),
+                     cex = 1.5, font = "bold"))
 
 testis.std <- subset(testis, sampleType == "Standard")
-fig2b <- xyplot(Cq ~ l2con | geneName,
-                data = testis.std,
-                panel = mypanel,
-                xlab = as.expression(bquote(-log[2]*N["0,i,j,k"])),
-                ylab = expression(C[q]),
-                main = "", col = "tomato",
-                pch = 16,
-                key = list(text = list(title = "B"),
-                           corner = c(-0.1,1.1),
-                           cex = 1.5, font = "bold"))
+fig2b <-
+  xyplot(Cq ~ l2con | geneName,
+         groups = geneName,
+         col = red.colours,
+         data = testis.std,
+         panel = mypanel,
+         xlab = as.expression(bquote(-log[2]*N["0,i,j,k"])),
+         ylab = expression(C[q]),
+         main = "",
+         pch = seq_along(red.colours),
+         key = list(text = list(title = "B"),
+                    corner = c(-0.1,1.1),
+                    cex = 1.5, font = "bold"))
 
 setEPS()
 postscript("../output/fig2.eps", width = 1.5*7, height = 0.5*7, fonts = "serif")
@@ -144,15 +153,12 @@ grps <-
                                        paste(x[1], "vs", x[2])))
 
 caption.txt <- "Testis data: Method comparison for estimating the
-  $\\ddcq$-value. $t$-test shows results from a simple unpaired
-  $t$-test ignoring dilution data. LMM signifies the regular
-  $\\ddcq$ method using a linear mixed effects model ignoring
-  dilution.
+  $\\ddcq$-value.
   EC denotes use of the plugin-estimator.
   VA denotes that the efficiency correction was variance adjusted using the
-  delta method (1) or monte carlo integration (2).
+  delta method (1) or Monte Carlo integration (2).
   Bootstrap shows the mean and standard deviation of %d
-  bootstrap samples using EC estimate. The last two columns shows the $95%s$
+  bootstrap samples using EC estimate. The last two columns show the $95%s$
   lower and upper confidence interval limits."
 
 toTeX <- toTeX[!grepl("LMM|t-test", rownames(toTeX)), ]

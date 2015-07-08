@@ -49,7 +49,7 @@ accepted for publication November 1, 2010}
 
 % List of authors, with corresponding author marked by asterisk
 \author{A.E. BILGRAU$^\ast$, S. FALGREEN, A. PETERSEN, M.K. KJELDSEN,\\
-J.S. B\O{}DKER,  H.E. JOHNSEN, K. DYBK\AE{}R, M. B\O{}GSTED\\[4pt]
+J.S. B\O{}DKER,  H.E. JOHNSEN, K. DYBK\AE{}R, P.S. ERIKSEN, M. B\O{}GSTED\\[4pt]
 % Author addresses
 \textit{Department of Haematology, Aalborg University Hospital,
 Aalborg, Denmark \\ %Sdr. Skovvej 15, 9000 Aalborg, Denmark
@@ -83,7 +83,7 @@ Determining the AE with such precision, however, requires tedious laboratory wor
 Violation of the assumption leads to overly optimistic standard errors of the $\ddcq$, confidence intervals, and $p$-values which ultimately increase the type I error rate beyond the expected significance level.
 As qPCR is often used for validation it should be a high priority to account for the uncertainty of the AE estimate and thereby properly bounding the type I error rate and achieve the desired significance level.
 We suggest methods founded in a linear mixed effects model (LMM) to obtain variance approximations of the efficiency adjusted $\ddcq$ using the statistical delta method, Monte Carlo integration, or bootstrapping.
-We illustrate the impact of AE uncertainty in a public available qPCR data set and use the methods to validate recent findings suggesting that MGST1 is differentially expressed between high and low abundance culture initiating cells in multiple myeloma and that microRNA-127 is differentially expressed between testicular and nodal lymphomas.
+We illustrate the impact of AE uncertainty in a public available qPCR data set and use the methods to validate recent findings suggesting that \textit{MGST1} is differentially expressed between high and low abundance culture initiating cells in multiple myeloma and that microRNA-127 is differentially expressed between testicular and nodal lymphomas.
 Finally, we benchmark our methods in a simulation study.
 }
 % Keywords
@@ -121,7 +121,7 @@ This assumption implies a systematic underestimation of the standard error of $\
 If the AE is poorly determined this underestimation can drastically increase the standard error of $\ddcq$ and the derived quantities.
 
 % Precise aims of the paper
-The aim of the paper is to formulate a mathematical model which allows us to draw formal statistical inference about qPCR experiments with non-efficient amplifications.
+The aim of this paper is to formulate a mathematical model which allows us to draw formal statistical inference about qPCR experiments with non-efficient amplifications.
 This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation, with special emphasis on false positive rates.
 We describe the simultaneous estimation of the uncertainty of the efficiency amplification estimate by linear mixed effects models (LMM), which also allows for a more appropriate handling of the technical and sample errors.
 We investigate the use of the statistical delta method, Monte Carlo integration, or bootstrapping to perform inference on the value of $\ddcq$.
@@ -131,7 +131,7 @@ The idea of using LMMs for qPCR experiments is not completely new.
 \citet{fu2006} applied the related generalized estimation equations to handle intra and inter group variation.
 However, our idea of LMMs combined with the statistical delta method, Monte Carlo integration, or bootstrapping to handle uncertainty stemming from the efficiency estimation seems to be novel and provides a general statistical framework for qPCR experiments and an extension of \cite{Yuan2008}.
 
-The approaches are used to demonstrate that multiple myeloma cancer cell lines differentially express the MGST1 gene depending on the frequency of culture initiating cells.
+The approaches are used to demonstrate that multiple myeloma cancer cell lines differentially express the \textit{MGST1} gene depending on the frequency of culture initiating cells.
 We also used the approach to design a study which results turned out to support the hypothesis of \cite{Robertus2009} that miRNA-127 is differentially expressed between testicular and nodal DLBCL
 Lastly, in a simulation study, we show that the methods control the false postive rate in the desired manner.
 
@@ -210,10 +210,10 @@ $\gamma_{i} = \alpha_i^{-1}$, and
 $\mu_{ij} = \alpha_i^{-1}(\log_2 F_{C_q} - \log_2 \kappa \sigma_j N_{0ij})$.
 The random effects $A_{js}$ are ${\cal{N}}(0,\sigma_S^2)$-distributed and
 the error terms $\epsilon_{ijsk}$ are independent and ${\cal{N}}(0,\sigma^2_j)$-distributed with a sample type specific variance $\sigma^2_j$.
-The random effect model the paired samples across tgt/ref for each $j$.
+The random effects account for the paired samples across tgt/ref for each $j$.
 LMMs provide a more correct quantification of the sources of variation and thereby a more correct evaluation of the uncertainty of $\mu_{ij}$ and their derived quantities.
 
-In one of the applications, we shall relax the assumption that the AE is independent of $j$ and consider group-specific AEs $\alpha_{ij} = \gamma_{ij}^{-1}$.
+In one application we shall relax the assumption that the AE is independent of $j$ and consider group-specific AEs $\alpha_{ij} = \gamma_{ij}^{-1}$.
 
 Although, variation due to technical replicates could be modeled in \eqref{eq:model} as an additional random effect term, we average out technical replicates for simplicity.
 For simplicity, we also deemed the multiple reference genes out-of-scope of the present paper, although our framework extends easily.
@@ -327,7 +327,7 @@ The estimate where the uncertainty of the AE is considered is referred to as eff
 We now consider hypothesis testing and confidence intervals for $\ddcq$ by bootstrapping as an alternative approach.
 The bootstrap, which avoids calculating gradients, is often cited to perform better in small sample situations.
 
-The basic idea of the bootstrap is that inference on $\ddcq$ can be can conducted by re-sampling the sample data and performing inference on the re-sampled data.
+The basic idea of the bootstrap is that inference on $\ddcq$ can be conducted by re-sampling the sample data and performing inference on the re-sampled data.
 In the usual qPCR setup with paired samples and dilution data, straight-forward bootstrapping will quickly fail.
 We propose non-parametric block bootstrap samples for the case-control data generated by sampling matched pairs of tgt/ref genes with replacement for cases and controls, respectively.
 However, as we have only got a single observation for each dilution step we chose to re-sample residuals from a simple linear regression model and subsequently adding the residuals to the fitted values from the linear regression.
@@ -368,48 +368,49 @@ In order to gauge the performance of the methods we subsequently performed a sim
 \subsection{CIC study}
 
 \subsubsection{Introduction}
-A cell is defined to be culture initiating if it can initiate a sustained production of cells when cultured in vitro. The viability potential of a cell population can be assessed by measuring the number of culture initiating cells (CICs). This number is typically estimated by a limiting dilution experiment where the number of cells are seeded in decreasing numbers. The ratio of CICs can then be estimated by e.g. Poisson regression \cite{Lefkovits1999}.
+A cell is defined to be culture initiating if it can initiate a sustained production of cells when cultured in vitro. The viability potential of a cell population can be assessed by measuring the number of culture initiating cells (CICs). This number is typically estimated by a limiting dilution experiment where the number of cells are seeded in decreasing numbers. The ratio of CICs can then be estimated by e.g. Poisson regression \citep{Lefkovits1999}.
 
-CICs are of particular interest in cancer research as it is believed that cells with high CIC potential have stem cell like properties making them resistant towards chemotherapy \cite{Chen2013}.
+CICs are of particular interest in cancer research as it is believed that cells with high CIC potential have stem cell like properties making them resistant towards chemotherapy \citep{Chen2013}.
 
-In a search for genes associated with a high culture initiating potential in multiple myeloma (MM) we made limiting dilution experiments of 14 MM cell lines and divided them into 7 cell lines with low and 7 cell lines with high culture initiating potential. Gene expressions were profiled by Affymetrix HG-U133 plus 2 microarrays and we identified the genes MGST1 and MMSET to be differentially expressed between between cell lines with high and low abundance of so-called culture initiating cells (CIC).
+In a search for genes associated with a high culture initiating potential in multiple myeloma (MM) we made limiting dilution experiments of 14 MM cell lines and divided them into 7 cell lines with low and 7 cell lines with high culture initiating potential. Gene expressions were profiled by Affymetrix HG-U133 plus 2 microarrays and we identified the genes \textit{MGST1} and \textit{MMSET} to be differentially expressed between between cell lines with high and low abundance of so-called culture initiating cells (CIC).
 
-As gene expression detection by microarrays can be hampered by high false positive rates, the purpose of this experiment was to validate the findings of the association of MGST1 and MMSET with culture initiating potential by qPCR.
+As gene expression detection by microarrays can be hampered by high false positive rates, the purpose of this experiment was to validate the findings of the association of \textit{MGST1} and \textit{MMSET} with culture initiating potential by qPCR.
 
 \subsubsection{Sample and data preparation}
 
-For this, 8 multiple myeloma cell lines (AMO-1, KMM-1, KMS-11, KMS12-PE, KMS12-BM, MOLP8, L-363, RPMI-8226) with $>10\%$ culture initiating cells (CIC), and 8 MM cell lines (ANBL-1, KAS-6-1, LP-1, MOLP-2, NCI-H929, OPM-2, SK-MM-2, U-266) with $<1\%$ culture initiating cells were used.
-The fraction of culture initiating cells was determined by the limiting dilution method, see \cite{Lefkovits1999}. Total RNA was isolated from frozen cell culture pellets, using a combined method of Trizol (invitrogen) and Mirvana spin columns (Ambion).
+For this, 8 multiple myeloma cell lines (AMO-1, KMM-1, KMS-11, KMS-12-PE, KMS-12-BM, MOLP-8, L-363, RPMI-8226) with $>10\%$ CICs, and 8 MM cell lines (ANBL-1, KAS-6-1, LP-1, MOLP-2, NCI-H929, OPM-2, SK-MM-2, U-266) with $<1\%$ CICs were used.
+The fraction of CICs was determined by the limiting dilution method, see \cite{Lefkovits1999}. Total RNA was isolated from frozen cell culture pellets, using a combined method of Trizol (Invitrogen) and Mirvana spin columns (Ambion).
 Isolated RNA was used in complementary DNA (cDNA) synthesis using SuperScript III First-Strand Synthesis Supermix (Invitrogen).
 As input into the total cDNA synthesis of 250ng total RNA was used. Equal amounts of random hexamers and oligo(dT) were used as primers.
-Quantitative real-time reverse transcriptase polymerase chain reaction (qPCR) was performed on an Mx3000p qPCR system (Agilent Technologies/Stratgene) using the TaqMan UniversalPCR Master Mi, No AmpErase UNG, and TaqMan gene expression Assays (Applied Biosystems).
-The following TaqMan Gene Expression Assays were used (Assay ID numbers in parentheses): MGST1 (Hs00220393\_m1), MMSET (Hs00983716\_m1).
+Quantitative real-time reverse transcriptase polymerase chain reaction (qPCR) was performed on a Mx3000p qPCR system (Agilent Technologies/Stratgene) using the TaqMan UniversalPCR Master Mi, No AmpErase UNG, and TaqMan gene expression Assays (Applied Biosystems).
+The following TaqMan Gene Expression Assays were used (Assay ID numbers in parentheses): \textit{MGST1} (Hs00220393\_m1), \textit{MMSET} (Hs00983716\_m1).
 The two reference paraffines beta-actin (ACTB) and GAPDH were used as endogenous controls, assay IDs 4333762-0912030 and 4333764-1111036, respectively.
-For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of material from AMO-1.
+For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of material from the AMO-1 cell line.
 
 \subsection{DLBCL study}
 
 \subsubsection{Introduction}
-The association between oncogenesis and micro RNAs (miRNAs), short non-coding RNA transcripts with regulatory capabilities, has recently prompted an immense research activity. The possibility to change treatment strategies by transfecting antisense oligonucleotide to control abnormally up-regulated miRNAs in malignant tissue is of particular interest \cite{Garzon2010}. In that respect up-regulated miR-127 and miR-143 in testicular Diffuse Large B-cell Lymphoma (DLBCL) have shown treatment changing potential \citet{Robertus2009}. However, as the number of screened miRNAs was high and the sample size was low in Robertus et al.'s work invoking high risk of false discoveries we set out to validate the differential expression of miR-127 and miR-143 in tissues from our own laboratory using our improved qPCR analysis workflow.
+The association between oncogenesis and micro RNAs (miRNAs), short non-coding RNA transcripts with regulatory capabilities, has recently prompted an immense research activity. The possibility to change treatment strategies by transfecting antisense oligonucleotide to control abnormally up-regulated miRNAs in malignant tissue is of particular interest \citep{Garzon2010}. In that respect up-regulated \textit{miR-127} and \textit{miR-143} in testicular Diffuse Large B-cell Lymphoma (DLBCL) have shown treatment changing potential \citep{Robertus2009}. However, as the number of screened miRNAs was high and the sample size was low in Robertus et al.'s work invoking high risk of false discoveries we set out to validate the differential expression of \textit{miR-127} and \textit{miR-143} in tissues from our own laboratory using our improved qPCR analysis workflow.
 
 \subsubsection{Sample and data preparation}
 
 For this study, DLBCL samples were collected from 8 testicular (case) and 8 nodal (control) paraffin embedded lymphomas at Aalborg University Hospital.
 Total RNA was isolated using a combined method of Trizol (Invitrogen) and Mirvana spin columns (Ambion). An amount of 10ng total RNA was synthesized into first strand cDNA in a 15$\mu$L reaction using TaqMan MicroRNA Reverse Transcription Kit (Applied Biosystems) according to the manufactures instruction. In total 1.33$\mu$L cDNA was used as template in the real time PCR amplification performed by Mx3000p QPCR system (Agilent Technologies/Stratgene) with sequence specific TaqMan primers (Applied Biosystems).
-As reference transcripts we chose RNU-6B and RNU-24, which were less variable and equally expressed across nodal and extra-nodal samples among a larger list of candidate reference genes.
-For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of pooled material from all 16 lymphomas. In the preprocessing of the data the sample H420 was deemed an outlier and omitted.
+As reference transcripts we chose \textit{RNU-6B} and \textit{RNU-24}, which were less variable and equally expressed across nodal and extra-nodal samples among a larger list of candidate reference genes.
+For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of pooled material from all 16 lymphomas.
+%In the preprocessing of the data the sample H420 was deemed an outlier and omitted.  % (Still used)
 
 \subsection{Arabidopsis thaliana study}
 
 \subsubsection{Introduction}
-In order to illustrate the effect of applying variance approximations in a data set with a limited number of dilution steps we considered the arabidopsis thaliana data set published by \citet{Yuan2008}. The data set contains one gene of interest, MT7, potentially differentially expressed under two growth conditions of the plant arabidopsis thaliana and two reference genes ubiquitin (UBQ) and tublin.
+In order to illustrate the effect of applying variance approximations in a data set with a limited number of dilution steps and samples we considered the arabidopsis thaliana data set published by \citet{Yuan2008}. The data set contains one gene of interest, \textit{MT7}, potentially differentially expressed under two growth conditions of the plant arabidopsis thaliana and two reference genes ubiquitin (\textit{UBQ}) and tublin.
 
 
 \subsubsection{Sample and data preparation}
 The arabidopsis thaliana plant growth, RNA extraction, and qPCR experiments were carried out as described in \citet{Yang2006}. The cDNA was diluted into one to four and one to sixteen serial dilutions. Real-time PCR experiments were carried out with duplication for each concentration \citep{Yuan2008}.
 
 Due to the the study design, we naturally fitted estimation efficiencies $\gamma_{ij} = \alpha_{ij}^{-1}$ for each group.
-Because of the few samples we omitted the, in this case meaningless random sample effect.
+Because of the few samples we omitted the, in this case, meaningless random sample effect.
 
 
 \subsection{Simulation study}
@@ -460,7 +461,7 @@ The $C_q$-values and dilution curves for the CIC study are depicted in Fig.~\ref
 The simple linear regressions show well-determined standard curves with small standard errors on the estimate of the slope.
 
 The values of the considered estimators for $\ddcq$ are seen in Table~\ref{table:cic}.
-The table also shows results of tests for difference in gene expression assessed by the $\ddcq$ for both target genes MGST1 and MMSET normalized to each of the reference genes GAPDH and ACTB.
+The table also shows results of tests for difference in gene expression assessed by the $\ddcq$ for both target genes \textit{MGST1} and \textit{MMSET} normalized to each of the reference genes GAPDH and ACTB.
 We used four different methods to estimate and perform inference:
 \begin{enumerate}
   \item EC: Efficiency corrected LMM estimate ignoring the uncertainty of the efficiency estimates.
@@ -468,18 +469,18 @@ We used four different methods to estimate and perform inference:
   \item EC\&VA2: EC and variance adjusted LMM estimate using Monte Carlo integration.
   \item Bootstrap: Estimate by the bootstrap described in Section \ref{sec:bootstrap} fitting the LMM and using the EC estimate.
 \end{enumerate}
-Consider the first section of Table~\ref{table:cic} regarding the target MGST1 normalized against the reference GAPDH.
+Consider the first section of Table~\ref{table:cic} regarding the target \textit{MGST1} normalized against the reference GAPDH.
 The tests for a vanishing $\ddcq$ are all highly significant with comparable $95\%$ CIs.
 As expected, the efficiency corrected estimates are unchanged due to the variance adjustment,
 and only the standard deviation of the estimate is increased.
 The increase of the standard error is very small resulting in small but unimportant increases of the absolute $t$- and $p$-values.
-The results remain significant for the MGST1 gene.
+The results remain significant for the \textit{MGST1} gene.
 Very similar results are obtained if ACTB is used as reference.
-In conclusion, there is good evidence that MGST1 is differentially expressed between cell lines with high and low abundance of CICs.
+In conclusion, there is good evidence that \textit{MGST1} is differentially expressed between cell lines with high and low abundance of CICs.
 
-For the target gene MMSET normalized with respect to both reference genes, all estimates are not significantly different from zero.
+For the target gene \textit{MMSET} normalized with respect to both reference genes, all estimates are not significantly different from zero.
 Again, the various methods all agree and no substantial inter-method differences are seen.
-Hence we find no evidence for differential expression of MMSET between cell lines with high and low abundance of CICs.
+Hence we find no evidence for differential expression of \textit{MMSET} between cell lines with high and low abundance of CICs.
 
 In all instances, our bootstrap scheme provides a standard deviation larger than what is obtained using the delta or Monte Carlo methods.
 The mean of the bootstrap distribution seems consistently larger that the other methods.
@@ -489,32 +490,32 @@ We see that the large number of dilution steps, as recommended, ensures a low im
 \subsection{DLBCL study}
 
 The $C_q$-values and dilution curves for the DLBCL study are depicted in Fig.~\ref{fig:cqTestis}, panels A--B, respectively.
-Analogous to the previous section, the differences in gene expressions assessed by the $\ddcq$ for the target genes miR-127 and miR-143 with respect to each reference gene rnu6b and rnu24 were estimated using the four different methods.
+Analogous to the previous section, the differences in gene expressions assessed by the $\ddcq$ for the target genes \textit{miR-127} and \textit{miR-143} with respect to each reference gene rnu6b and rnu24 were estimated using the four different methods.
 Again $\Sexpr{n.boots}$ bootstrapped samples were used.
 The results are seen in Table~\ref{table:tesits}.
 
 We notice the efficiency corrected estimates are exactly equal with and without variance adjustment, while the standard deviation of the estimate and the $p$-values are higher for the adjusted values as expected.
 The size of the increase is again undramatic hinting at well determined dilution curves.
 
-For all combinations of reference genes the estimates for miR-127 are significantly different from zero at the usual 5 \% significant level, but not at the 1 \% significance level.
-The miR-143 estimates are not significantly different from zero.
+For all combinations of reference genes the estimates for \textit{miR-127} are significantly different from zero at the usual 5 \% significant level, but not at the 1 \% significance level.
+The \textit{miR-143} estimates are not significantly different from zero.
 Despite the very small increase in standard error, the $p$-values increase at the second digit.
 
-The bootstrap method provides a standard deviation similar to the delta method and Monte Carlo integration for both miR-127 and miR-143.
+The bootstrap method provides a standard deviation similar to the delta method and Monte Carlo integration for both \textit{miR-127} and \textit{miR-143}.
 
-Regarding the biological interest, we conclude there is evidence for a difference in miR-127 expression between testicular and nodal DLBCL whilst the data is not compatible with difference in miR-143 expression.
+Regarding the biological interest, we conclude there is evidence for a difference in \textit{miR-127} expression between testicular and nodal DLBCL whilst the data is not compatible with difference in \textit{miR-143} expression.
 While the AE estimate had no influence in these cases a change in significance is easily imagined in other cases.
 
 \subsection{Arabidopsis thaliana data}
 
 The $C_q$-values and dilution data for the arabidopsis thaliana data are shown in Fig.~\ref{fig:cqYuan}.
 
-The estimated difference in gene expression between case and control of the target gene MT7 normalized to either reference (Tublin or UBQ) is seen in Table~\ref{table:yuan}.
+The estimated difference in gene expression between case and control of the target gene \textit{MT7} normalized to either reference (Tublin or UBQ) is seen in Table~\ref{table:yuan}.
 The table shows results using the efficiency corrected method with and without variance adjustment by the delta method.
 In both cases, we see a dramatic increase in the standard error, $p$-values, and size of the confidence intervals.
-When using variance adjustment there is no longer a highly statistical significant difference in MT7 expression between case and ctrl.
+When using variance adjustment there is no longer a highly statistical significant difference in \textit{MT7} expression between case and ctrl.
 
-These results may be seem surprising at first sight when considering the standard errors of the slopes in the group specific simple linear regressions shown in Fig.~\ref{fig:cqYuan}. One might imagine that the uncertainty of the AE is negligible and thus perform the usual analysis.
+The results may be surprising at first sight when considering the relatively small standard errors of the slopes in the group specific simple linear regressions shown in Fig.~\ref{fig:cqYuan}. One might imagine that the uncertainty of the AE is negligible and thus perform the usual analysis.
 However, we see the contrary for several reasons.
 First, using only 3 dilutions steps leaves very few degrees of freedom left in each group as we are left few samples and a high number of parameters to be estimated.
 Secondly, as dilution curves are used for each group the four group-specific AE estimates will all contribute to the standard error of the $\ddcq$.
@@ -559,7 +560,7 @@ Our primary approach based on the statistical delta-method to approximate the va
 We also note that the problem is not limited to the $\ddcq$ statistic.
 
 The approach was used to validate that:
-(1) MGST1 is differentially expressed between multiple myeloma cell lines of high and low abundance of culture initiating cells and
+(1) \textit{MGST1} is differentially expressed between multiple myeloma cell lines of high and low abundance of culture initiating cells and
 (2) analyze and study the hypothesis that miRNA-127 is differentially expressed between testicular and nodal DLBCL, and
 (3) illustrate the effect of a small number of dilution steps.
 
@@ -604,7 +605,7 @@ The research is supported by MSCNET, a translational program studying cancer ste
   Overview of CIC experiment data.
   A: Raw $C_q$-values for different cell lines for each gene type and sample type.
   The point type and colour differentiates the different genes.
-  B: Dilution data for reference genes (ACTB, GAPDH) and target genes (MGST1, MMSET).
+  B: Dilution data for reference genes (ACTB, GAPDH) and target genes (\textit{MGST1}, \textit{MMSET}).
 }
 \label{fig:cqCIC}
 \end{figure}
@@ -619,7 +620,7 @@ The research is supported by MSCNET, a translational program studying cancer ste
   Overview of testis experiment data.
   A: Raw $C_q$-values for different patient samples for each gene type and sample type.
   The point type and colour differentiates the different genes.
-  B: Dilution data for reference genes (rnu24, rnu6b) and target genes (mir127, mir142).
+  B: Dilution data for reference genes (\textit{RNU-24}, \textit{RNU-6B}) and target genes (\textit{miR-127}, mir-142).
 }
 \label{fig:cqTestis}
 \end{figure}
@@ -633,7 +634,7 @@ The research is supported by MSCNET, a translational program studying cancer ste
 \caption{
   Overview of \citet{Yuan2008} experiment data.
   $C_q$-values against the dilution step for case and control samples.
-  Dilution data are present for both the target (MT7) and reference genes (Tublin, UBQ).
+  Dilution data are present for both the target (\textit{MT7}) and reference genes (Tublin, UBQ).
   The technical duplicates have been averaged out in the analysis.
   }
 \label{fig:cqYuan}

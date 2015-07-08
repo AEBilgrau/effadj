@@ -48,13 +48,13 @@ accepted for publication November 1, 2010}
 
 
 % List of authors, with corresponding author marked by asterisk
-\author{A.E. BILGRAU$^\ast$, S. FALGREEN, A. PETERSEN, M.K. KJELDSEN,\\
-J.S. B\O{}DKER,  H.E. JOHNSEN, K. DYBK\AE{}R, P.S. ERIKSEN, M. B\O{}GSTED\\[4pt]
+\author{A.E. BILGRAU$^{\ast 1 2}$, S. FALGREEN, A. PETERSEN, M.K. KJELDSEN,\\
+J.S. B{\O}DKER$^1$,  H.E. JOHNSEN$^1$, K. DYBK{\AE}R$^1$, P.S. ERIKSEN$^2$, M. B{\O}GSTED$^1$\\[4pt]
 % Author addresses
-\textit{Department of Haematology, Aalborg University Hospital,
+\textit{$^1$Department of Haematology, Aalborg University Hospital,
 Aalborg, Denmark \\ %Sdr. Skovvej 15, 9000 Aalborg, Denmark
-Department of Mathematical Sciences, Aalborg University,
-Aalborg \O{}, Denmark %Fredrik Bajers Vej 7G, 9220 Aalborg \O{}, Denmark
+$^2$Department of Mathematical Sciences, Aalborg University,
+Aalborg {\O}, Denmark %Fredrik Bajers Vej 7G, 9220 Aalborg \O{}, Denmark
 }
 \\[2pt]
 % E-mail address for correspondence
@@ -368,9 +368,9 @@ In order to gauge the performance of the methods we subsequently performed a sim
 \subsection{CIC study}
 
 \subsubsection{Introduction}
-A cell is defined to be culture initiating if it can initiate a sustained production of cells when cultured in vitro. The viability potential of a cell population can be assessed by measuring the number of culture initiating cells (CICs). This number is typically estimated by a limiting dilution experiment where the number of cells are seeded in decreasing numbers. The ratio of CICs can then be estimated by e.g. Poisson regression \citep{Lefkovits1999}.
+A cell is defined to be culture initiating if it can initiate a sustained production of cells when cultured in vitro. The viability potential of a cell population can be assessed by measuring the number of culture initiating cells (CICs). This number is typically estimated by a limiting dilution experiment where the number of cells are seeded in decreasing numbers. The ratio of CICs can then be estimated by e.g.~Poisson regression \citep{Lefkovits1999}.
 
-CICs are of particular interest in cancer research as it is believed that cells with high CIC potential have stem cell like properties making them resistant towards chemotherapy \citep{Chen2013}.
+CICs are of particular interest in cancer research as it is believed that cancers with high culture initiating potential have stem cell like properties making them resistant towards chemotherapy \citep{Chen2013}.
 
 In a search for genes associated with a high culture initiating potential in multiple myeloma (MM) we made limiting dilution experiments of 14 MM cell lines and divided them into 7 cell lines with low and 7 cell lines with high culture initiating potential. Gene expressions were profiled by Affymetrix HG-U133 plus 2 microarrays and we identified the genes \textit{MGST1} and \textit{MMSET} to be differentially expressed between between cell lines with high and low abundance of so-called culture initiating cells (CIC).
 
@@ -384,7 +384,7 @@ Isolated RNA was used in complementary DNA (cDNA) synthesis using SuperScript II
 As input into the total cDNA synthesis of 250ng total RNA was used. Equal amounts of random hexamers and oligo(dT) were used as primers.
 Quantitative real-time reverse transcriptase polymerase chain reaction (qPCR) was performed on a Mx3000p qPCR system (Agilent Technologies/Stratgene) using the TaqMan UniversalPCR Master Mi, No AmpErase UNG, and TaqMan gene expression Assays (Applied Biosystems).
 The following TaqMan Gene Expression Assays were used (Assay ID numbers in parentheses): \textit{MGST1} (Hs00220393\_m1), \textit{MMSET} (Hs00983716\_m1).
-The two reference paraffines beta-actin (ACTB) and GAPDH were used as endogenous controls, assay IDs 4333762-0912030 and 4333764-1111036, respectively.
+The two reference genes beta-actin (ACTB) and GAPDH were used as endogenous controls, assay IDs 4333762-0912030 and 4333764-1111036, respectively.
 For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of material from the AMO-1 cell line.
 
 \subsection{DLBCL study}

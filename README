@@ -1,25 +1,27 @@
 ################################################################################
 # git repository for the paper:                                                #
 #                                                                              #
-#               Variance approximation of efficiency adjusted                  #
-#                      DDCq-values in qPCR experiments                         #
+#            Unaccounted uncertainty from qPCR efficiency estimates            #
+#                   imply uncontrolled false positive rates                    #
 #                                                                              #
 #                           Bilgrau et al. (2015)                              #
 #                                                                              #
 ################################################################################
 
-This is the repository for the paper on esimation of amplification eficiency in
-qPCR experiments.
+This is the git repository for the paper on estimation of amplification
+efficiency in qPCR experiments and the effects of disregarding the uncertainty
+hereof. The paper illustrates how to obtain variance approximations of the
+efficiency adjusted delta-delta-Cq-values and better account for all sources of
+variation in qPCR experiments.
 
+# How to compile and generate the paper
 
-## How to compile the paper
-
-The paper is written in using the R-package knitr (`.Rnw`) document. Plase make
+The paper is written in using the R-package knitr (`.Rnw`) document. Please make
 sure that R and LaTeX is installed. Likewise, make sure that the needed
-R-packages (seen in scripts/master.R) are installed. The results
-of the paper and the pdf document can be generated in multiple ways:
+R-packages (seen in scripts/master.R) are installed.
+The results of the paper and the pdf document can be generated in multiple ways:
 
-(1) If you use Rstudio, open `paper-qPCR-Rproj` and press compile document.
+(1) If you use Rstudio, open `paper-qPCR.Rproj` and press compile document.
 
 (2) From within `R` run:
 

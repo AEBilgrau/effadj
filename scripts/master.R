@@ -2,14 +2,14 @@
 ################################################################################
 # Master script for the paper:                                                 #
 #                                                                              #
-#               Variance approximation of efficiency adjusted                  #
-#                      DDCq-values in qPCR experiments                         #
+#            Unaccounted uncertainty from qPCR efficiency estimates            #
+#                   imply uncontrolled false positive rates                    #
 #                                                                              #
 #                           Bilgrau et al. (2015)                              #
 #                                                                              #
 # Script written by:                                                           #
 #   Anders Ellern Bilgrau, Steffen Falgreen, and Martin Boegsted               #
-# Last revision: 10th of June, 2015                                            #
+# Last revision: 10th of July, 2015                                            #
 ################################################################################
 
 # Initalizing and loading required packages
@@ -25,7 +25,8 @@ start.t <- proc.time()
 parallel <- TRUE
 n.cpus <- 4
 
-# install.packages(c("lattice", "Hmisc", "lme4", "epiR"))
+# install.packages(c("lattice", "latticeExtra", "Hmisc", "lme4", "nlme",
+#                    "epiR", "snowfall", "GMCM"))
 library("lattice") # For plots
 library("latticeExtra")
 library("lme4")    # For mixed effects models > 1.1-8

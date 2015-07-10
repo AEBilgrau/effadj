@@ -747,7 +747,7 @@ export <- # Function names to export to parallel clusters
   c("SimqPCRData", "qPCRfit", "is.data.qPCR", "cHyp", "DcHyp", "Var.cHyp",
     "std.curve", "DDCq.test", "DDCq", "as.data.qPCR", "bootstrapEstimate",
     "parametricBootstrapEstimate", "bootstrapSample", "twoSideP",
-    "catchBootstrapWarning", "attachWarning")
+    "catchBootstrapWarning", "attachWarning", "Var.cHyp.monte.carlo")
 
 
 

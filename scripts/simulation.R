@@ -33,12 +33,16 @@ SimFunc <- function(nd, ns, n.boots = 151, alpha = 0.05) {
       DDCq.test(data$H0, method = "LMM", eff.cor = FALSE, var.adj = FALSE),
       DDCq(qfit0, eff.cor = TRUE, var.adj = FALSE, alpha = alpha, weighted = w),
       DDCq(qfit0, eff.cor = TRUE, var.adj = TRUE, alpha = alpha, weighted = w),
+      # DDCq(qfit0, eff.cor = TRUE, var.adj = TRUE, alpha = alpha, weighted = w,
+           # var.type = "montecarlo"),
       bs0 <- DDCq.test(data$H0, method =  "Bootstrap", n.boots = n.boots,
                        weighted = w),
       # Under the alternative
       DDCq.test(data$HA, method = "LMM", eff.cor = FALSE, var.adj = FALSE),
       DDCq(qfitA, eff.cor = TRUE, var.adj = FALSE, alpha = alpha, weighted = w),
       DDCq(qfitA, eff.cor = TRUE, var.adj = TRUE, alpha = alpha, weighted = w),
+      # DDCq(qfitA, eff.cor = TRUE, var.adj = TRUE, alpha = alpha, weighted = w,
+           # var.type = "montecarlo"),
       bs1 <- DDCq.test(data$HA, method =  "Bootstrap", n.boots = n.boots,
                        weighted = w)
     ))
@@ -54,8 +58,8 @@ SimFunc <- function(nd, ns, n.boots = 151, alpha = 0.05) {
   }
 
   rownames(res) <-
-    paste0(rep(c("H0:", "H1:"), each = 4),
-           rep(c("LMM", "LMM.EC", "LMM.EC.VA", "LMM.boot"), 2))
+    paste0(rep(c("H0:", "H1:"), each = nrow(res)/2),
+           rep(c("LMM", "LMM.EC", "LMM.EC.VA1", "LMM.boot"), 2))
 
   res <- as.matrix(res)
   attr(res, "bootstrapDist") <-
@@ -101,8 +105,6 @@ if (!exists("res.ex") || recompute) {
 }
 
 res.ex <- simplify2array(res.ex)
-
-
 
 
 #
@@ -158,6 +160,7 @@ if (!exists("sim.results") || recompute) {
   resave(sim.results,  file = save.file)
 }
 
+
 #
 # Plot and write results
 #
@@ -193,7 +196,7 @@ get.2by2.table <-  function(subdata, estimator = "LMM.EC", p.cut = 0.05) {
 #
 
 p.cut <- 0.05
-est <- c("LMM.EC", "LMM.EC.VA", "LMM.boot")
+est <- c("LMM.EC", "LMM.EC.VA1", "LMM.boot")
 getr <- paste(rep(c("H0", "H1"), length(est)), rep(est, each = 2), sep = ":")
 significant <- res.ex[getr, "Pr(>|t|)", ] < p.cut
 ex.tab <- rbind(rowSums(!significant),
@@ -340,8 +343,6 @@ get.est.info <- function(data, estimator = "LMM.EC") {
   return(data.frame(x0, x1))
 }
 
-
-
 setEPS()
 postscript("../output/figS1_simCIs.eps", width = 1.5*7, height = 1*7)
 
@@ -410,7 +411,6 @@ for (i in seq_along(dilutions)) {
 }
 title(paste(100*(1 - p.cuts[g]), "% CIs"), outer = TRUE)
 dev.off()
-
 
 
 

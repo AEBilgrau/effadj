@@ -22,29 +22,38 @@ mypanel <- function(x, y, ...) {
 }
 
 # Trellis plot of all data
+blue.colours <- c("#5C7495", "#4D6FC0", "#3E424B", "#2D406A")
+
 cic.data <- subset(cic, l2con == 0)
 levels(cic.data$sampleType) <-
   gsub("Standard", "case", levels(cic.data$sampleType))
-fig1a <- dotplot(sampleName ~ Cq | droplevels(geneType:sampleType),
-                 data = cic.data,
-                 main = "", col = "steelblue",
-                 xlab = expression(C[q]),
-                 pch = 16,
-                 key = list(text = list(title = "A"),
-                            corner = c(-0.1,1.1),
-                            cex = 1.5, font = "bold"))
+
+fig1a <-
+  dotplot(sampleName ~ Cq | geneType:sampleType,
+          groups = cic.data$geneName,
+          col = blue.colours,
+          data = cic.data,
+          main = "",
+          xlab = expression(C[q]),
+          pch = seq_along(blue.colours),
+          key = list(text = list(title = "A"),
+                     corner = c(-0.1,1.1),
+                     cex = 1.5, font = "bold"))
 
 cic.std <- subset(cic, sampleName == "AMO-1")
-fig1b <- xyplot(Cq ~ l2con | as.factor(geneName),
-                panel = mypanel,
-                data = cic.std,
-                xlab = as.expression(bquote(-log[2]*N["0,i,j,k"])),
-                ylab = expression(C[q]),
-                pch = 16,
-                main = "", col = "steelblue",
-                key = list(text = list(title = "B"),
-                           corner = c(-0.1,1.1),
-                           cex = 1.5, font = "bold"))
+fig1b <-
+  xyplot(Cq ~ l2con | as.factor(geneName),
+         groups = cic.std$geneName,
+         col = blue.colours,
+         panel = mypanel,
+         data = cic.std,
+         xlab = as.expression(bquote(-log[2]*N["0,i,j,k"])),
+         ylab = expression(C[q]),
+         pch = seq_along(blue.colours),
+         main = "",
+         key = list(text = list(title = "B"),
+                    corner = c(-0.1,1.1),
+                    cex = 1.5, font = "bold"))
 
 setEPS()
 postscript("../output/fig1.eps", width = 1.5*7, height = 0.5*7, fonts = "serif")
@@ -145,15 +154,12 @@ grps <-
                                            paste(x[1], "vs", x[2])))
 
 caption.txt <- "CIC data: Method comparison for estimating the
-  $\\ddcq$-value. $t$-test shows results from a simple unpaired
-  $t$-test ignoring dilution data. LMM signifies the regular
-  $\\ddcq$ method using a linear mixed effects model ignoring
-  dilution.
+  $\\ddcq$-value.
   EC denotes use of the plugin-estimator.
   VA denotes that the efficiency correction was variance adjusted using the
-  delta method (1) or monte carlo integration (2).
+  delta method (1) or Monte Carlo integration (2).
   Bootstrap shows the mean and standard deviation of %d
-  bootstrap samples using EC estimate. The last two columns shows the $95%s$
+  bootstrap samples using the EC estimate. The last two columns show the $95%s$
   lower and upper confidence interval limits."
 
 toTeX <- toTeX[!grepl("LMM|t-test", rownames(toTeX)), ]

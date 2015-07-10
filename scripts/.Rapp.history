@@ -1,0 +1,13 @@
+load("/Users/mboegsted/Downloads/saved.RData")
+ls()
+sim.results
+ls()
+cic.boot
+res.ex
+ls()
+sim.results
+ls()
+dilution.power.results
+cic.boot
+testis.boot
+res.ex

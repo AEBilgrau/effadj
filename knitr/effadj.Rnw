@@ -404,7 +404,7 @@ In order to illustrate the effect of applying variance approximations in a data 
 
 
 \subsubsection{Sample and data preparation}
-The arabidopsis thaliana plant growth, RNA extraction, and qPCR experiments were carried out as described in \citet{Yang2006}. The cDNA was diluted into 1:4 and 1:16 serial dilutions. Real-time PCR experiments was performed in duplicates for each concentration \citep{Yuan2008}.
+The arabidopsis thaliana plant growth, RNA extraction, and qPCR experiments were carried out as described in \citet{Yang2006}. The cDNA was diluted into 1-to-4 and 1-to-16 serial dilutions. Real-time PCR experiments was performed in duplicates for each concentration \citep{Yuan2008}.
 
 Due to the the study design, we naturally fitted estimation efficiencies $\gamma_{ij} = \alpha_{ij}^{-1}$ for each group.
 Because of the few samples we omitted the, in this case, meaningless random sample effect of the LMM.
@@ -571,20 +571,31 @@ Researchers analyzing qPCR experiments need to model their experiments in detail
 This is necessary in all qPCR experiments in order to draw valid inferences and uphold the common statistical guarantees often erroneously assumed to be automatically fulfilled.
 We recommend the conservative approach of always accounting for the uncertainty of the estimates.
 
-
+\phantomsection
+\addcontentsline{toc}{section}{Software and supplementary Material}
 \section*{Software and supplementary Material}
 
-All statistical analysis were done with R \citep{Rproj} version 3.1.3 and the contributed \texttt{lme4}-package \citep{Pinheiro2000a} was applied for random effects modelling.
+All statistical analysis were done with R \citep{Rproj} version \Sexpr{paste0(version$major, ".", version$minor)} and the contributed \texttt{lme4}-package \citep{Pinheiro2000a} was applied for random effects modelling.
 All data, R code, LaTeX, and instructions to reproduce the present paper and results within are freely available at \url{http://www.github.org/AEBilgrau/effadj/} or upon personal request.
 The paper is generated using \texttt{knitr}, an improvement of Sweave \citep{Xie2013, Leisch2002}.
+The R-packages
+\texttt{Hmisc} \citep{Harrell2015},
+\texttt{lattice} (and \texttt{latticeExtra}) \citep{Sarkar2008},
+\texttt{epiR} \citep{Stevenson2015},
+\texttt{snowfall} \citep{Knaus2013}, and
+\texttt{GMCM} \citep{Bilgrau2015},
+were used for tables, figures, FDR/TPR confidence intervals, parallel execution of simulations, and multivariate normal simulations, respectively.
 
-
+\phantomsection
+\addcontentsline{toc}{section}{Acknowledgments}
 \section*{Acknowledgments}
 
 The research is supported by MSCNET, a translational program studying cancer stem cells in multiple myeloma supported by the EU FP6, and CHEPRE, a program studying chemo-sensitivity in malignant lymphoma by genomic signatures supported by The Danish Agency for Science, Technology and Innovation, as well as Karen Elise Jensen Fonden. The founders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.\\
 {\it Conflict of Interest}: None declared.
 
 
+\phantomsection
+\addcontentsline{toc}{section}{References}
 \bibliographystyle{biorefs}
 \bibliography{references}
 

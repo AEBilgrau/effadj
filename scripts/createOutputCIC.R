@@ -22,7 +22,6 @@ mypanel <- function(x, y, ...) {
 }
 
 # Trellis plot of all data
-library("ggplot2")
 blue.colours <- c("#5C7495", "#4D6FC0", "#3E424B", "#2D406A")
 
 cic.data <- subset(cic, l2con == 0)

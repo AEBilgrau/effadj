@@ -48,7 +48,7 @@ accepted for publication November 1, 2010}
 
 
 % List of authors, with corresponding author marked by asterisk
-\author{A.E. BILGRAU$^{\ast 1 2}$, S. FALGREEN, A. PETERSEN, M.K. KJELDSEN,\\
+\author{A.E. BILGRAU$^{\ast 1 2}$, S. FALGREEN$^1$, A. PETERSEN$^1$, M.K. KJELDSEN$^1$,\\
 J.S. B{\O}DKER$^1$,  H.E. JOHNSEN$^1$, K. DYBK{\AE}R$^1$, P.S. ERIKSEN$^2$, M. B{\O}GSTED$^1$\\[4pt]
 % Author addresses
 \textit{$^1$Department of Haematology, Aalborg University Hospital,

@@ -49,7 +49,7 @@ accepted for publication November 1, 2010}
 
 % List of authors, with corresponding author marked by asterisk
 \author{A.E. BILGRAU$^{\ast 1 2}$, S. FALGREEN$^1$, A. PETERSEN$^1$, M.K. KJELDSEN$^1$,\\
-J.S. B{\O}DKER$^1$,  H.E. JOHNSEN$^1$, K. DYBK{\AE}R$^1$, P.S. ERIKSEN$^2$, M. B{\O}GSTED$^1$\\[4pt]
+J.S. B{\O}DKER$^1$,  H.E. JOHNSEN$^1$, K. DYBK{\AE}R$^1$, M. B{\O}GSTED$^1$\\[4pt]
 % Author addresses
 \textit{$^1$Department of Haematology, Aalborg University Hospital,
 Aalborg, Denmark \\ %Sdr. Skovvej 15, 9000 Aalborg, Denmark
@@ -590,7 +590,11 @@ were used for tables, figures, FDR/TPR confidence intervals, parallel execution 
 \addcontentsline{toc}{section}{Acknowledgments}
 \section*{Acknowledgments}
 
-The research is supported by MSCNET, a translational program studying cancer stem cells in multiple myeloma supported by the EU FP6, and CHEPRE, a program studying chemo-sensitivity in malignant lymphoma by genomic signatures supported by The Danish Agency for Science, Technology and Innovation, as well as Karen Elise Jensen Fonden. The founders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.\\
+The research is supported by MSCNET, %a translational program studying cancer stem cells in multiple myeloma
+% supported by the
+EU FP6, and CHEPRE, %a program studying chemo-sensitivity in malignant lymphoma by genomic signatures
+%supported by
+The Danish Agency for Science, Technology and Innovation, as well as Karen Elise Jensen Fonden. The founders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.\\
 {\it Conflict of Interest}: None declared.
 
 

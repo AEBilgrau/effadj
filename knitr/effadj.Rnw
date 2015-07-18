@@ -572,7 +572,7 @@ This is necessary in all qPCR experiments in order to draw valid inferences and 
 We recommend the conservative approach of always accounting for the uncertainty of the estimates.
 
 \phantomsection
-\addcontentsline{toc}{section}{Software and supplementary Material}
+\addcontentsline{toc}{section}{Supplementary Material and Software}
 \section*{Software and supplementary Material}
 
 All statistical analysis were done with R \citep{Rproj} version \Sexpr{paste0(version$major, ".", version$minor)} and the contributed \texttt{lme4}-package \citep{Pinheiro2000a} was applied for random effects modelling.

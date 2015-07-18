@@ -482,26 +482,6 @@ The mean of the bootstrap distribution seems consistently larger that the other 
 
 We see that the large number of dilution steps, as recommended, ensures a low impact of the AE induced standard error on the inference of the $\ddcq$.
 
-% CIC fig
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{fig1}
-\end{center}
-\caption{
-  Overview of CIC experiment data.
-  A: Raw $C_q$-values for different cell lines (samples) for each gene type and sample type.
-  The point type and colour differentiates the different gene types.
-  B: Dilution data for
-  reference genes (\textit{ACTB}, \textit{GAPDH}) and
-  target genes (\textit{MGST1}, \textit{MMSET}).
-}
-\label{fig:cqCIC}
-\end{figure}
-
-% CIC table
-\input{../output/Table1.tex}
-
-
 
 
 
@@ -524,28 +504,6 @@ The bootstrap method provides a standard deviation similar to the delta method a
 Regarding the biological interest, we conclude there is evidence for a difference in \textit{miR-127} expression between testicular and nodal DLBCL whilst the data is not compatible with difference in \textit{miR-143} expression.
 While the AE estimate had no influence in these cases a change in significance is easily imagined in other cases.
 
-% DLBCL fig
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{fig2}
-\end{center}
-\caption{
-  Overview of DLBCL testis experiment data.
-  A: Raw $C_q$-values for different patient samples for each gene type and sample type.
-  The point type and colour differentiates the different gene types.
-  B: Dilution data for
-  reference genes (\textit{RNU-24}, \textit{RNU-6B}) and
-  target genes (\textit{miR-127}, \textit{miR-143}).
-}
-\label{fig:cqTestis}
-\end{figure}
-
-% DLBCL table
-\input{../output/Table2.tex}
-
-
-
-
 
 
 \subsection{Arabidopsis thaliana data}
@@ -563,24 +521,6 @@ First, using only 3 dilutions steps leaves very few degrees of freedom left in e
 Secondly, as dilution curves are used for each group the four group-specific AE estimates will all contribute to increasing the standard error of the $\ddcq$.
 While this example was selected as a worst-case scenario, it should illustrate that although the standard curves are seemingly well determined, it is hard to intuitively predetermine the combined effect on the standard error of $\ddcq$.
 
-
-
-% Arabidopsis thaliana fig
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{fig3}
-\end{center}
-\caption{
-  Overview of \citet{Yuan2008} experiment data.
-  $C_q$-values against the dilution step for case and control samples.
-  Dilution data are present for both the target (\textit{MT7}) and reference genes (Tublin, \textit{UBQ}).
-  The technical duplicates have been averaged out in the analysis.
-  }
-\label{fig:cqYuan}
-\end{figure}
-
-% Arabidopsis thaliana table
-\input{../output/Table3.tex}
 
 
 
@@ -613,21 +553,6 @@ Overall, we see that the EC\&VA adjusted estimate is the only procedure consiste
 Likewise, for many dilutions, the difference between the EC and EC\&VA procedures diminish as the uncertainty of the AE is relatively low.
 Finally as expected a decrease in FPR corresponds to a decrease in TPR.
 
-% Simulation tab
-\input{../output/Table4.tex}
-
-% Simulation fig
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{fig4}
-\end{center}
-\caption{
-  Plot of the false positive rates (FPR, black) and true positive rates (TPR, grey) and their 95 \% confidence intervals achieved simulation experiments for each method at various $p$-value cut-offs (0.05, 0.01, 0.1) shown by solid red horizontal lines.
-  The FPR and TPR are computed completely analogous to Table~\ref{tab:simexample}.
-  The rates are plotted for each combination of 4 or 8 samples with 4 or 8 fold dilution curves.
-}
-\label{fig:simstudy}
-\end{figure}
 
 
 \section{Discussion and conclusion}
@@ -686,6 +611,87 @@ The Danish Agency for Science, Technology and Innovation, as well as Karen Elise
 \addcontentsline{toc}{section}{References}
 \bibliographystyle{biorefs}
 \bibliography{references}
+
+\newpage
+
+% CIC fig
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{fig1}
+\end{center}
+\caption{
+  Overview of CIC experiment data.
+  A: Raw $C_q$-values for different cell lines (samples) for each gene type and sample type.
+  The point type and colour differentiates the different gene types.
+  B: Dilution data for
+  reference genes (\textit{ACTB}, \textit{GAPDH}) and
+  target genes (\textit{MGST1}, \textit{MMSET}).
+}
+\label{fig:cqCIC}
+\end{figure}
+
+% CIC table
+\input{../output/Table1.tex}
+
+
+% DLBCL fig
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{fig2}
+\end{center}
+\caption{
+  Overview of DLBCL testis experiment data.
+  A: Raw $C_q$-values for different patient samples for each gene type and sample type.
+  The point type and colour differentiates the different gene types.
+  B: Dilution data for
+  reference genes (\textit{RNU-24}, \textit{RNU-6B}) and
+  target genes (\textit{miR-127}, \textit{miR-143}).
+}
+\label{fig:cqTestis}
+\end{figure}
+
+% DLBCL table
+\input{../output/Table2.tex}
+
+
+
+% Arabidopsis thaliana fig
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{fig3}
+\end{center}
+\caption{
+  Overview of \citet{Yuan2008} experiment data.
+  $C_q$-values against the dilution step for case and control samples.
+  Dilution data are present for both the target (\textit{MT7}) and reference genes (Tublin, \textit{UBQ}).
+  The technical duplicates have been averaged out in the analysis.
+  }
+\label{fig:cqYuan}
+\end{figure}
+
+% Arabidopsis thaliana table
+\input{../output/Table3.tex}
+
+
+% Simulation tab
+\input{../output/Table4.tex}
+
+% Simulation fig
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{fig4}
+\end{center}
+\caption{
+  Plot of the false positive rates (FPR, black) and true positive rates (TPR, grey) and their 95 \% confidence intervals achieved simulation experiments for each method at various $p$-value cut-offs (0.05, 0.01, 0.1) shown by solid red horizontal lines.
+  The FPR and TPR are computed completely analogous to Table~\ref{tab:simexample}.
+  The rates are plotted for each combination of 4 or 8 samples with 4 or 8 fold dilution curves.
+}
+\label{fig:simstudy}
+\end{figure}
+
+
+
+
 
 \end{document}
 

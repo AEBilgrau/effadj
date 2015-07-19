@@ -83,7 +83,7 @@ Determining the AE with such precision, however, requires tedious laboratory wor
 Violation of the assumption leads to overly optimistic standard errors of the $\ddcq$, confidence intervals, and $p$-values which ultimately increase the type I error rate beyond the expected significance level.
 As qPCR is often used for validation it should be a high priority to account for the uncertainty of the AE estimate and thereby properly bounding the type I error rate and achieve the desired significance level.
 We suggest methods founded in a linear mixed effects model (LMM) to obtain variance approximations of the efficiency adjusted $\ddcq$ using the statistical delta method, Monte Carlo integration, or bootstrapping.
-We illustrate the impact of AE uncertainty in a public available qPCR data set and use the methods to validate recent findings suggesting that \textit{MGST1} is differentially expressed between high and low abundance culture initiating cells in multiple myeloma and that microRNA-127 is differentially expressed between testicular and nodal lymphomas.
+We illustrate the impact of AE uncertainty in three qPCR data sets and use the methods to validate findings suggesting that \textit{MGST1} is differentially expressed between high and low abundance culture initiating cells in multiple myeloma and that microRNA-127 is differentially expressed between testicular and nodal lymphomas.
 Finally, we benchmark our methods in a simulation study.
 }
 % Keywords
@@ -105,8 +105,8 @@ Like all experiments in molecular biology and chemistry, qPCR is sensitive not o
 There are an incredible amount of sources of systematic and non-systematic variation including temperature variations, concentration differences by pipetting errors, and primer affinity, in addition to the genuine biological variations of interest across case and control samples.
 Laboratory guidelines and increasingly sophisticated statistical modelling have been established to combat many of these systematic errors \citep{Bustin2010, Bustin2009}.
 
-The regular so-called $\ddcq$ method is the normalized relative expression of a target gene of interest between treated (case) and untreated samples (control) accounting for undesired variations using one or more endogenous reference genes (also called housekeeping gene) assumed to be approximately unchanged due to the treatment.
-The $\ddcq$ value is usually based on the assumption a perfect amplification efficiencies for both the target and reference gene.
+The so-called $\ddcq$ method is the normalized relative expression of a target gene of interest between treated (case) and untreated samples (control) accounting for undesired variations using one or more endogenous reference genes (also called housekeeping gene) assumed to be approximately unchanged due to the treatment.
+The $\ddcq$ value is usually based on the assumption of perfect AEs for both the target and reference gene.
 However, the target and reference genes might be subject to different AE which yield biased $\ddcq$ values.
 In turn, the $\ddcq$ was modified to an AE corrected version \citep{Pfaffl2001}.
 
@@ -149,9 +149,9 @@ $\sigma$ is the sample specific handling error and
 $\alpha$ is the percentage of the $\log_2$-AE.
 In practice, the transcript abundance level is determined by the cycle $C_q$ for which a given fluorescence measurement $F_{C_q}$ is reached.
 We rearrange \eqref{eq:fluorescencemodel} and notice that $C_q$ can be expressed as
-\begin{equation*}
+$% \begin{equation*}
   \alpha C_q = \log_2 F_{C_q} - \log_2 \kappa \sigma N_0.
-\end{equation*}
+$ % \end{equation*}
 In order to estimate the relative amount of target (tgt) gene transcripts between case
 and control (ctrl) samples, we assume
 the amount of the reference (ref) gene template is the same in both the case
@@ -230,9 +230,9 @@ $
      \hat{\mu}_{\rref,\case}, \hat{\mu}_{\rref,\ctrl}, \hat{\gamma}_\rref)^\top.
 $
 We wish to test the hypothesis
-\begin{equation*}
+$ % \begin{equation*}
   H_0 : c(\vtheta) = 0,
-\end{equation*}
+$ % \end{equation*}
 where $c$ is the continuously differentiable function of the
 fixed effects given by
 \begin{equation}
@@ -251,10 +251,11 @@ That is, the standard error,
 \end{equation}
 is of central interest.
 The standard error is used in the statistic for testing $H_0$ given by
-\begin{equation*}
-  t = \frac{c(\hat{\vtheta})}
-           {\sqrt{\Var\!\bigl[c(\hat{\vtheta})\bigr]}},
-\end{equation*}
+$t = c(\hat{\vtheta})/\mathrm{se}(\hat{\vtheta})$,
+% \begin{equation*}
+%   t = \frac{c(\hat{\vtheta})}
+%            {\sqrt{\Var\!\bigl[c(\hat{\vtheta})\bigr]}},
+% \end{equation*}
 which according to a first order Taylor series expansion of $c$ can be
 approximated by
 \begin{equation}
@@ -271,7 +272,7 @@ approximated by
 According to \citet[Section 2.4.2]{Pinheiro2000a}, $t$ is approximately
 $t$-distributed with $\eta$ degrees of freedom.
 The degrees of freedom of multilevel mixed effects models are non-trivial to obtain in general.
-For the purposes of this paper, we do not pursue this further and restrict ourselves to the case of balanced experimental designs where $\eta$ is obtained relatively straight-forward.
+We do not pursue this further and restrict ourselves to the case of balanced experimental designs where $\eta$ is obtained relatively straight-forward.
 
 On the basis of \eqref{eq:tstat}, an approximate $(1 - \alpha) 100\%$ confidence interval of $c(\vtheta)$ can then given by
 \begin{equation*}
@@ -281,31 +282,32 @@ On the basis of \eqref{eq:tstat}, an approximate $(1 - \alpha) 100\%$ confidence
 Likewise, $p$-values can be obtained by computing $P(\lvert t \rvert > T)$ where $T$ is $t$-distributed with $\eta$ degrees of freedom.
 
 Alternatively to \eqref{eq:tstat}, the variance $\Var\!\bigl[c(\hat{\vtheta})\bigr]$ can be evaluated by Monte Carlo integration.
-One way is to simulate a large number $N$ of parameters $\vtheta_1, \ldots, \vtheta_N$ from a multivariate normal distribution using the estimated parameters ${\cal{N}}_6(\hat{\vtheta}, \Var[\hat{\vtheta}])$ and to compute the sample variance of $c(\vtheta_1), \ldots, c(\vtheta_N)$.
+One way is to simulate a large number $N$ of parameters $\vtheta_1, \ldots, \vtheta_N$ from a multivariate normal distribution using the estimated parameters ${\cal{N}}_6(\hat{\vtheta}, \Var[\hat{\vtheta}])$ and compute the sample variance of $c(\vtheta_1), \ldots, c(\vtheta_N)$.
 
-Both maximum likelihood (ML) and restricted maximum likelihood estimation (REML) of LMMs have been implemented by the R-package \texttt{lme4} \citep{Bates2014} based on the \texttt{nlme} package \citep{Pinheiro2000a}.
-The packages readily provide the estimate $\hat{\vtheta}$ and $\Var[\hat{\vtheta}]$ and we use these in the construction of test and confidence intervals for the $\ddcq$ as described above.
-The needed gradient in \eqref{eq:tstat} is computed straight-forwardly from \eqref{eq:c} as
-\begin{equation*}
-  \nabla c(\hat{\vtheta}) =
-  \left(
-    \gamma_\tgt^{-1} ,
-    -\gamma_\tgt^{-1} ,
-    \mu_{\tgt,\ctrl} \gamma_\rref^{-1} - \mu_{\tgt,\case} \gamma_\tgt^{-1} ,
-    -\gamma_\rref^{-1} ,
-    \gamma_\rref^{-1} ,
-    \mu_{\rref,\case} \gamma_\tgt^{-1} - \mu_{\rref,\ctrl} \gamma_\rref^{-1}
- \right)^\top.
-\end{equation*}
+Both maximum likelihood (ML) and restricted maximum likelihood estimation (REML) of LMMs is implemented in the R-packages \texttt{lme4} and \texttt{nlme} \citep{Bates2014, Pinheiro2000a}.
+The packages readily provides the estimate $\hat{\vtheta}$ and $\Var[\hat{\vtheta}]$ and we use these in the construction of test and confidence intervals for the $\ddcq$ as described above.
+The needed gradient in \eqref{eq:tstat} is computed straight-forwardly from \eqref{eq:c}.
+% \begin{equation*}
+%   \nabla c(\hat{\vtheta}) =
+%   \left(
+%     \gamma_\tgt^{-1} ,
+%     -\gamma_\tgt^{-1} ,
+%     \mu_{\tgt,\ctrl} \gamma_\rref^{-1} - \mu_{\tgt,\case} \gamma_\tgt^{-1} ,
+%     -\gamma_\rref^{-1} ,
+%     \gamma_\rref^{-1} ,
+%     \mu_{\rref,\case} \gamma_\tgt^{-1} - \mu_{\rref,\ctrl} \gamma_\rref^{-1}
+%  \right)^\top.
+% \end{equation*}
 
 We note that the division by $\gamma_j$ in \eqref{eq:c} is problematic as $\hat{\gamma}_j$ is normally distributed and values near zero can increase the variance dramatic.
 In practice, this is only problematic if the standard error of $\hat{\gamma}_j$ is sufficiently large.
 One way to solve this problem is to use the $\log_2$ concentration as the response and the $C_q$-values as the explanatory variables in a regression model of the standard curve to estimate $\alpha_j$ directly.
 This approach is however also not without conceptual problems as this puts the errors on the explanatory variables.
-To this end, we note that one could equivalently test the hypothesis
-\begin{equation*}
+To this end, note that the hypothesis
+$% \begin{equation*}
   H_0: \gamma_\tgt\gamma_\rref c(\hat{\vtheta}) = 0,
-\end{equation*}
+$ % \end{equation*}
+can be equivalently tested
 for which the standard error of the test-statistic can be worked out exactly.
 % We omitted doing so for two reasons;
 % First, the $\ddcq$-values is the well-known and understood quantity for non-statistician researchers.
@@ -332,9 +334,9 @@ Hence the $B$ bootstrapped datasets consists of the re-sampled matched pairs and
 For each dataset, $\hat{\delta}_1 = \ddcq^{(1)}, \ldots, \hat{\delta}_B = \ddcq^{(B)}$ are computed to obtain the bootstrap distribution from which confidence intervals and $p$-values can be obtained.
 The standard error of $\ddcq$ is estimated by the sample standard deviation of the bootstrap distribution.
 A $(1-\alpha)100\%$ confidence interval can be computed as
-\begin{equation*}
+$ % \begin{equation*}
   ( \hat{\delta}_{(\alpha/2)} , \hat{\delta}_{(1-\alpha/2)} )
-\end{equation*}
+$ % \end{equation*}
 where e.g.\ $\hat{\delta}_{(\alpha/2)}$ denotes the $\alpha/2$-percentile of $\hat{\delta}_1, \ldots, \hat{\delta}_B$.
 The $p$-value for the null hypothesis of $\delta = 0$ is computed by
 \begin{equation*}
@@ -365,13 +367,16 @@ In order to gauge the performance of the methods we subsequently performed a sim
 \subsection{CIC study}
 
 \subsubsection{Introduction}
-A cell is defined to be culture initiating if it can initiate a sustained production of cells when cultured in vitro. The viability potential of a cell population can be assessed by measuring the number of culture initiating cells (CICs). This number is typically estimated by a limiting dilution experiment where the number of cells are seeded in decreasing numbers. The ratio of CICs can then be estimated by e.g.~Poisson regression \citep{Lefkovits1999}.
+A cell is culture initiating if it can initiate a sustained production of cells when cultured in vitro.
+The viability potential of a cell population can be assessed by measuring the number of culture initiating cells (CICs).
+This number can be estimated by a dilution experiment where cells are seeded in decreasing numbers.
+The ratio of CICs can then be estimated by e.g.~Poisson regression \citep{Lefkovits1999}.
+CICs are of particular interest in cancer research as cancers with high culture initiating potential seemingly have stem cell like properties making them resistant towards chemotherapy \citep{Chen2013}.
 
-CICs are of particular interest in cancer research as it is believed that cancers with high culture initiating potential have stem cell like properties making them resistant towards chemotherapy \citep{Chen2013}.
-
-In a search for genes associated with a high culture initiating potential in MM we made limiting dilution experiments of 14 MM cell lines and divided them into 7 cell lines with low and 7 cell lines with high culture initiating potential. Gene expressions were profiled by Affymetrix HG-U133 plus 2 microarrays and we identified the genes \textit{MGST1} and \textit{MMSET} to be differentially expressed between between cell lines with high and low abundance of CICs.
-
+In search for genes associated with a high culture initiating potential in MM we made limiting dilution experiments of 14 MM cell lines and divided them into 7 cell lines with low and 7 cell lines with high culture initiating potential.
+Gene expressions profiling by microarrays identified genes \textit{MGST1} and \textit{MMSET} to be differentially expressed between between cell lines with high and low abundance of CICs.
 As gene expression detection by microarrays can be hampered by high false positive rates, the purpose of this experiment was to validate the findings of the association of \textit{MGST1} and \textit{MMSET} with culture initiating potential by qPCR.
+
 
 \subsubsection{Sample and data preparation}
 
@@ -415,18 +420,16 @@ Because of the few samples we omitted the, in this case, meaningless random samp
 In order to properly benchmark statistical test procedures one needs to have an idea of the false positive rate (FPR), or type I error rate, as well as the true positive rate (TPR), or sensitivity.
 As ground truth is usually not available in non-synthetic data, we use simulation experiments to determine the error rates of the discussed statistical procedures.
 
-In our setting, the FPR of a statistical test is the probability that the test incorrectly will declare a result statistically significant given a vanishing effect size or difference of $ c(\theta) = 0$ between case and controls.
-Hence, for qPCR-experiments the FPR is given by
-\begin{equation*}
+In our setting, the FPR of a statistical test is the probability that the test incorrectly will declare a result statistically significant given a vanishing effect size or difference of $ c(\theta) = 0$ between case and controls; {i.e.}
+$ % \begin{equation*}
   \mathrm{FPR} =
     P\bigl(\vert t \vert > t_{1 - \alpha/2,\eta} \bigm| c(\theta) = 0\bigr).
-\end{equation*}
-On the other hand the TPR of the statistical test is the probability that the test will correctly declare a result statistically significant given an non-zero effect size $\delta = c(\theta)$ between case and controls.
-Hence, the TPR is given by
-\begin{equation*}
+$ % \end{equation*}
+On the other hand the TPR of the statistical test is the probability that the test will correctly declare a result statistically significant given an non-zero effect size $\delta = c(\theta)$ between case and controls; {i.e.}
+$ % \begin{equation*}
   \mathrm{TPR} =
     P\bigl(\vert t \vert > t_{1 - \alpha/2,\eta} \bigm| c(\theta) = \delta\bigr).
-\end{equation*}
+$ %\end{equation*}
 
 A straightforward way to obtain an estimate of the TPR is to simulate a large number $n$ of datasets under the alternative hypothesis of $c(\theta) = \delta$, fit the model for each dataset, and compute $t$-values $t_1, \dots, t_n$.
 From these $t$-scores the TPR can estimated by
@@ -438,7 +441,7 @@ From these $t$-scores the TPR can estimated by
 where $\bbOne[\;\cdot\;]$ is the indicator function.
 Hence, the estimated TPR is the fraction of tests correctly declared significant.
 
-Likewise, an estimate of the FPR is obtained by simulating $n$ datasets under the null hypothesis of $c(\theta) = 0$ and obtain $t$-values $t_1, \dots ,t_n$ from which FPR is estimated by
+Likewise, an estimate of the FPR is obtained by simulating $n$ datasets under the null hypothesis of $c(\theta) = 0$ and obtaining $t$-values $t_1, \dots ,t_n$ from which FPR is estimated by
 \begin{equation*}
   \widehat{\mathrm{FPR}} =
     \frac{1}{n}\sum_{i=1}^n
@@ -459,12 +462,11 @@ The simple linear regressions show well-determined standard curves with small st
 The values of the considered estimators for $\ddcq$ are seen in Table~\ref{table:cic}.
 The table also shows results of tests for difference in gene expression assessed by the $\ddcq$ for both target genes \textit{MGST1} and \textit{MMSET} normalized to each of the reference genes \textit{GAPDH} and \textit{ACTB}.
 We used four different methods to estimate and perform inference:
-\begin{enumerate}
-  \item EC: Efficiency corrected LMM estimate ignoring the uncertainty of the efficiency estimates.
-  \item EC\&VA1: EC and variance adjusted LMM estimate using 1.~order approximation.
-  \item EC\&VA2: EC and variance adjusted LMM estimate using Monte Carlo integration.
-  \item Bootstrap: Estimate by the bootstrap described in Section \ref{sec:bootstrap} fitting the LMM and using the EC estimate.
-\end{enumerate}
+  (1) EC: Efficiency corrected LMM estimate ignoring the uncertainty of the efficiency estimates.
+  (2) EC\&VA1: EC and variance adjusted LMM estimate using 1.~order approximation.
+  (3) EC\&VA2: EC and variance adjusted LMM estimate using Monte Carlo integration.
+  (4) Bootstrap: Estimate by the bootstrap described in Section \ref{sec:bootstrap} fitting the LMM and using the EC estimate.
+
 Consider the first section of Table~\ref{table:cic} where tgt \textit{MGST1} is normalized against the reference \textit{GAPDH}.
 The tests for a vanishing $\ddcq$ are all highly significant with comparable $95\%$ CIs.
 As expected, the efficiency corrected estimates are unchanged due to the variance adjustment,
@@ -575,16 +577,16 @@ Problems with uncertainty in efficiency estimates should be handled by establish
 It is also noteworthy that model based estimation of the $\ddcq$ also allows for model checking by e.g.\ residual plots.
 
 % Conclusions
-Despite the extensive use of qPCR, much more statistical methodological research is needed to establish qPCR more firmly as a gold standard to reliably quantify abundances of nucleic acids.
+Despite the extensive use of qPCR, more statistical research is needed to establish qPCR more firmly as a gold standard to reliably quantify abundances of nucleic acids.
 Researchers analyzing qPCR experiments need to model their experiments in detail, e.g.\ via linear or non-linear (mixed) models, as the propagation of uncertainty needs to be carefully assessed and accounted for.
-This is necessary in all qPCR experiments in order to draw valid inferences and uphold the common statistical guarantees often erroneously assumed to be automatically fulfilled.
-We recommend the conservative approach of always accounting for the uncertainty of the estimates.
+This is necessary for making valid inferences and upholding the common statistical guarantees often erroneously assumed to be automatically fulfilled.
+We recommend the conservative approach of always accounting for the uncertainty of the AE.
 
 \phantomsection
 \addcontentsline{toc}{section}{Supplementary Material and Software}
 \section*{Supplementary Material and Software}
 
-The statistical analysis were done with R v\Sexpr{paste0(version$major, ".", version$minor)} using \texttt{lme4} \citep{Pinheiro2000a, Rproj}.
+The statistical analysis were done with R v\Sexpr{paste0(version$major, ".", version$minor)} \citep{Rproj} using \texttt{lme4}.
 All data, R code, LaTeX, and instructions to reproduce the present paper and results are freely available at \href{http://github.org/AEBilgrau/effadj/}{github.org/AEBilgrau/effadj/} using \texttt{knitr}, an extension of Sweave \citep{Xie2013, Leisch2002}.
 The packages
 \texttt{Hmisc} \citep{Harrell2015},
@@ -597,10 +599,10 @@ were used for tables, figures, FDR/TPR confidence intervals, parallel execution 
 \phantomsection
 \addcontentsline{toc}{section}{Acknowledgments}
 \section*{Acknowledgments}
-This research is supported by
-MSCNET; EU FP6; CHEPRE; Danish Agency for Science, Technology and Innovation; and Karen Elise Jensen Fonden.
-The founders had no role in study design, data collection, analysis, publishing, or preparation of this paper.\\
-{\it Conflict of Interest}: None declared.
+This work was supported by
+the Myeloma Stem Cell Network; EU FP6; CHEPRE; Karen Elise Jensen Fonden; and the Danish Agency for Science, Technology and Innovation.
+The founders had no role in study design, data collection, analysis, publishing, or preparation of this paper.
+ {\it Conflict of Interest}: None declared.
 
 
 \phantomsection

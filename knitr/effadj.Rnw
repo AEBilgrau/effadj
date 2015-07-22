@@ -614,10 +614,41 @@ The founders had no role in study design, data collection, analysis, publishing,
 \newpage
 
 
-% \bibliographystyle{NAR}
-% \bibliography{references}
+\bibliographystyle{nar}
+\bibliography{references}
 
+% \begin{thebibliography}{4}
 %
+% % Format for article
+% \bibitem{1}
+% Author,A.B. and Author,C. (1992)
+% Article title.
+% \textit{Abbreviated Journal Name}, \textbf{5}, 300--330.
+%
+% % Format for book
+% \bibitem{2}
+% Author,D., Author,E.F. and Author,G. (1995)
+% \textit{Book Title}.
+% Publisher Name, Publisher Address.
+%
+% % Format for chapter in book
+% \bibitem{3}
+% Author,H. and Author,I. (2005)
+% Chapter title.
+% In
+% Editor,A. and Editor,B. (eds),
+% \textit{Book Title},
+% Publisher Name, Publisher Address,
+% pp.\ 60--80.
+%
+% % Another article
+% \bibitem{4}
+% Author,Y. and Author,Z. (2002)
+% Article title.
+% \textit{Abbreviated Journal Name}, \textbf{53}, 500--520.
+%
+% \end{thebibliography}
+
 % % CIC fig
 % \begin{figure}
 % \begin{center}

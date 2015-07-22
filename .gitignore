@@ -10,5 +10,7 @@
 *.synctex.gz
 *.out
 *.tex
+*.zip
+nar-latex2010
 output/
 Data/Yuan/

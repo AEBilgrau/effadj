@@ -1,7 +1,8 @@
-\documentclass[oupdraft]{bio}
-\usepackage[colorlinks=true,urlcolor=citecolor,linkcolor=citecolor,citecolor=citecolor]{hyperref}
+\documentclass[a4,center,fleqn]{NAR}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Our preamble %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \graphicspath{{../output/}}
 \DeclareGraphicsExtensions{.eps}
@@ -22,8 +23,7 @@
 
 \usepackage{dsfont}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\usepackage{NAR-natbib}
 
 % Run analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -32,47 +32,53 @@ source("../scripts/master.R")  # Simply runs the master script
 @
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Enter dates of publication
+\copyrightyear{2008}
+\pubdate{31 July 2009}
+\pubyear{2009}
+\jvolume{37}
+\jissue{12}
 
-% Add history information for the article if required
-\history{Received August 1, 2010;
-revised October 1, 2010;
-accepted for publication November 1, 2010}
-
-
+%\articlesubtype{This is the article type (optional)}
 
 \begin{document}
 
-% Title of paper
 \title{Unaccounted uncertainty from qPCR efficiency estimates imply uncontrolled false positive rates}
 
+\author{%
+A.E.~Bilgrau\,$^{1,2,*}$
+S.~Falgreen\,$^1$
+A.~Petersen\,$^1$
+M.K.~Kjeldsen$^1$
+J.S.~B{\o}dker\,$^1$
+H.E.~Johnsen$^1$,
+K.~Dybk{\ae}r\,$^1$,
+and M.~B{\o}gsted\,$^1$%
+\footnote{To whom correspondence should be addressed.
+Tel: +45 000 0000000; Fax: +45 000 0000000; Email: abilgrau@math.aau.dk}}
 
-% List of authors, with corresponding author marked by asterisk
-\author{A.E. BILGRAU$^{\ast 1 2}$, S. FALGREEN$^1$, A. PETERSEN$^1$, M.K. KJELDSEN$^1$,\\
-J.S. B{\O}DKER$^1$,  H.E. JOHNSEN$^1$, K. DYBK{\AE}R$^1$, M. B{\O}GSTED$^1$\\[4pt]
-% Author addresses
-\textit{$^1$Department of Haematology, Aalborg University Hospital,
-Aalborg, Denmark \\ %Sdr. Skovvej 15, 9000 Aalborg, Denmark
-$^2$Department of Mathematical Sciences, Aalborg University,
-Aalborg {\O}, Denmark %Fredrik Bajers Vej 7G, 9220 Aalborg \O{}, Denmark
-}
-\\[2pt]
-% E-mail address for correspondence
-{abilgrau@math.aau.dk}}
+\address{%
+$^{1}$Deptartment of Haematology
+Aalborg University Hospital,
+Sdr.\ Skovvej 15, 9000 Aalborg, Denmark,
+and
+$^{2}$Department of Mathematical Sciences,
+Aalborg University,
+Fredrik Bajers Vej 7G, 9220 Aalborg {\O}, Denmark}
+% Affiliation must include:
+% Department name, institution name, full road and district address,
+% state, Zip or postal code, country
 
-
-% Running headers of paper:
-\markboth%
-% First field is the short list of authors
-{{A.} {E.} Bilgrau and others}
-% Second field is the short title of the paper
-{Unaccounted uncertainty in qPCR efficiency estimates}
+\history{%
+Received January 1, 2009;
+Revised February 1, 2009;
+Accepted March 1, 2009}
 
 \maketitle
 
-% Add a footnote for the corresponding author if one has been
-% identified in the author list
-\footnotetext{To whom correspondence should be addressed.}
 
 \begin{abstract}
 {Accurate adjustment for the amplification efficiency (AE) has become an important part of real-time quantitative polymerase chain reaction (qPCR) experiments.
@@ -86,8 +92,8 @@ We suggest methods founded in a linear mixed effects model (LMM) to obtain varia
 We illustrate the impact of AE uncertainty in three qPCR data sets and use the methods to validate findings suggesting that \textit{MGST1} is differentially expressed between high and low abundance culture initiating cells in multiple myeloma and that microRNA-127 is differentially expressed between testicular and nodal lymphomas.
 Finally, we benchmark our methods in a simulation study.
 }
-% Keywords
-{amplification efficiency; delta-delta Cq; $\ddcq$; efficiency adjusted; power calculation; qPCR}
+% % Keywords
+% {amplification efficiency; delta-delta Cq; $\ddcq$; efficiency adjusted; power calculation; qPCR}
 \end{abstract}
 
 
@@ -100,7 +106,11 @@ Here qPCR is the gold standard validation tool for the most promising gene trasc
 For validation experiments in particular the ability to control the type I error rate is very important.
 Unfortunately, important statistical details are often omitted resulting in a failure to obtain the desired type I error probability.
 Validation without such an ability cannot be considered very meaningful and therefore conservative approaches should be taken.
-
+% **************************************************************
+% Keep this command to avoid text of first page running into the
+% first page footnotes
+\enlargethispage{-65.1pt}
+% **************************************************************
 Like all experiments in molecular biology and chemistry, qPCR is sensitive not only to genes and gene transcripts of interest, but also laboratory settings and experimental conditions.
 There are an incredible amount of sources of systematic and non-systematic variation including temperature variations, concentration differences by pipetting errors, and primer affinity, in addition to the genuine biological variations of interest across case and control samples.
 Laboratory guidelines and increasingly sophisticated statistical modelling have been established to combat many of these systematic errors \citep{Bustin2010, Bustin2009}.
@@ -132,7 +142,7 @@ The approaches are used to demonstrate that multiple myeloma cancer cell lines d
 We also used the approach to design a study which results turned out to support the hypothesis of \cite{Robertus2009} that miRNA-127 is differentially expressed between testicular and nodal DLBCL
 Lastly, in a simulation study, we show that the three methods control the false postive rate better.
 
-\section{Methods}
+\section{MATERIALS AND METHODS}
 
 \subsection{Observational model}
 
@@ -357,7 +367,7 @@ Here, both new random effects and noise terms are realized and added to the fitt
 
 
 
-\section{Applications}
+\section{MATERIALS}
 
 We applied the described approaches to two qPCR validation experiments regarding culture initiating cells (CICs) in multiple myeloma (MM) and non-coding microRNAs in diffuse large B-cell lymphoma (DLBCL).
 In both experiments, the $C_q$ values were extracted for both the reference and target transcripts with automatic baseline and threshold selection \citep{Mx300P2013}.
@@ -453,7 +463,7 @@ Based on the above statistical model, we estimate the FPR and the TPR for each d
 
 
 
-\section{Results}
+\section{RESULTS}
 
 \subsection{CIC study}
 The $C_q$-values and dilution curves for the CIC study are depicted in Fig.~\ref{fig:cqCIC} panels A--B, respectively.
@@ -557,7 +567,7 @@ Finally as expected a decrease in FPR corresponds to a decrease in TPR.
 
 
 
-\section{Discussion and conclusion}
+\section{DISCUSSION AND CONCLUSION}
 % Main message
 The commonly used efficiency corrected $\ddcq$ approach to analysis of qPCR data disregards the uncertainty of the estimated AE leading to increased false positive rates.
 As qPCR experiments are often used for validation this is highly undesirable.
@@ -582,11 +592,9 @@ Researchers analyzing qPCR experiments need to model their experiments in detail
 This is necessary for making valid inferences and upholding the common statistical guarantees often erroneously assumed to be automatically fulfilled.
 We recommend the conservative approach of always accounting for the uncertainty of the AE.
 
-\phantomsection
-\addcontentsline{toc}{section}{Supplementary Material and Software}
-\section*{Supplementary Material and Software}
+\section{AVAILABILITY}
 
-The statistical analysis were done with R v\Sexpr{paste0(version$major, ".", version$minor)} \citep{Rproj} using \texttt{lme4}.
+All statistical analysis were done with R v\Sexpr{paste0(version$major, ".", version$minor)} \citep{Rproj} using \texttt{lme4}.
 All data, R code, LaTeX, and instructions to reproduce the present paper and results are freely available at \href{http://github.org/AEBilgrau/effadj/}{github.org/AEBilgrau/effadj/} using \texttt{knitr}, an extension of Sweave \citep{Xie2013, Leisch2002}.
 The packages
 \texttt{Hmisc} \citep{Harrell2015},
@@ -596,97 +604,95 @@ The packages
 \texttt{GMCM} \citep{Bilgrau2015},
 were used for tables, figures, FDR/TPR confidence intervals, parallel execution of simulations, and multivariate normal simulations, respectively.
 
-\phantomsection
-\addcontentsline{toc}{section}{Acknowledgments}
-\section*{Acknowledgments}
+
+\section{ACKNOWLEDGEMENTS}
+
 This work was supported by
 the Myeloma Stem Cell Network; EU FP6; CHEPRE; Karen Elise Jensen Fonden; and the Danish Agency for Science, Technology and Innovation.
 The founders had no role in study design, data collection, analysis, publishing, or preparation of this paper.
- {\it Conflict of Interest}: None declared.
-
-
-\phantomsection
-\addcontentsline{toc}{section}{References}
-\bibliographystyle{biorefs}
-\bibliography{references}
-
+\subsubsection{Conflict of interest statement.} None declared.
 \newpage
 
-% CIC fig
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{fig1}
-\end{center}
-\caption{
-  Overview of CIC experiment data.
-  A: Raw $C_q$-values for different cell lines (samples) for each gene type and sample type.
-  The point type and colour differentiates the different gene types.
-  B: Dilution data for
-  reference genes (\textit{ACTB}, \textit{GAPDH}) and
-  target genes (\textit{MGST1}, \textit{MMSET}).
-}
-\label{fig:cqCIC}
-\end{figure}
 
-% CIC table
-\input{../output/Table1.tex}
+% \bibliographystyle{NAR}
+% \bibliography{references}
 
-
-% DLBCL fig
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{fig2}
-\end{center}
-\caption{
-  Overview of DLBCL testis experiment data.
-  A: Raw $C_q$-values for different patient samples for each gene type and sample type.
-  The point type and colour differentiates the different gene types.
-  B: Dilution data for
-  reference genes (\textit{RNU-24}, \textit{RNU-6B}) and
-  target genes (\textit{miR-127}, \textit{miR-143}).
-}
-\label{fig:cqTestis}
-\end{figure}
-
-% DLBCL table
-\input{../output/Table2.tex}
-
-
-
-% Arabidopsis thaliana fig
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{fig3}
-\end{center}
-\caption{
-  Overview of \citet{Yuan2008} experiment data.
-  $C_q$-values against the dilution step for case and control samples.
-  Dilution data are present for both the target (\textit{MT7}) and reference genes (Tublin, \textit{UBQ}).
-  The technical duplicates have been averaged out in the analysis.
-  }
-\label{fig:cqYuan}
-\end{figure}
-
-% Arabidopsis thaliana table
-\input{../output/Table3.tex}
-
-
-% Simulation tab
-\input{../output/Table4.tex}
-
-% Simulation fig
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{fig4}
-\end{center}
-\caption{
-  Plot of the false positive rates (FPR, black) and true positive rates (TPR, grey) and their 95 \% confidence intervals achieved simulation experiments for each method at various $p$-value cut-offs (0.05, 0.01, 0.1) shown by solid red horizontal lines.
-  The FPR and TPR are computed completely analogous to Table~\ref{tab:simexample}.
-  The rates are plotted for each combination of 4 or 8 samples with 4 or 8 fold dilution curves.
-}
-\label{fig:simstudy}
-\end{figure}
-
+%
+% % CIC fig
+% \begin{figure}
+% \begin{center}
+% \includegraphics[width=\textwidth]{fig1}
+% \end{center}
+% \caption{
+%   Overview of CIC experiment data.
+%   A: Raw $C_q$-values for different cell lines (samples) for each gene type and sample type.
+%   The point type and colour differentiates the different gene types.
+%   B: Dilution data for
+%   reference genes (\textit{ACTB}, \textit{GAPDH}) and
+%   target genes (\textit{MGST1}, \textit{MMSET}).
+% }
+% \label{fig:cqCIC}
+% \end{figure}
+%
+% % CIC table
+% \input{../output/Table1.tex}
+%
+%
+% % DLBCL fig
+% \begin{figure}
+% \begin{center}
+% \includegraphics[width=\textwidth]{fig2}
+% \end{center}
+% \caption{
+%   Overview of DLBCL testis experiment data.
+%   A: Raw $C_q$-values for different patient samples for each gene type and sample type.
+%   The point type and colour differentiates the different gene types.
+%   B: Dilution data for
+%   reference genes (\textit{RNU-24}, \textit{RNU-6B}) and
+%   target genes (\textit{miR-127}, \textit{miR-143}).
+% }
+% \label{fig:cqTestis}
+% \end{figure}
+%
+% % DLBCL table
+% \input{../output/Table2.tex}
+%
+%
+%
+% % Arabidopsis thaliana fig
+% \begin{figure}
+% \begin{center}
+% \includegraphics[width=\textwidth]{fig3}
+% \end{center}
+% \caption{
+%   Overview of \citet{Yuan2008} experiment data.
+%   $C_q$-values against the dilution step for case and control samples.
+%   Dilution data are present for both the target (\textit{MT7}) and reference genes (Tublin, \textit{UBQ}).
+%   The technical duplicates have been averaged out in the analysis.
+%   }
+% \label{fig:cqYuan}
+% \end{figure}
+%
+% % Arabidopsis thaliana table
+% \input{../output/Table3.tex}
+%
+%
+% % Simulation tab
+% \input{../output/Table4.tex}
+%
+% % Simulation fig
+% \begin{figure}
+% \begin{center}
+% \includegraphics[width=\textwidth]{fig4}
+% \end{center}
+% \caption{
+%   Plot of the false positive rates (FPR, black) and true positive rates (TPR, grey) and their 95 \% confidence intervals achieved simulation experiments for each method at various $p$-value cut-offs (0.05, 0.01, 0.1) shown by solid red horizontal lines.
+%   The FPR and TPR are computed completely analogous to Table~\ref{tab:simexample}.
+%   The rates are plotted for each combination of 4 or 8 samples with 4 or 8 fold dilution curves.
+% }
+% \label{fig:simstudy}
+% \end{figure}
+%
 
 
 

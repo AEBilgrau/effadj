@@ -135,8 +135,8 @@ Simultaneous estimation of the uncertainty of the efficiency amplification estim
 We investigate the use of the statistical delta method, Monte Carlo integration, or bootstrapping to perform inference on the value of $\ddcq$.
 
 The idea of using LMMs for qPCR experiments is not completely new.
-\cite{andersen2004} and \cite{abruzzo2005} have used mixed effects modeling to identify candidate normalizing genes.
-\citet{fu2006} applied the related generalized estimation equations to handle intra and inter group variation.
+Others have used mixed effects modeling to identify candidate normalizing genes \cite{andersen2004,abruzzo2005}.
+Oher applied the related generalized estimation equations to handle intra and inter group variation \cite{fu2006}.
 However, our idea of LMMs combined with the statistical delta method, Monte Carlo integration, or bootstrapping to handle uncertainty stemming from the efficiency estimation seems to be novel and provides a general statistical framework for qPCR experiments and may be considered an extension of the strategy by \cite{Yuan2008}.
 
 The approaches are used to demonstrate that multiple myeloma cancer cell lines differentially express the \textit{MGST1} gene depending on the frequency of culture initiating cells.
@@ -281,8 +281,8 @@ approximated by
   }.
   \label{eq:tstat}
 \end{equation}
-According to \citet[Section 2.4.2]{Pinheiro2000a}, $t$ is approximately
-$t$-distributed with $\eta$ degrees of freedom.
+It is known that $t$ is approximately
+$t$-distributed with $\eta$ degrees of freedom \cite[Section 2.4.2]{Pinheiro2000a}.
 The degrees of freedom of multilevel mixed effects models are non-trivial to obtain in general.
 We do not pursue this further and restrict ourselves to the case of balanced experimental designs where $\eta$ is obtained relatively straight-forward.
 
@@ -417,11 +417,11 @@ For each target and reference transcripts a standard curve based on seven 2-fold
 \subsection{Arabidopsis thaliana study}
 
 \subsubsection{Introduction}
-In order to illustrate the effect of applying variance approximations in a data set with a limited number of dilution steps and samples we considered the arabidopsis thaliana data set published by \citet{Yuan2008}. The data set contains one gene of interest, \textit{MT7}, potentially differentially expressed under two growth conditions of the plant arabidopsis thaliana and two reference genes ubiquitin (\textit{UBQ}) and tublin.
+In order to illustrate the effect of applying variance approximations in a data set with a limited number of dilution steps and samples we considered the arabidopsis thaliana data set published by \cite{Yuan2008}. The data set contains one gene of interest, \textit{MT7}, potentially differentially expressed under two growth conditions of the plant arabidopsis thaliana and two reference genes ubiquitin (\textit{UBQ}) and tublin.
 
 
 \subsubsection{Sample and data preparation}
-The arabidopsis thaliana plant growth, RNA extraction, and qPCR experiments were carried out as described in \citet{Yang2006}. The cDNA was diluted into 1-to-4 and 1-to-16 serial dilutions. Real-time PCR experiments was performed in duplicates for each concentration \citep{Yuan2008}.
+The arabidopsis thaliana plant growth, RNA extraction, and qPCR experiments were carried out as described in \cite{Yang2006}. The cDNA was diluted into 1-to-4 and 1-to-16 serial dilutions. Real-time PCR experiments was performed in duplicates for each concentration \citep{Yuan2008}.
 
 Due to the the study design, we naturally fitted estimation efficiencies $\gamma_{ij} = \alpha_{ij}^{-1}$ for each group.
 Because of the few samples we omitted the, in this case, meaningless random sample effect of the LMM.

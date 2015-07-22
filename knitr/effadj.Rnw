@@ -171,25 +171,26 @@ $N_{0,\rref,\case}=N_{0,\rref,\ctrl}$,
 and that the AE only vary between the target and reference gene. We then
 arrive at the following expression for the $\log_2$-fold change of
 the target gene template between case and controls:
-\begin{align*}
-  \log_2\Bigl(\frac{N_{ 0,\tgt,\case}}{N_{0,\tgt,\ctrl}}\Bigr)
-  &= \log_2 \kappa \sigma_{ \case} N_{0,\tgt,\case}
-    -\log_2 \kappa \sigma_{ \case} N_{0,\rref,\case} \\
+{\small{}%
+\begin{align*}%
+  \log\Bigl(\frac{N_{ 0,\tgt,\case}}{N_{0,\tgt,\ctrl}}\Bigr)
+  &= \log \kappa \sigma_{ \case} N_{0,\tgt,\case}
+    -\log \kappa \sigma_{ \case} N_{0,\rref,\case} \\
   &\quad
-       - \log_2 \kappa \sigma_{\ctrl} N_{0,\tgt,\ctrl}
-       + \log_2 \kappa \sigma_{\ctrl} N_{0,\rref,\ctrl}  \\
+       - \log \kappa \sigma_{\ctrl} N_{0,\tgt,\ctrl}
+       + \log \kappa \sigma_{\ctrl} N_{0,\rref,\ctrl}  \\
   &=   - \bigl\{(\alpha_{\tgt}  C_{ q,\tgt,\case}
-       -  \alpha_{\rref} C_{q,\rref,\case})
-       - (\alpha_{\tgt}  C_{q,\tgt,\ctrl}
+       -  \alpha_{\rref} C_{q,\rref,\case}) \\
+  &\quad - (\alpha_{\tgt}  C_{q,\tgt,\ctrl}
        - \alpha_{\rref} C_{q,\rref,\ctrl})\bigr\},
-\end{align*}
+\end{align*}\normalsize}%
 assuming that the $C_q$-values have been determined by a common florescence level $F_{C_q}$.
 This method of estimating the log relative abundance between case and controls is often referred to as the $\ddcq$-method \citep{Livak2001}, after the double difference appearing in the expression:
 \begin{align}
+  \ddcq :&=
+    (\alpha_{ \tgt}C_{ q,\tgt,\case} - \alpha_{ \rref}C_{ q,\rref,\case}) \notag\\
+   &\quad - (\alpha_{ \tgt}C_{ q,\tgt,\ctrl} - \alpha_{ \rref}C_{ q,\rref,\ctrl}).
   \label{eq:ddcq}
-  \ddcq :=
-    (\alpha_{ \tgt}C_{ q,\tgt,\case} - \alpha_{ \rref}C_{ q,\rref,\case})
-      - (\alpha_{ \tgt}C_{ q,\tgt,\ctrl} - \alpha_{ \rref}C_{ q,\rref,\ctrl}).
 \end{align}
 Thus we have $2^{-\ddcq}$ as the relative abundance of the original target transcript.
 
@@ -246,14 +247,14 @@ $ % \begin{equation*}
 $ % \end{equation*}
 where $c$ is the continuously differentiable function of the
 fixed effects given by
-\begin{equation}
-  \label{eq:c}
+\begin{align}
   c(\vtheta)
-    =      \big\{ (\mu_{\tgt,\case} \gamma_\tgt^{-1}
-               -  \mu_{\rref,\case} \gamma_\rref^{-1})
-               - (\mu_{\tgt,\ctrl}  \gamma_\tgt^{-1}
+    &=      \big\{ (\mu_{\tgt,\case} \gamma_\tgt^{-1}
+               -  \mu_{\rref,\case} \gamma_\rref^{-1})  \notag\\
+    &\quad     - (\mu_{\tgt,\ctrl}  \gamma_\tgt^{-1}
                -  \mu_{\rref,\ctrl} \gamma_\rref^{-1})\bigr\}.
-\end{equation}
+  \label{eq:c}
+\end{align}
 The main task of this paper is to approximate the standard error of $c(\hat{\vtheta})$ and thereby account for the uncertainty of $\ddcq$.
 That is, the standard error,
 \begin{equation}

@@ -121,18 +121,18 @@ toTeX <- rbind(EC    = DDCq.test2(ds1, eff.cor = TRUE, var.adj = FALSE),
 
 
 
-toTeX      <- signif(toTeX, 4)
-toTeX[, 5] <- sn(toTeX[, 5])
+toTeX      <- signif(toTeX, 2)
+toTeX[, 5] <- sn(toTeX[, 5], 2)
 colnames(toTeX) <- gsub("Pr(>|t|)", "$p$-value", colnames(toTeX), fixed = TRUE)
 colnames(toTeX) <- gsub("t ", "$t$-", colnames(toTeX), fixed = TRUE)
 
 rownames(toTeX) <- gsub("LMEM", "LMM", rownames(toTeX))
-rownames(toTeX) <- gsub("t.", "$t$-", rownames(toTeX), fixed = TRUE)
+rownames(toTeX) <- gsub("t.", "$t$", rownames(toTeX), fixed = TRUE)
 rownames(toTeX) <- gsub("ECVA", "EC\\\\&VA", rownames(toTeX))
 
 grps <- sapply(list(g1, g2), function(x) paste(x[1], "vs", x[2]))
 
-caption.txt <- "\\citet{Yuan2008} data: Method comparison for estimating the
+caption.txt <- "A.~thaliana data: Method comparison for estimating the
   $\\ddcq$-value. EC denotes use of the plugin-estimator.
   VA denotes that the efficiency correction was variance adjusted using the
   delta method (1)."
@@ -147,3 +147,24 @@ w <- latex(toTeX,
            numeric.dollar = TRUE,
            keep.tex = TRUE,
            size = "small")
+
+#
+# Use nar table instead
+#
+caption.txt <- "A.~thaliana data: Method comparison for estimating the
+  $\\ddcq$."
+footnote <- "EC denotes use of the plugin-estimator.
+  VA denotes that the efficiency correction was variance adjusted using the
+  delta method (1)."
+colnames(toTeX) <- gsub("Estimate", "Est.\\", colnames(toTeX))
+colnames(toTeX) <- gsub("Std. Error", "SE", colnames(toTeX))
+colnames(toTeX) <- gsub("-value", "", colnames(toTeX))
+NARtable(toTeX,
+         caption = caption.txt,
+         footnote = footnote,
+         label = "table:yuan",
+         rgroup = grps,
+         title = "",
+         file = "../output/Table3.tex")
+
+

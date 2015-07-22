@@ -567,6 +567,21 @@ Likewise, for many dilutions, the difference between the EC and EC\&VA procedure
 Finally as expected a decrease in FPR corresponds to a decrease in TPR.
 
 
+% CIC table
+\input{../output/Table1.tex}
+
+
+% DLBCL table
+\input{../output/Table2.tex}
+
+
+% Arabidopsis thaliana table
+\input{../output/Table3.tex}
+
+
+% Simulation tab
+\input{../output/Table4.tex}
+
 
 \section{DISCUSSION AND CONCLUSION}
 % Main message
@@ -652,7 +667,7 @@ The founders had no role in study design, data collection, analysis, publishing,
 
 
 % CIC fig
-\begin{figure}
+\begin{figure*}
 \begin{center}
 \includegraphics[width=\textwidth]{fig1}
 \end{center}
@@ -665,14 +680,11 @@ The founders had no role in study design, data collection, analysis, publishing,
   target genes (\textit{MGST1}, \textit{MMSET}).
 }
 \label{fig:cqCIC}
-\end{figure}
-
-% CIC table
-\input{../output/Table1.tex}
+\end{figure*}
 
 
 % DLBCL fig
-\begin{figure}
+\begin{figure*}
 \begin{center}
 \includegraphics[width=\textwidth]{fig2}
 \end{center}
@@ -685,36 +697,25 @@ The founders had no role in study design, data collection, analysis, publishing,
   target genes (\textit{miR-127}, \textit{miR-143}).
 }
 \label{fig:cqTestis}
-\end{figure}
-
-% DLBCL table
-\input{../output/Table2.tex}
-
+\end{figure*}
 
 
 % Arabidopsis thaliana fig
-\begin{figure}
+\begin{figure*}
 \begin{center}
 \includegraphics[width=\textwidth]{fig3}
 \end{center}
 \caption{
-  Overview of \citet{Yuan2008} experiment data.
+  Overview of A.~thaliana experiment data.
   $C_q$-values against the dilution step for case and control samples.
   Dilution data are present for both the target (\textit{MT7}) and reference genes (Tublin, \textit{UBQ}).
   The technical duplicates have been averaged out in the analysis.
   }
 \label{fig:cqYuan}
-\end{figure}
-
-% Arabidopsis thaliana table
-\input{../output/Table3.tex}
-
-
-% Simulation tab
-\input{../output/Table4.tex}
+\end{figure*}
 
 % Simulation fig
-\begin{figure}
+\begin{figure*}
 \begin{center}
 \includegraphics[width=\textwidth]{fig4}
 \end{center}
@@ -724,7 +725,7 @@ The founders had no role in study design, data collection, analysis, publishing,
   The rates are plotted for each combination of 4 or 8 samples with 4 or 8 fold dilution curves.
 }
 \label{fig:simstudy}
-\end{figure}
+\end{figure*}
 
 
 

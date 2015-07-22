@@ -204,7 +204,7 @@ ex.tab <- rbind(rowSums(!significant),
 colnames(ex.tab) <- gsub("H0:.+","$H_0$",gsub("H1:.+","$H_A$",colnames(ex.tab)))
 rownames(ex.tab) <- sprintf(c("$p \\geq %.2f$", "$p < %.2f$"), p.cut)
 ex.cgroup <- c("EC", "EC\\&VA1", "Bootstr.")
-tmp.caption <- "Contingency tables for the different estimators for at
+tmp.caption <- "Contingency tables for different estimators for at
   5 \\% $p$-value threshold. The used estimators are the LMM
   with efficiency correction (EC), the LMM
   with EC and variance adjustment (EC\\&VA), and the bootstrapped LMM approach."
@@ -214,6 +214,26 @@ w <- latex(ex.tab, file = "../output/Table4.tex", title = "",
            rgroup = "$p$-values",
            caption = tmp.caption,
            label = "tab:simexample")
+
+#
+# Use nar table instead
+#
+
+tmp.caption <- "Contingency tables for different estimators for at
+  5 \\% sig-level."
+footnote <- "The used estimators are the LMM
+  with efficiency correction (EC), the LMM
+  with EC and variance adjustment (EC\\&VA), and the bootstrapped LMM approach."
+subheaders <- colnames(ex.tab)
+colnames(ex.tab) <- rep(ex.cgroup, each = 2)
+NARtable(ex.tab,
+         caption = tmp.caption,
+         subheaders = subheaders,
+         label = "tab:simexample",
+         footnote = footnote,
+         title = "$p$-value",
+         file = "../output/Table4.tex")
+
 
 #
 # To use in the knitr document

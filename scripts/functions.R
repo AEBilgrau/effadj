@@ -751,5 +751,64 @@ export <- # Function names to export to parallel clusters
 
 
 
+#
+# Function for NAR tables
+#
+
+NARtable <- function(tab, caption = "", label = "tab", footnote = "",
+                     title = "", rgroup = NULL, subheaders, file = "",
+                     star = "") {
+nar_table_body <- "
+\\begin{table%s}[b]
+\\tableparts{%%
+\\caption{%s}
+\\label{%s}%%
+}{%%
+\\begin{tabular*}{\\columnwidth}{@{}%s@{}}
+\\toprule
+%s %%Col. head 1 & Col. head 2 & Col. head 3 & Col. head 4 & Col. head 5
+\\\\
+%s %%& (\\%%) & (s$^{-1}$) & (\\%%) & (s$^{-1}$)
+\\\\
+\\colrule
+%s %%Row 1 & Row 1 & Row 1 & -- & --
+\\\\
+\\botrule
+\\end{tabular*}%%
+}
+{%s} %% footnote
+\\end{table%s}"
+
+  m <- ncol(tab)
+  headers <- paste(c(title, colnames(tab)), collapse = " & ")
+  if (missing(subheaders)) {
+    subheaders <- rep("", m + 1)
+  } else {
+    subheaders <- c("", subheaders)
+  }
+  subheaders <- paste(subheaders, collapse = " & ")
+  form <- paste0(rep("l", m + 1), collapse = "")
+
+  if (!is.null(rgroup)) {
+    rgroup <- paste0("\\textbf{", rgroup, "}")
+    nn <- length(rgroup)
+    n <- nrow(tab)
+
+    tab <- cbind(tab, "sort" = seq_len(n))
+    tab <- rbind(tab, cbind(matrix("", nn, m), seq(1, n, by = nn)-0.1))
+    rownames(tab)[n + 1:nn] <- rgroup
+
+    tab <- tab[order(as.numeric(tab[,"sort"])), -(m+1)]
+  }
+
+  content <- apply(tab, 1, paste0, collapse = " & ")
+  content <- paste(names(content), content, sep = " & ", collapse = "\\\\\n")
+
+  cat(sprintf(nar_table_body, star, caption, label, form,
+              headers, subheaders, content, footnote, star),
+      file = file)
+
+}
+
 
 

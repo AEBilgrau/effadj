@@ -139,8 +139,8 @@ sink()
 # Writing LaTeX table
 #
 
-toTeX      <- signif(toTeX, 4)
-toTeX[, 5] <- sn(toTeX[, 5])
+toTeX      <- signif(toTeX, 2)
+toTeX[, 5] <- sn(toTeX[, 5], 2)
 colnames(toTeX) <- gsub("Pr(>|t|)", "$p$-value", colnames(toTeX), fixed = TRUE)
 colnames(toTeX) <- gsub("t ", "$t$-", colnames(toTeX), fixed = TRUE)
 
@@ -175,3 +175,29 @@ w <- latex(toTeX,
            numeric.dollar = TRUE,
            keep.tex = TRUE,
            size = "small")
+
+#
+# Use nar table instead
+#
+
+
+caption.txt <- "CIC data: Method comparison for estimating the
+  $\\ddcq$-value."
+footnote <-
+  "EC denotes use of the plugin-estimator.
+  VA denotes that the efficiency correction was variance adjusted using the
+  delta method (1) or Monte Carlo integration (2).
+  Bootstrap shows the mean and standard deviation of %d
+  bootstrap samples using the EC estimate. The last two columns show the $95\\%%$
+  lower and upper confidence interval limits."
+
+colnames(toTeX) <- gsub("Estimate", "Est.\\", colnames(toTeX))
+colnames(toTeX) <- gsub("Std. Error", "SE", colnames(toTeX))
+colnames(toTeX) <- gsub("-value", "", colnames(toTeX))
+NARtable(toTeX, star = "",
+         caption = caption.txt,
+         footnote = sprintf(footnote, n.boots),
+         label = "table:cic",
+         rgroup = paste0("{\\tiny{}", grps, "}"),
+         title = "",
+         file = "../output/Table1.tex")

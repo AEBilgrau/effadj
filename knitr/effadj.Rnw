@@ -189,7 +189,7 @@ This method of estimating the log relative abundance between case and controls i
 \begin{align}
   \ddcq :&=
     (\alpha_{ \tgt}C_{ q,\tgt,\case} - \alpha_{ \rref}C_{ q,\rref,\case}) \notag\\
-   &\quad - (\alpha_{ \tgt}C_{ q,\tgt,\ctrl} - \alpha_{ \rref}C_{ q,\rref,\ctrl}).
+   &\quad - (\alpha_{ s\tgt}C_{ q,\tgt,\ctrl} - \alpha_{ \rref}C_{ q,\rref,\ctrl}).
   \label{eq:ddcq}
 \end{align}
 Thus we have $2^{-\ddcq}$ as the relative abundance of the original target transcript.
@@ -496,6 +496,9 @@ The mean of the bootstrap distribution seems consistently larger that the other 
 
 We see that the large number of dilution steps, as recommended, ensures a low impact of the AE induced standard error on the inference of the $\ddcq$.
 
+% CIC table
+\input{../output/Table1.tex}
+
 
 
 
@@ -518,6 +521,9 @@ The bootstrap method provides a standard deviation similar to the delta method a
 Regarding the biological interest, we conclude there is evidence for a difference in \textit{miR-127} expression between testicular and nodal DLBCL whilst the data is not compatible with difference in \textit{miR-143} expression.
 While the AE estimate had no influence in these cases a change in significance is easily imagined in other cases.
 
+% DLBCL table
+\input{../output/Table2.tex}
+
 
 
 \subsection{Arabidopsis thaliana data}
@@ -535,7 +541,8 @@ First, using only 3 dilutions steps leaves very few degrees of freedom left in e
 Secondly, as dilution curves are used for each group the four group-specific AE estimates will all contribute to increasing the standard error of the $\ddcq$.
 While this example was selected as a worst-case scenario, it should illustrate that although the standard curves are seemingly well determined, it is hard to intuitively predetermine the combined effect on the standard error of $\ddcq$.
 
-
+% Arabidopsis thaliana table
+\input{../output/Table3.tex}
 
 
 
@@ -566,19 +573,6 @@ In each panel the $p$-value cut-off is varied between 0.01, 0.05, and 0.1.
 Overall, we see that the EC\&VA adjusted estimate is the only procedure consistent with controlling the FPR at the nominal chosen significance level.
 Likewise, for many dilutions, the difference between the EC and EC\&VA procedures diminish as the uncertainty of the AE is relatively low.
 Finally as expected a decrease in FPR corresponds to a decrease in TPR.
-
-
-% CIC table
-\input{../output/Table1.tex}
-
-
-% DLBCL table
-\input{../output/Table2.tex}
-
-
-% Arabidopsis thaliana table
-\input{../output/Table3.tex}
-
 
 % Simulation tab
 \input{../output/Table4.tex}

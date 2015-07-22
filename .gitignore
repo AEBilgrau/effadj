@@ -11,6 +11,9 @@
 *.out
 *.tex
 *.zip
+*.idx
+*.ilg
+*.ind
 nar-latex2010
 output/
 Data/Yuan/

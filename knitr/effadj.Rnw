@@ -570,9 +570,11 @@ We recommend the conservative approach of always accounting for the uncertainty 
 \addcontentsline{toc}{section}{Supplementary Material and Software}
 \section*{Supplementary Material and Software}
 
-The statistical analysis were done with R v\Sexpr{paste0(version$major, ".", version$minor)} \citep{Rproj} using \texttt{lme4}.
-All data, R code, LaTeX, and instructions to reproduce the present paper and results are freely available at \href{http://github.org/AEBilgrau/effadj/}{github.org/AEBilgrau/effadj/} using \texttt{knitr}, an extension of Sweave \citep{Xie2013, Leisch2002}.
-The packages
+The statistical analysis were done using the programming language \textsf{R} \texttt{v\Sexpr{paste0(version$major, ".", version$minor)}} \citep{Rproj} using \texttt{lme4}.
+All data, R code, LaTeX, and instructions to reproduce the present paper and results are freely available at
+\href{http://github.org/AEBilgrau/effadj/}{\texttt{github.org/AEBilgrau/effadj/}}
+using \texttt{knitr}, an extension of Sweave \citep{Xie2013, Leisch2002}.
+Functionality from the packages
 \texttt{Hmisc} \citep{Harrell2015},
 \texttt{lattice} (and \texttt{latticeExtra}) \citep{Sarkar2008},
 \texttt{epiR} \citep{Stevenson2015},

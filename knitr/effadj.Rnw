@@ -1,11 +1,18 @@
-\documentclass[oupdraft]{bio}
-\usepackage[colorlinks=true,urlcolor=citecolor,linkcolor=citecolor,citecolor=citecolor]{hyperref}
+\documentclass{article}
 
 % Our preamble %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \graphicspath{{../output/}}
 \DeclareGraphicsExtensions{.eps}
 \usepackage[outdir=./]{epstopdf}
+
+\usepackage{authblk}  % For author affiliations
+\usepackage{amsmath}  % Enables the align enviroment
+\usepackage{amssymb}  % Math symbols (e.g. \mathbb{})
+\usepackage{dsfont}   % bold fonts
+\usepackage{natbib}
+\usepackage{hyperref}
+\usepackage{fullpage} % Larger margins
 
 \renewcommand{\vec}{\boldsymbol} % for bold vectors
 \newcommand{\vtheta}{\vec{\theta}} % vector theta
@@ -20,7 +27,6 @@
 \newcommand{\slfrac}[2]{\left.#1\middle/#2\right.}
 \newcommand{\ddcq}{\Delta\Delta C_q}
 
-\usepackage{dsfont}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -33,49 +39,28 @@ source("../scripts/master.R")  # Simply runs the master script
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-% Add history information for the article if required
-\history{Received August 1, 2010;
-revised October 1, 2010;
-accepted for publication November 1, 2010}
-
-
-
 \begin{document}
 
 % Title of paper
 \title{Unaccounted uncertainty from qPCR efficiency estimates imply uncontrolled false positive rates}
 
+\author[12]{A.~E.~Bilgrau\thanks{To whom correspondence should be addressed (\texttt{abilgrau@math.aau.dk})}}
+\author[1]{S.~Falgreen}
+\author[1]{A.~Petersen}
+\author[1]{M.~K.~Kjeldsen}
+\author[1]{J.~S.~B{\o}dker}
+\author[1]{H.~E.~Johnsen}
+\author[1]{K.~Dybk{\ae}r}
+\author[13]{M.~B{\o}gsted}
 
-% List of authors, with corresponding author marked by asterisk
-\author{A.E. BILGRAU$^{\ast 1 2}$, S. FALGREEN$^1$, A. PETERSEN$^1$, M.K. KJELDSEN$^1$,\\
-J.S. B{\O}DKER$^1$,  H.E. JOHNSEN$^1$, K. DYBK{\AE}R$^1$, M. B{\O}GSTED$^1$\\[4pt]
-% Author addresses
-\textit{$^1$Department of Haematology, Aalborg University Hospital,
-Aalborg, Denmark \\ %Sdr. Skovvej 15, 9000 Aalborg, Denmark
-$^2$Department of Mathematical Sciences, Aalborg University,
-Aalborg {\O}, Denmark %Fredrik Bajers Vej 7G, 9220 Aalborg \O{}, Denmark
-}
-\\[2pt]
-% E-mail address for correspondence
-{abilgrau@math.aau.dk}}
-
-
-% Running headers of paper:
-\markboth%
-% First field is the short list of authors
-{{A.} {E.} Bilgrau and others}
-% Second field is the short title of the paper
-{Unaccounted uncertainty in qPCR efficiency estimates}
+\affil[1]{Department of Haematology, Aalborg University Hospital}
+\affil[2]{Department of Mathematical Sciences, Aalborg University}
+\affil[3]{Department of Clincal Medicine, Aalborg University Hospital}
 
 \maketitle
 
-% Add a footnote for the corresponding author if one has been
-% identified in the author list
-\footnotetext{To whom correspondence should be addressed.}
-
 \begin{abstract}
-{Accurate adjustment for the amplification efficiency (AE) has become an important part of real-time quantitative polymerase chain reaction (qPCR) experiments.
+Accurate adjustment for the amplification efficiency (AE) has become an important part of real-time quantitative polymerase chain reaction (qPCR) experiments.
 The most commonly used correction strategy is to estimate the AE by dilution experiments and use this as a plug-in when efficiency correcting the $\ddcq$.
 Currently it is recommended to determine the AE with high precision as the plug-in approach does not account for its uncertainty,
 implicitly assuming an infinitely precise AE estimate.
@@ -84,10 +69,9 @@ Violation of the assumption leads to overly optimistic standard errors of the $\
 As qPCR is often used for validation it should be a high priority to account for the uncertainty of the AE estimate and thereby properly bounding the type I error rate and achieve the desired significance level.
 We suggest methods founded in a linear mixed effects model (LMM) to obtain variance approximations of the efficiency adjusted $\ddcq$ using the statistical delta method, Monte Carlo integration, or bootstrapping.
 We illustrate the impact of AE uncertainty in three qPCR data sets and use the methods to validate findings suggesting that \textit{MGST1} is differentially expressed between high and low abundance culture initiating cells in multiple myeloma and that microRNA-127 is differentially expressed between testicular and nodal lymphomas.
-Finally, we benchmark our methods in a simulation study.
-}
-% Keywords
-{amplification efficiency; delta-delta Cq; $\ddcq$; efficiency adjusted; power calculation; qPCR}
+Finally, we benchmark our methods in a simulation study. \\
+\medskip
+\textbf{Keywords:} amplification efficiency; delta-delta Cq; $\ddcq$; efficiency adjusted; power calculation; qPCR
 \end{abstract}
 
 
@@ -607,7 +591,7 @@ The founders had no role in study design, data collection, analysis, publishing,
 
 \phantomsection
 \addcontentsline{toc}{section}{References}
-\bibliographystyle{biorefs}
+\bibliographystyle{plainnat}
 \bibliography{references}
 
 \newpage

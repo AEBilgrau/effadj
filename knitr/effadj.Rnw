@@ -87,7 +87,7 @@ Validation without such an ability cannot be considered very meaningful and ther
 
 Like all experiments in molecular biology and chemistry, qPCR is sensitive not only to genes and gene transcripts of interest, but also laboratory settings and experimental conditions.
 There are an incredible amount of sources of systematic and non-systematic variation including temperature variations, concentration differences by pipetting errors, and primer affinity, in addition to the genuine biological variations of interest across case and control samples.
-Laboratory guidelines and increasingly sophisticated statistical modelling have been established to combat many of these systematic errors \citep{Bustin2010, Bustin2009}.
+Laboratory guidelines and increasingly sophisticated statistical modelling have been established to combat many of these systematic errors \citep{Bustin2010, Bustin2009, Spiess2015, Ruijter2013, Rao2013}.
 
 The so-called $\ddcq$ method is the normalized relative expression of a target gene of interest between treated (case) and untreated samples (control) accounting for undesired variations using one or more endogenous reference genes (also called housekeeping gene) assumed to be approximately unchanged due to the treatment.
 The $\ddcq$ value is usually based on the assumption of perfect AEs for both the target and reference gene.

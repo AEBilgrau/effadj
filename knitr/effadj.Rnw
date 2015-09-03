@@ -92,14 +92,19 @@ Laboratory guidelines and increasingly sophisticated statistical modelling have 
 The so-called $\ddcq$ method is the normalized relative expression of a target gene of interest between treated (case) and untreated samples (control) accounting for undesired variations using one or more endogenous reference genes (also called housekeeping gene) assumed to be approximately unchanged due to the treatment.
 The $\ddcq$ value is usually based on the assumption of perfect AEs for both the target and reference gene.
 However, the target and reference genes might be subject to different AE which yield biased $\ddcq$ values.
-In turn, the $\ddcq$ was modified to an AE corrected version \citep{Pfaffl2001}.
+In turn, the $\ddcq$ has been modified to an AE corrected versions \citep{Pfaffl2001, Rao2013b}.
 
 Despite the tremendous success of qPCR, ``statistical inference considerations are still not accorded high enough priority'' \citep{Bustin2009, Bustin2010}.
 We find this particular true for the estimation of the AE.
-Although efficiency calibration has been extensively treated by \cite{Pfaffl2001} or the more generalized model presented by \cite{Yuan2008}, there still seems to lack a systematic study of the unavoidable influence of uncertainty in the efficiency amplification estimate on the conclusions of qPCR experiments based on formal statistical inference.
-The current AE adjusted $\ddcq$ methods do not account for the uncertainty of the estimated AE and thus effectively assumes the AE to be estimated with infinite precision.
+Although efficiency calibration has been extensively treated by \cite{Pfaffl2001} or the more generalized model presented by \cite{Yuan2008}, there still seems to lack a systematic study of the unavoidable influence of the uncertainty of the efficiency amplification estimate on the conclusions of qPCR experiments based on formal statistical inference.
+The current AE adjusted $\ddcq$ methods do not account for the \emph{uncertainty of the estimated AE} and thus effectively assumes the AE to be estimated with infinite precision.
 This assumption implies a systematic underestimation of the standard error of $\ddcq$ leading to too narrow confidence intervals, decreased $p$-values, and lastly increased type I error rates.
 If the AE is poorly determined this underestimation can drastically increase the standard error of $\ddcq$ and the derived quantities.
+
+\citet{Svec2015} recently assessed the impact of the AE uncertainty as a function of the number of technical replications at each concentration and the qPCR instrument.
+They conlude that a minimum of 3--4 replicates at each concentration are needed and that a significant inter qPCR instrument effect is present.
+They fail, however, to gauge the effect of the number of concentrations---an arguably more important variable than the number of replicates, as additional technical replicates rarely contribute with much information to determine the AE.
+Nontheless, \citet{Svec2015} do not adress the impact of the AE uncertainty on formal statistical inference on the $\ddcq$, as this paper intends.
 
 % Precise aims of the paper
 We aim to formulate a mathematical model which allows formal statistical inference about qPCR experiments with non-efficient amplifications.
@@ -115,6 +120,8 @@ However, our idea of LMMs combined with the statistical delta method, Monte Carl
 The approaches are used to demonstrate that multiple myeloma cancer cell lines differentially express the \textit{MGST1} gene depending on the frequency of culture initiating cells.
 We also used the approach to design a study which results turned out to support the hypothesis of \cite{Robertus2009} that miRNA-127 is differentially expressed between testicular and nodal DLBCL
 Lastly, in a simulation study, we show that the three methods control the false postive rate better.
+
+
 
 \section{Methods}
 

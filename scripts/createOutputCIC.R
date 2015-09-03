@@ -47,7 +47,7 @@ fig1b <-
          col = blue.colours,
          panel = mypanel,
          data = cic.std,
-         xlab = as.expression(bquote(-log[2]*N["0,i,j,k"])),
+         xlab = "Dilution step", #as.expression(bquote(-log[2]*N["0,i,j,k"])),
          ylab = expression(C[q]),
          pch = seq_along(blue.colours),
          main = "",

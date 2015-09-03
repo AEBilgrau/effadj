@@ -26,7 +26,7 @@ mypanel <- function(x, y, ...) {
 fig3 <- xyplot(Cq ~ l2con | sampleType:geneName, data = yuan, panel = mypanel,
                groups = yuan$geneName,
                col = lime.colours, pch  = seq_along(lime.colours),
-               xlab = as.expression(bquote(-log[2]*N["0,i,j,k"])),
+               xlab = "Dilution step", #as.expression(bquote(-log[2]*N["0,i,j,k"])),
                ylab = expression(C[q]),
                main = "")
 

@@ -46,7 +46,7 @@ fig2b <-
          col = red.colours,
          data = testis.std,
          panel = mypanel,
-         xlab = as.expression(bquote(-log[2]*N["0,i,j,k"])),
+         xlab = "Dilution step",#as.expression(bquote(-log[2]*N["0,i,j,k"])),
          ylab = expression(C[q]),
          main = "",
          pch = seq_along(red.colours),

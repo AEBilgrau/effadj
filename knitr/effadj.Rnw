@@ -188,8 +188,9 @@ $k\in\{0,\dots,K_{ijs}\}$ for dilution steps for each sample.
 To estimate $\ddcq$, estimates of $\alpha_i$ are needed.
 A popular way of estimating the AEs is by dilution curves,
 i.e.\ by regressing $C_{q,ij}$ against a series of decreasing
-$N_{0,ij}$-values, denoted by $N_{0ijk} = N_{0,ij1}2^{-x_k}$, where
+$N_{0,ij}$-values, denoted by $N_{0,ijk} = N_{0,ij}2^{-x_k}$, where
 $0 = x_1 < \cdots < x_K < \infty$, and na\"{i}vely plugging $\hat{\alpha}_i$ into \eqref{eq:ddcq} thus disregarding its uncertainty.
+Here, $k$ denote the dilution step and $x_k$ the number of 2-fold dilutions (e.g.\ $x_1 = 1$ means the first dilution step halves the original concentration).
 The estimation of the expected $C_{q,ij}$-values and $\alpha_i$ can however be estimated simultaneously when formulated as a LMM \citep{Pinheiro2000a};
 \begin{equation}
   \label{eq:model}
@@ -476,7 +477,7 @@ Again, the various methods all agree and no substantial inter-method differences
 In all instances, our bootstrap scheme provides a standard deviation larger than what is obtained using the delta or Monte Carlo methods.
 The mean of the bootstrap distribution seems consistently larger that the other methods.
 
-We see that the large number of dilution steps, as recommended, ensures a low impact of the AE induced standard error on the inference of the $\ddcq$.
+We see that the large number of dilution steps, as recommended and expected, ensures a low impact of the AE induced standard error on the inference of the $\ddcq$.
 
 
 

@@ -76,7 +76,7 @@ Finally, we benchmark our methods in a simulation study. \\
 
 
 \section{Introduction}
-Despite being an aging technique, real-time quantitative polymerase chain reaction (qPCR) ---``one of the most significant biotech discoveries in our time''---is still heavily used in molecular biology \citep{Rainbow1996}.
+Despite being an aging technique, real-time quantitative polymerase chain reaction (qPCR) \citep{Rainbow1996}---arguably one of the most significant biotech discoveries of all time---is still heavily used in molecular biology.
 qPCR is an extremely sensitive and cost-effective technique to amplify and quantitate the abundance of DNA and even mRNA by using so-called reverse transcriptase.
 In life sciences, qPCR is typically applied to quantify candidate gene transcripts that are biomarkers of diagnostic, prognostic, and even predictive value of e.g.\ infectious diseases, cancer, and genetic abnormalities.
 In the slip stream of high-volume omics-data, another very important application of qPCR has arisen.

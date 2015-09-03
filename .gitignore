@@ -8,6 +8,7 @@
 *.blg
 *.log
 *.synctex.gz
+*.synctex
 *.out
 *.tex
 output/

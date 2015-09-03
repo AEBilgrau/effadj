@@ -570,6 +570,10 @@ This illustrates that it is important to consider all aspects of uncertainty whe
 Problems with uncertainty in efficiency estimates should be handled by establishing well-estimated dilution curves as argued elsewhere \citep{Bustin2010}, however even in this case the presented method also allows for design guidelines for power calculations and assessing the influence of the estimated dilution curves.
 It is also noteworthy that model based estimation of the $\ddcq$ also allows for model checking by e.g.\ residual plots.
 
+Lastly, we note that algorithm \citep{Mx300P2013} we used for threshold selection and $C_q$ value extraction in the CIC and DLBCL studies may not be optimal, cf.~\citep{Ruijter2013}, as it can be affected by the AE.
+Nonetheless, this has no bearing on the stated problem of this paper.
+The estimated standard error of $\ddcq$ is still affected in a similar manner by the uncertainty of the AE and thus optimistic.
+
 % Conclusions
 Despite the extensive use of qPCR, more statistical research is needed to establish qPCR more firmly as a gold standard to reliably quantify abundances of nucleic acids.
 Researchers analyzing qPCR experiments need to model their experiments in detail, e.g.\ via linear or non-linear (mixed) models, as the propagation of uncertainty needs to be carefully assessed and accounted for.

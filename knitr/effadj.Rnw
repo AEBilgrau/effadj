@@ -102,12 +102,15 @@ This assumption implies a systematic underestimation of the standard error of $\
 If the AE is poorly determined this underestimation can drastically increase the standard error of $\ddcq$ and the derived quantities.
 
 \citet{Svec2015} recently assessed the impact of the AE uncertainty as a function of the number of technical replications at each concentration and the qPCR instrument.
-They conlude that a minimum of 3--4 replicates at each concentration are needed and that a significant inter qPCR instrument effect is present.
+They conlude that a minimum of $3$--$4$ replicates at each concentration are needed and that a significant inter qPCR instrument effect is present.
 They fail, however, to gauge the effect of the number of concentrations---an arguably more important variable than the number of replicates, as additional technical replicates rarely contribute with much information to determine the AE.
 Nontheless, \citet{Svec2015} do not adress the impact of the AE uncertainty on formal statistical inference on the $\ddcq$, as this paper intends.
 
+
 % Precise aims of the paper
-We aim to formulate a mathematical model which allows formal statistical inference about qPCR experiments with non-efficient amplifications.
+We aim to highlight the common problem in formal statistical inference of the $\ddcq$-value of disregarding the AE uncertainty in qPCR experiments with inefficient amplifications.
+And we propose different off-the-shelf and novel resolutions to this problem.
+To this end, we empoly a statistical model which allows such formal inference.
 This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation, with special emphasis on false positive rates.
 Simultaneous estimation of the uncertainty of the efficiency amplification estimate by linear mixed effects models (LMM), which allows a more appropriate handling of the technical and sample errors, is described.
 We investigate the use of the statistical delta method, Monte Carlo integration, or bootstrapping to perform inference on the value of $\ddcq$.
@@ -203,7 +206,7 @@ LMMs provide a more correct quantification of the sources of variation and there
 In one application we shall relax the assumption that the AE is independent of $j$ and consider group-specific AEs $\alpha_{ij} = \gamma_{ij}^{-1}$.
 
 Although, variation due to technical replicates could be modeled in \eqref{eq:model} as an additional random effect term, we average out technical replicates for simplicity.
-For simplicity in this paper, we refrained from using multiple reference genes simultaneously in the $\ddcq$ estimation although our framework easily extends to this case.
+For simplicity in this paper, we refrained from using multiple reference genes simultaneously in the $\ddcq$ estimation although our the framework and methods easily extends to this case.
 
 
 \subsection[Inference for DDCq by the delta method and Monte Carlo integration]{Inference for $\ddcq$ by the delta method and Monte Carlo integration}
@@ -263,7 +266,7 @@ approximated by
 According to \citet[Section 2.4.2]{Pinheiro2000a}, $t$ is approximately
 $t$-distributed with $\eta$ degrees of freedom.
 The degrees of freedom of multilevel mixed effects models are non-trivial to obtain in general.
-We do not pursue this further and restrict ourselves to the case of balanced experimental designs where $\eta$ is obtained relatively straight-forward.
+We do not pursue this further and restrict ourselves to the case of balanced experimental designs where $\eta$ is obtained relatively straight-forwardly.
 
 On the basis of \eqref{eq:tstat}, an approximate $(1 - \alpha) 100\%$ confidence interval of $c(\vtheta)$ can then given by
 \begin{equation*}

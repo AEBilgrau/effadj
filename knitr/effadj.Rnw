@@ -96,21 +96,27 @@ In turn, the $\ddcq$ has been modified to an AE corrected versions \citep{Pfaffl
 
 Despite the tremendous success of qPCR, ``statistical inference considerations are still not accorded high enough priority'' \citep{Bustin2009, Bustin2010}.
 We find this particular true for the estimation of the AE.
-Although efficiency calibration has been extensively treated by \cite{Pfaffl2001} or the more generalized model presented by \cite{Yuan2008}, there still seems to lack a systematic study of the unavoidable influence of the uncertainty of the efficiency amplification estimate on the conclusions of qPCR experiments based on formal statistical inference.
+Although efficiency calibration has been extensively treated by \cite{Pfaffl2001} or in the more generalized model presented by \cite{Yuan2008}, there seems to lack a systematic study of the unavoidable influence of the uncertainty of the efficiency amplification estimate on the conclusions of qPCR experiments based on formal statistical inference.
 The current AE adjusted $\ddcq$ methods do not account for the \emph{uncertainty of the estimated AE} and thus effectively assumes the AE to be estimated with infinite precision.
 This assumption implies a systematic underestimation of the standard error of $\ddcq$ leading to too narrow confidence intervals, decreased $p$-values, and lastly increased type I error rates.
 If the AE is poorly determined this underestimation can drastically increase the standard error of $\ddcq$ and the derived quantities.
 
+\citet{Nordgaard2006} studied error propagation including the effect of the AE uncertainty on the $C_q$-values, effectively.
+This study was, however, statistically informal and made no attempt to quantify the effect on the $\ddcq$ and inference hereof.
+Furthermore, \citet{Nordgaard2006} considered AE estimation from the amplification curve (thus for each sample) and not from separate dillution experiments.
+In this paper, we discuss in principle only the AE from dilution curves.
+However, similar problems exists as the AE estimates from the amplification curves \emph{also} have an associated standard error which affect the `down-steam' quantities and inference.
+
 \citet{Svec2015} recently assessed the impact of the AE uncertainty as a function of the number of technical replications at each concentration and the qPCR instrument.
-They conlude that a minimum of $3$--$4$ replicates at each concentration are needed and that a significant inter qPCR instrument effect is present.
+They conclude that a minimum of $3$--$4$ replicates at each concentration are needed and that a significant inter qPCR instrument effect is present.
 They fail, however, to gauge the effect of the number of concentrations---an arguably more important variable than the number of replicates, as additional technical replicates rarely contribute with much information to determine the AE.
-Nontheless, \citet{Svec2015} do not adress the impact of the AE uncertainty on formal statistical inference on the $\ddcq$, as this paper intends.
+Nonetheless, \citet{Svec2015} do not address the impact of the AE uncertainty on formal statistical inference on the $\ddcq$, as this paper intends.
 
 
 % Precise aims of the paper
 We aim to highlight the common problem in formal statistical inference of the $\ddcq$-value of disregarding the AE uncertainty in qPCR experiments with inefficient amplifications.
 And we propose different off-the-shelf and novel resolutions to this problem.
-To this end, we empoly a statistical model which allows such formal inference.
+To this end, we employ a statistical model which allows such formal inference.
 This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation, with special emphasis on false positive rates.
 Simultaneous estimation of the uncertainty of the efficiency amplification estimate by linear mixed effects models (LMM), which allows a more appropriate handling of the technical and sample errors, is described.
 We investigate the use of the statistical delta method, Monte Carlo integration, or bootstrapping to perform inference on the value of $\ddcq$.

@@ -484,7 +484,7 @@ Again, the various methods all agree and no substantial inter-method differences
 In all instances, our bootstrap scheme provides a standard deviation larger than what is obtained using the delta or Monte Carlo methods.
 The mean of the bootstrap distribution seems consistently larger that the other methods.
 
-We see that the large number of dilution steps, as recommended and expected, ensures a low impact of the AE induced standard error on the inference of the $\ddcq$.
+We see that the large number of dilution steps, as recommended and expected, ensures a low impact of the AE on the standard error and thus on the inference of the $\ddcq$.
 
 
 

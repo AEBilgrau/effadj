@@ -121,10 +121,11 @@ This covers statistical model formulation, confidence intervals, hypothesis test
 Simultaneous estimation of the uncertainty of the efficiency amplification estimate by linear mixed effects models (LMM), which allows a more appropriate handling of the technical and sample errors, is described.
 We investigate the use of the statistical delta method, Monte Carlo integration, or bootstrapping to perform inference on the value of $\ddcq$.
 
-The idea of using LMMs for qPCR experiments is not completely new.
+The idea of using LMMs for qPCR experiments is not new \citep{andersen2004,abruzzo2005,fu2006,Steibel2009,Matz2013}.
 \cite{andersen2004} and \cite{abruzzo2005} have used mixed effects modeling to identify candidate normalizing genes.
 \citet{fu2006} applied the related generalized estimation equations to handle intra and inter group variation.
 However, our idea of LMMs combined with the statistical delta method, Monte Carlo integration, or bootstrapping to handle uncertainty stemming from the efficiency estimation seems to be novel and provides a general statistical framework for qPCR experiments and may be considered an extension of the strategy by \cite{Yuan2008}.
+\citep{Steibel2009} and \citep{Matz2013} use the mixed models primarily for the $C_q$ value estimation but also derived values.
 
 The approaches are used to demonstrate that multiple myeloma cancer cell lines differentially express the \textit{MGST1} gene depending on the frequency of culture initiating cells.
 We also used the approach to design a study which results turned out to support the hypothesis of \cite{Robertus2009} that miRNA-127 is differentially expressed between testicular and nodal DLBCL

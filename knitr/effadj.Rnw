@@ -326,7 +326,7 @@ The estimate where the uncertainty of the AE is considered is referred to as eff
 \label{sec:bootstrap}
 
 We now consider hypothesis testing and confidence intervals for $\ddcq$ by bootstrapping as an alternative approach.
-The bootstrap, which avoids calculating gradients, is often cited to perform better in small sample situations.
+The bootstrap, which avoids calculating gradients, is often cited to perform better in small sample situations \citep{Efron1982}.
 
 The basic idea of the bootstrap is that inference on $\ddcq$ can be conducted by re-sampling the sample data and performing inference on the re-sampled data.
 In the usual qPCR setup with paired samples and dilution data, straight-forward bootstrapping will quickly fail.

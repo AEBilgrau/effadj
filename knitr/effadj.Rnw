@@ -62,7 +62,7 @@ source("../scripts/master.R")  # Simply runs the master script
 \begin{abstract}
 Accurate adjustment for the amplification efficiency (AE) has become an important part of real-time quantitative polymerase chain reaction (qPCR) experiments.
 The most commonly used correction strategy is to estimate the AE by dilution experiments and use this as a plug-in when efficiency correcting the $\ddcq$.
-Currently it is recommended to determine the AE with high precision as the plug-in approach does not account for its uncertainty,
+Currently it is recommended to determine the AE with high precision as the plug-in approach does not account for the AE uncertainty,
 implicitly assuming an infinitely precise AE estimate.
 Determining the AE with such precision, however, requires tedious laboratory work and vast amounts of biological material.
 Violation of the assumption leads to overly optimistic standard errors of the $\ddcq$, confidence intervals, and $p$-values which ultimately increase the type I error rate beyond the expected significance level.
@@ -70,7 +70,7 @@ As qPCR is often used for validation it should be a high priority to account for
 We suggest methods founded in a linear mixed effects model (LMM) to obtain variance approximations of the efficiency adjusted $\ddcq$ using the statistical delta method, Monte Carlo integration, or bootstrapping.
 We illustrate the impact of AE uncertainty in three qPCR data sets and use the methods to validate findings suggesting that \textit{MGST1} is differentially expressed between high and low abundance culture initiating cells in multiple myeloma and that microRNA-127 is differentially expressed between testicular and nodal lymphomas.
 Finally, we benchmark our methods in a simulation study. \\
-\medskip
+\bigskip
 \textbf{Keywords:} amplification efficiency; delta-delta Cq; $\ddcq$; efficiency adjusted; power calculation; qPCR
 \end{abstract}
 
@@ -112,14 +112,19 @@ They conclude that a minimum of $3$--$4$ replicates at each concentration are ne
 They fail, however, to gauge the effect of the number of concentrations---an arguably more important variable than the number of replicates, as additional technical replicates rarely contribute with much information to determine the AE.
 Nonetheless, \citet{Svec2015} do not address the impact of the AE uncertainty on formal statistical inference on the $\ddcq$, as this paper intends.
 
-
 % Precise aims of the paper
-We aim to highlight the common problem in formal statistical inference of the $\ddcq$-value of disregarding the AE uncertainty in qPCR experiments with inefficient amplifications.
+\subsection{Aims}
+Primarily, we aim to highlight the common problem of disregarding the uncertainty of the AE estimate in statistical inference of the $\ddcq$-value in qPCR experiments.
 And we propose different off-the-shelf and novel resolutions to this problem.
+
 To this end, we employ a statistical model which allows such formal inference.
 This covers statistical model formulation, confidence intervals, hypothesis testing, and power calculation, with special emphasis on false positive rates.
-Simultaneous estimation of the uncertainty of the efficiency amplification estimate by linear mixed effects models (LMM), which allows a more appropriate handling of the technical and sample errors, is described.
-We investigate the use of the statistical delta method, Monte Carlo integration, or bootstrapping to perform inference on the value of $\ddcq$.
+Simultaneous estimation of the uncertainty of the AE estimate and mean $C_q$-values by linear mixed effects models (LMM), which allows a more appropriate handling of the technical and sample errors, is described.
+We investigate the use of the statistical delta method, Monte Carlo integration, or bootstrapping to correctly perform inference on the value of $\ddcq$.
+
+Note two important observations:
+First, the problem exist for all statistical models and methods which incorrectly disregard the uncertainty of the AE estimate and is not limited to LMMs.
+Second, the problem exists for $\ddcq$-value and similar quantities (e.g.\ $\Delta C_q$) and even $C_q$ and the statistical inference of these.
 
 The idea of using LMMs for qPCR experiments is not new \citep{andersen2004,abruzzo2005,fu2006,Steibel2009,Matz2013}.
 \cite{andersen2004} and \cite{abruzzo2005} have used mixed effects modeling to identify candidate normalizing genes.
@@ -128,7 +133,7 @@ However, our idea of LMMs combined with the statistical delta method, Monte Carl
 \citep{Steibel2009} and \citep{Matz2013} use the mixed models primarily for the $C_q$ value estimation but also derived values.
 
 The approaches are used to demonstrate that multiple myeloma cancer cell lines differentially express the \textit{MGST1} gene depending on the frequency of culture initiating cells.
-We also used the approach to design a study which results turned out to support the hypothesis of \cite{Robertus2009} that miRNA-127 is differentially expressed between testicular and nodal DLBCL
+We also used the approach to design a study which results turned out to support the hypothesis of \cite{Robertus2009} that miRNA-127 is differentially expressed between testicular and nodal DLBCL.
 Lastly, in a simulation study, we show that the three methods control the false postive rate better.
 
 
@@ -186,6 +191,8 @@ Thus we have $2^{-\ddcq}$ as the relative abundance of the original target trans
 
 
 \subsection{Statistical model}
+We study the problematic aspects of ignoring the uncertainty of AE estimate in the context of the following LMM.
+Note, however, that this problem persists for \emph{all} statistical models and methods which na\"{i}ve `plug-in' the AE estimate from dilution curves or otherwise into formulae concering the $\ddcq$ (and similar quantities).
 
 For ease of notation we use the abbreviations
 $i\in\{\tgt,\rref\}$ for gene types target and reference;

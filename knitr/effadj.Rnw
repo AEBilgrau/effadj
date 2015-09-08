@@ -123,19 +123,23 @@ Simultaneous estimation of the uncertainty of the AE estimate and mean $C_q$-val
 We investigate the use of the statistical delta method, Monte Carlo integration, or bootstrapping to correctly perform inference on the value of $\ddcq$.
 
 Note two important observations:
-First, the problem exist for all statistical models and methods which incorrectly disregard the uncertainty of the AE estimate and is not limited to LMMs.
-Second, the problem exists for $\ddcq$-value and similar quantities (e.g.\ $\Delta C_q$) and even $C_q$ and the statistical inference of these.
+First, the problem exist for \emph{all} statistical models and methods which incorrectly disregard the uncertainty of the AE estimate and is not limited to LMMs.
+Second, the problem exists not only for $\ddcq$-values, but also all similar quantities (e.g.\ $\Delta C_q$) and even $C_q$ and the statistical inference based on these.
 
 The idea of using LMMs for qPCR experiments is not new \citep{andersen2004,abruzzo2005,fu2006,Steibel2009,Matz2013}.
 \cite{andersen2004} and \cite{abruzzo2005} have used mixed effects modeling to identify candidate normalizing genes.
 \citet{fu2006} applied the related generalized estimation equations to handle intra and inter group variation.
-However, our idea of LMMs combined with the statistical delta method, Monte Carlo integration, or bootstrapping to handle uncertainty stemming from the efficiency estimation seems to be novel and provides a general statistical framework for qPCR experiments and may be considered an extension of the strategy by \cite{Yuan2008}.
+However, the usage of LMMs combined with the statistical delta method, Monte Carlo integration, or bootstrapping to handle uncertainty stemming from the efficiency estimation seems to be novel and provides a general statistical framework for qPCR experiments and may be considered an extension of the strategy by \cite{Yuan2008}.
 \citep{Steibel2009} and \citep{Matz2013} use the mixed models primarily for the $C_q$ value estimation but also derived values.
 
-The approaches are used to demonstrate that multiple myeloma cancer cell lines differentially express the \textit{MGST1} gene depending on the frequency of culture initiating cells.
-We also used the approach to design a study which results turned out to support the hypothesis of \cite{Robertus2009} that miRNA-127 is differentially expressed between testicular and nodal DLBCL.
-Lastly, in a simulation study, we show that the three methods control the false postive rate better.
+We demonstrate that considering the uncertainty of the AE is, unsurprisingly, highly important when the AE is determined with inadequate precision and vice versa.
+We do so by three application examples and a simulation experiment.
+In the first two applications, the consideration of the AE uncertainty is largely unimportant for $\ddcq$ inference due to a large number of dilution steps and well-determined AE.
+In the last application, we see that the AE uncertainties have a drastically different impact on $\ddcq$ inference.
+In a simulation study, we show that the methods proposed indeed control the false postive rate better than the conventional approach and provide further insight into the problem.
 
+In the first application, we also verify that multiple myeloma cancer cell lines differentially express the \textit{MGST1} gene depending on the abundance of culture initiating cells.
+In the second application, the approaches are also used to design and analyze a study which results turned out to support the hypothesis of \cite{Robertus2009} that miRNA-127 is differentially expressed between testicular and nodal DLBCL.
 
 
 \section{Methods}
@@ -461,7 +465,6 @@ i.e.\ the fraction of tests incorrectly declared significant.
 Based on the above statistical model, we estimate the FPR and the TPR for each discussed method under different choices of sample sizes and number of dilutions whilst fixing the size of the sample and experimental variations.
 
 
-
 \section{Results}
 
 \subsection{CIC study}
@@ -560,11 +563,17 @@ The above simulations were repeated for sample sizes 4 or 8 in both case and con
 Fig.~\ref{fig:simstudy} shows the performance of the methods in terms of FPR and TPR.
 Each panel corresponds to a given number of samples and dilutions.
 In each panel the $p$-value cut-off is varied between 0.01, 0.05, and 0.1.
-Overall, we see that the EC\&VA adjusted estimate is the only procedure consistent with controlling the FPR at the nominal chosen significance level.
+Overall, we see that the EC\&VA estimate is the only procedure consistent with controlling the FPR at the nominal chosen significance level.
 Likewise, for many dilutions, the difference between the EC and EC\&VA procedures diminish as the uncertainty of the AE is relatively low.
-Finally as expected a decrease in FPR corresponds to a decrease in TPR.
+As expected a decrease in FPR corresponds to a decrease in TPR.
 
-
+To gauge when the standard error of \eqref{eq:se} is determined with adequate precision, we simulated $2\times \Sexpr{n.sims}$ datasets and computed the mean standard error of the $\ddcq$ for the EC and EC\&VA procedures as a function of the number of dilutions and samples.
+We varied the number of dilutions in the range \Sexpr{paste0(range(dils), collapse="--")} for a number of samples in the range \Sexpr{paste0(range(samps), collapse = "--")} with the same settings as above.
+Fig.~\ref{fig:simstudy2} shows these results.
+As expected, increasing the number of samples or the number of dilutions yield a smaller standard error.
+Also unsurprising and as already seen in the applications, the differences in the standard error for the EC and EC\&VA methods are very substantial for a small number of dilutions and vanish as the number of dilutions steps increase.
+The differences in the standard error seems to be larger under the alternative than the null hypothesis.
+Similar figures might also aid in designing qPCR experiments and help determine if investing in additional dilutions or samples is preferable---obviously with properly chosen simulation parameters in the given context.
 
 \section{Discussion and conclusion}
 % Main message
@@ -702,6 +711,17 @@ The founders had no role in study design, data collection, analysis, publishing,
 \label{fig:simstudy}
 \end{figure}
 
+
+% Simulation fig2
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{fig5}
+\end{center}
+\caption{
+  The mean standard error of the $\ddcq$ for the methods over \Sexpr{n.sims} repeated simulations under the null (panel A) and alternative hypothesis (panel B) as a function of the number of dilution steps for a different number of samples in each group.
+}
+\label{fig:simstudy2}
+\end{figure}
 
 
 

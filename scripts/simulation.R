@@ -414,3 +414,163 @@ dev.off()
 
 
 
+
+
+#
+# As function of dilutions
+#
+
+SimFuncAlt <- function(nd, ns, alpha = 0.05) {
+
+  data <- structure(vector("list", 2), names = c("H0", "HA"))
+  for (i in 1:2) {
+    data[[i]] <-
+      SimqPCRData(std.curve = TRUE, mu.tgt = 25, mu.ref = 30,
+                  n.samples = ns, n.replicates = 1, n.dilutions = nd,
+                  tech.sd = 1, sample.sd = 1,
+                  alpha.tgt = 0.80, alpha.ref = 0.95,
+                  ddcq = ifelse(i == 1, 0, 10/9))
+  }
+
+  # Aggregate replicates
+  w <- FALSE
+  qfit0 <- qPCRfit(data$H0, weighted = w)
+  qfitA <- qPCRfit(data$HA, weighted = w)
+
+  res <- as.data.frame(
+    rbind(
+      # Under the null hypothesis
+      DDCq.test(data$H0, method = "LMM", eff.cor = FALSE, var.adj = FALSE),
+      DDCq(qfit0, eff.cor = TRUE, var.adj = FALSE, alpha = alpha, weighted = w),
+      DDCq(qfit0, eff.cor = TRUE, var.adj = TRUE, alpha = alpha, weighted = w),
+      # Under the alternative
+      DDCq.test(data$HA, method = "LMM", eff.cor = FALSE, var.adj = FALSE),
+      DDCq(qfitA, eff.cor = TRUE, var.adj = FALSE, alpha = alpha, weighted = w),
+      DDCq(qfitA, eff.cor = TRUE, var.adj = TRUE, alpha = alpha, weighted = w)
+    ))
+
+  # Sanity checks:
+  i <- c(2,5)
+  stopifnot(all.equal(res$Estimate[i], res$Estimate[i + 1]))
+  if (!all(res$"Std. Error"[i] <= res$"Std. Error"[i + 1])) {
+    stop("The standard error in EC+VA is not increased!")
+  }
+  if (!all(res[i, 5] <= res[i + 1, 5])) {
+    stop("The p-values in EC+VA has not increased!")
+  }
+
+  rownames(res) <-
+    paste0(rep(c("H0:", "H1:"), each = nrow(res)/2),
+           rep(c("LMM", "LMM.EC", "LMM.EC.VA1"), 2))
+
+  res <- as.matrix(res)
+  return(res)
+}
+
+
+dils <- 4:9
+samps <- c(4, 7, 10)
+if (!exists("sim.results.alt") || recompute) {
+
+  wrapperSimFuncTmp <- function(seed) {
+    set.seed(seed)
+    return(SimFuncAlt(nd = nd, ns = ns, alpha = 0.05))
+  }
+
+  st <- proc.time()
+
+  sfInit(parallel, cpus = n.cpus)
+  sfLibrary(lme4)
+  sfLibrary(nlme)
+  sfExport("wrapperSimFuncTmp", "SimFuncAlt", list = export)
+
+  sim.results.alt        <- vector("list", length(dils))
+  names(sim.results.alt) <- paste0("nd", dils)
+
+  for (i in seq_along(dils)) {
+    sim.results.alt[[i]] <- vector("list", length(samps))
+    names(sim.results.alt[[i]]) <- paste0("ns", samps)
+
+    for (j in seq_along(samps)) {
+      ns <- samps[j]
+      nd <- dils[i]
+      sfExport("nd", "ns")
+
+      set.seed(1437960867)  # "Meta-seed": Seed for the seeds
+      seeds <- sample.int(2^31, n.sims) # Seed for each simulation
+
+      sim.results.alt[[i]][[j]] <- sfClusterApplyLB(seeds, wrapperSimFuncTmp)
+
+      cat(sprintf("dil = %-2d, samp = %-2d, ellapsed: %d mins.\n",
+                  nd, ns, round((proc.time() - st)[3]) %/% 60))
+    }
+  }
+
+  sfStop()
+
+  run.time <- proc.time() - st
+  attr(sim.results.alt, "time") <- run.time[3]
+  resave(sim.results.alt,  file = save.file)
+}
+
+
+# Compute averages across simulations
+get.mean <- function(x) {
+  return(Reduce("+", x)/length(x))
+}
+
+sim.res.alt <- lapply(sim.results.alt, function(x) lapply(x, get.mean))
+
+# Get std errors
+get.est.sd <- function(x) {
+  return(x[-c(1,4), "Std. Error"])
+}
+
+sim.res.alt <- lapply(sim.res.alt, function(y) sapply(y, get.est.sd))
+sim.res.alt <- simplify2array(sim.res.alt)
+
+
+# Plot results
+setEPS()
+postscript("../output/fig5.eps", width = 2*7/1.5, height = 7/1.5)
+par(mfrow = c(1,2), mar = c(4, 4, 2, 0) + 0.1)
+for (j in 1:2) {
+
+  H <- ifelse(j == 1, "H0", "H1")
+
+  sim.tmp <- sim.res.alt[paste0(H, ":LMM.EC"), , ]
+  sim.tmp.va <- sim.res.alt[paste0(H, ":LMM.EC.VA1"), , ]
+
+  samples   <- as.numeric(gsub("ns([0-9]+)",   "\\1", rownames(sim.tmp)))
+  dilutions <- as.numeric(gsub("nd([0-9]+)", "\\1", colnames(sim.tmp)))
+  cols <- c("steelblue", "darkgrey", "coral")
+
+  ylab <- ifelse(j == 1, expression(paste("Mean SE of ", Delta*Delta*C[q])), "")
+  plot(1, type = "n", main = "", ylim = c(0.5, 2), axes = FALSE, log = "y",
+       xlim = range(dilutions), xlab = "Dilutions",
+       ylab = ylab)
+  grid()
+
+  if (j == 1) par(mar = c(4, 3, 2, 0) + 0.1)
+
+  axis(2); axis(1, at = dilutions); grid(); box()
+  for (i in 1:nrow(sim.tmp)) {
+    lines(dilutions, sim.tmp[i, ], col = cols[i],
+          lty = 1, lwd = 2, type = "b", pch = 16)
+    lines(dilutions, sim.tmp.va[i, ], col = cols[i],
+          lty = 2, lwd = 2, type = "b", pch = 1)
+  }
+  legend("topright", col = cols, lwd = 4,
+         legend = gsub("ns([0-9]+)", "\\1 samples", rownames(sim.tmp)),
+         lty = 1, bty = "n", inset = 0.025,
+         title = parse(text = ifelse(H == "H0", "H[0]", "H[A]")))
+  legend("bottomleft", lty = c(1,2), pch = c(16, 1), legend = c("EC", "EC&VA1"),
+         bty = "n", inset = 0.025, lwd = 2)
+
+  mtext(LETTERS[j], side = 3, adj = 0, cex = 1.1, line = 1, font = 2)
+}
+dev.off()
+
+
+
+

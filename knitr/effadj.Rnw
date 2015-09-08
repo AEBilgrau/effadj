@@ -525,14 +525,17 @@ The $C_q$-values and dilution data for the arabidopsis thaliana data are shown i
 The estimated difference in gene expression between case and control of the target gene \textit{MT7} normalized to either reference (Tublin or \textit{UBQ}) is seen in Table~\ref{table:yuan}.
 The table shows the efficiency corrected method with and without variance adjustment by the delta method.
 In both cases, we see a dramatic increase in the standard error, $p$-values, and size of the confidence intervals.
-When using variance adjustment there is no longer a highly statistical significant difference in \textit{MT7} expression between case and ctrl (two growth conditions).
+When using variance adjustment there is no longer a highly statistical significant difference in \textit{MT7} expression between case and ctrl growth conditions.
 
-The results may be surprising at first sight when considering the relatively small standard errors of the slopes in the simple linear regressions shown in Fig.~\ref{fig:cqYuan}. One might imagine that the uncertainty of the AE is negligible and thus perform the usual analysis.
+The results may be surprising at first sight when considering the relatively small standard errors of the slopes in the simple linear regressions shown in Fig.~\ref{fig:cqYuan}.
+One might imagine that the uncertainty of the AE is negligible and thus perform the usual analysis.
 However, we see the contrary for several reasons.
 First, using only 3 dilutions steps leaves very few degrees of freedom left in each group as we are left with few samples and a high number of parameters to be estimated.
 Secondly, as dilution curves are used for each group the four group-specific AE estimates will all contribute to increasing the standard error of the $\ddcq$.
 While this example was selected as a worst-case scenario, it should illustrate that although the standard curves are seemingly well determined, it is hard to intuitively predetermine the combined effect on the standard error of $\ddcq$.
 
+We note here, that no pre-averaging of the technical replicates for each concentration was done.
+Instead, the technical replicates where modeled as a random effect.
 
 
 
@@ -684,7 +687,6 @@ The founders had no role in study design, data collection, analysis, publishing,
   Overview of \citet{Yuan2008} experiment data.
   $C_q$-values against the dilution step for case and control samples.
   Dilution data are present for both the target (\textit{MT7}) and reference genes (Tublin, \textit{UBQ}).
-  The technical duplicates have been averaged out in the analysis.
   }
 \label{fig:cqYuan}
 \end{figure}

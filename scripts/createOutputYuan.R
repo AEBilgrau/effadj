@@ -41,16 +41,18 @@ dev.off()
 # Analysis
 #
 
-
-
-
 DDCq.test2 <- function(data, eff.cor = TRUE, var.adj = TRUE, alpha = 0.05) {
-  data <- aggregate(Cq ~ ., FUN = mean, data = data)
+  data$re <-
+    factor(with(data, paste(sampleType, geneType, copyNumber, sep = ":")))
 
-  fit <- lm(Cq ~ -1 + sampleType:geneType + geneType:sampleType:l2con,
-            # random = ~ 1|sampleName,
-            data = data)
-  fixef.lm <- function(x) coef(x)
+  fit <- lme(Cq ~ -1 + sampleType:geneType + geneType:sampleType:l2con,
+             random = ~1 | re, data = data, method = "ML")
+
+#   data <- aggregate(Cq ~ ., FUN = mean, data = data)
+#   fit <- lm(Cq ~ -1 + sampleType:geneType + geneType:sampleType:l2con,
+#             data = data)
+#   fixef.lm <- function(x) {coef(x)}
+
   # Function for evaluating the mapping into DDCq and it variance
   e <- fixef(fit)
   v <- vcov(fit)
@@ -93,8 +95,8 @@ DDCq.test2 <- function(data, eff.cor = TRUE, var.adj = TRUE, alpha = 0.05) {
   # Generate results
   se.con <- sqrt(var.con)
   t.stat <- con/se.con
-  df <- fit$df.residual
-  # df <- unique(summary(fit)$tTable[,"DF"])
+  # df <- fit$df.residual
+  df <- unique(summary(fit)$tTable[,"DF"])
   p.val   <- 2*(1 - pt(abs(t.stat), df))
   conf.int <- con + c(-1, 1)*qt(1 - alpha/2, df)*se.con
   result  <- c("Estimate" = con, "Std. Error" = se.con,
@@ -108,6 +110,7 @@ DDCq.test2 <- function(data, eff.cor = TRUE, var.adj = TRUE, alpha = 0.05) {
 #
 # Fit model
 #
+
 g1 <- c("MT7", "Tublin")
 g2 <- c("MT7", "UBQ")
 ds1 <- subset(yuan, geneName %in% g1)
@@ -133,9 +136,10 @@ rownames(toTeX) <- gsub("ECVA", "EC\\\\&VA", rownames(toTeX))
 grps <- sapply(list(g1, g2), function(x) paste(x[1], "vs", x[2]))
 
 caption.txt <- "\\citet{Yuan2008} data: Method comparison for estimating the
-  $\\ddcq$-value. EC denotes use of the plugin-estimator.
-  VA denotes that the efficiency correction was variance adjusted using the
-  delta method (1)."
+  $\\ddcq$-value. EC denotes use of the plug-in estimator disregarding
+  uncertainty in the AE.
+  EC\\&VA1 denotes that the efficiency correction was variance adjusted using
+  the delta method."
 w <- latex(toTeX,
            file    = "../output/Table3.tex",
            title   = "",

@@ -26,7 +26,7 @@ yuan$sampleType <- factor(yuan$treat,
 yuan$geneType <- factor(as.character(yuan$geneName))
 levels(yuan$geneType) <- c("tgt", "ref", "ref")
 yuan$l2con <- -log2(yuan$copyNumber/25)
-yuan$replicate <- 1
+yuan$replicate <- 1:2
 
 # Create sample names
 s <- 1
@@ -38,7 +38,9 @@ for (i in unique(yuan$sampleType)) {
   }
 }
 
-# Aggregate, mean over technical replicates
-yuan <- aggregate(Cq ~ ., FUN = mean, data = yuan)
+# # Aggregate, mean over technical replicates
+# yuan.org <- yuan  # For later use
+# yuan <- aggregate(Cq ~ treat + geneName + copyNumber + group + sampleType +
+#                     geneType + l2con + sampleName, FUN = mean, data = yuan)
 
 

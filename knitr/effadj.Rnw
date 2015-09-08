@@ -190,7 +190,7 @@ This method of estimating the log relative abundance between case and controls i
     (\alpha_{ \tgt}C_{ q,\tgt,\case} - \alpha_{ \rref}C_{ q,\rref,\case})
       - (\alpha_{ \tgt}C_{ q,\tgt,\ctrl} - \alpha_{ \rref}C_{ q,\rref,\ctrl}).
 \end{align}
-Thus we have $2^{-\ddcq}$ as the relative abundance of the original target transcript.
+Thus we have $2^{-\ddcq}$ as the relative abundance of the original target transcript corrected for the AE.
 
 
 
@@ -203,11 +203,9 @@ $i\in\{\tgt,\rref\}$ for gene types target and reference;
 $j\in\{\case,\ctrl,\std\}$ for sample types case, control, and standard curve;
 $s\in\{1,\dots,n_{ij}\}$ for samples in the $ij$'th group; and
 $k\in\{0,\dots,K_{ijs}\}$ for dilution steps for each sample.
-To estimate $\ddcq$, estimates of $\alpha_i$ are needed.
-A popular way of estimating the AEs is by dilution curves,
-i.e.\ by regressing $C_{q,ij}$ against a series of decreasing
-$N_{0,ij}$-values, denoted by $N_{0,ijk} = N_{0,ij}2^{-x_k}$, where
-$0 = x_1 < \cdots < x_K < \infty$, and na\"{i}vely plugging $\hat{\alpha}_i$ into \eqref{eq:ddcq} thus disregarding its uncertainty.
+To estimate $\ddcq$ of \eqref{eq:ddcq}, estimates of $\alpha_i$ are needed.
+A popular way of estimating the AE is by ordinary linear regression.
+I.e.\ by regressing $C_{q,ij}$ against a series of increasing values $0 = x_1 < \cdots < x_K$, defined by $N_{0,ijk} = N_{0,ij}2^{-x_k}$, and na\"{i}vely plugging $\hat{\alpha}_i$ into \eqref{eq:ddcq} and thus disregarding its uncertainty.
 Here, $k$ denote the dilution step and $x_k$ the number of 2-fold dilutions (e.g.\ $x_1 = 1$ means the first dilution step halves the original concentration).
 The estimation of the expected $C_{q,ij}$-values and $\alpha_i$ can however be estimated simultaneously when formulated as a LMM \citep{Pinheiro2000a};
 \begin{equation}
@@ -216,7 +214,7 @@ The estimation of the expected $C_{q,ij}$-values and $\alpha_i$ can however be e
 \end{equation}
 where $A_{js}$ is a random effect from sample $s$ under the $j$'th sample type,
 $\gamma_{i} = \alpha_i^{-1}$, and
-$\mu_{ij} = \alpha_i^{-1}(\log_2 F_{C_q} - \log_2 \kappa \sigma_j N_{0ij})$.
+$\mu_{ij}$ is the group means.
 The random effects $A_{js}$ are ${\cal{N}}(0,\sigma_S^2)$-distributed and
 the error terms $\epsilon_{ijsk}$ are independent and ${\cal{N}}(0,\sigma^2_j)$-distributed with a sample type specific variance $\sigma^2_j$.
 The random effects account for the paired samples across tgt/ref for each $j$.
@@ -224,8 +222,8 @@ LMMs provide a more correct quantification of the sources of variation and there
 
 In one application we shall relax the assumption that the AE is independent of $j$ and consider group-specific AEs $\alpha_{ij} = \gamma_{ij}^{-1}$.
 
-Although, variation due to technical replicates could be modeled in \eqref{eq:model} as an additional random effect term, we average out technical replicates for simplicity.
-For simplicity in this paper, we refrained from using multiple reference genes simultaneously in the $\ddcq$ estimation although our the framework and methods easily extends to this case.
+Although, variation due to technical replicates should be modeled in \eqref{eq:model} as an additional random effect term, we average out technical replicates for simplicity.
+For further simplicity of this paper, we refrained from using multiple reference genes simultaneously in the $\ddcq$ estimation although our the framework and methods easily extends to this case.
 
 
 \subsection[Inference for DDCq by the delta method and Monte Carlo integration]{Inference for $\ddcq$ by the delta method and Monte Carlo integration}
@@ -718,7 +716,7 @@ The founders had no role in study design, data collection, analysis, publishing,
 \includegraphics[width=\textwidth]{fig5}
 \end{center}
 \caption{
-  The mean standard error of the $\ddcq$ for the methods over \Sexpr{n.sims} repeated simulations under the null (panel A) and alternative hypothesis (panel B) as a function of the number of dilution steps for a different number of samples in each group.
+  The mean standard error of the $\ddcq$ for two methods (EC and EC\&VA1) over \Sexpr{n.sims} repeated simulations under the null (panel A) and alternative hypothesis (panel B) as a function of the number of dilution steps for a different number of samples in each group.
 }
 \label{fig:simstudy2}
 \end{figure}

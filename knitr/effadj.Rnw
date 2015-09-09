@@ -68,7 +68,7 @@ Determining the AE with such precision, however, requires tedious laboratory wor
 Violation of the assumption leads to overly optimistic standard errors of the $\ddcq$, confidence intervals, and $p$-values which ultimately increase the type I error rate beyond the expected significance level.
 As qPCR is often used for validation it should be a high priority to account for the uncertainty of the AE estimate and thereby properly bounding the type I error rate and achieve the desired significance level.
 We suggest methods founded in a linear mixed effects model (LMM) to obtain variance approximations of the efficiency adjusted $\ddcq$ using the statistical delta method, Monte Carlo integration, or bootstrapping.
-We illustrate the impact of AE uncertainty in three qPCR data sets and use the methods to validate findings suggesting that \textit{MGST1} is differentially expressed between high and low abundance culture initiating cells in multiple myeloma and that micro-RNA-127 is differentially expressed between testicular and nodal lymphomas.
+We illustrate the impact of AE uncertainty in three qPCR datasets and use the methods to validate findings suggesting that \textit{MGST1} is differentially expressed between high and low abundance culture initiating cells in multiple myeloma and that micro-RNA-127 is differentially expressed between testicular and nodal lymphomas.
 Finally, we benchmark our methods in a simulation study. \\
 \bigskip
 \textbf{Keywords:} amplification efficiency; delta-delta Cq; $\ddcq$; efficiency adjusted; power calculation; qPCR
@@ -368,7 +368,7 @@ Here, both new random effects and noise terms are realized and added to the fitt
 
 We applied the described approaches to two qPCR validation experiments regarding culture initiating cells (CICs) in multiple myeloma (MM) and non-coding microRNAs in diffuse large B-cell lymphoma (DLBCL).
 In both experiments, the $C_q$ values were extracted for both the reference and target transcripts with automatic baseline and threshold selection \citep{Mx300P2013}.
-We also illustrate the method on a public available qPCR data set concerning the differential gene expression in arabidopsis thaliana grown under different conditions.
+We also illustrate the method on a public available qPCR dataset concerning the differential gene expression in arabidopsis thaliana grown under different conditions.
 In order to gauge the performance of the methods we subsequently performed a simulation study.
 
 \subsection{CIC study}
@@ -412,7 +412,8 @@ For each target and reference transcripts a standard curve based on seven 2-fold
 \subsection{Arabidopsis thaliana study}
 
 \subsubsection{Introduction}
-In order to illustrate the effect of applying variance approximations in a data set with a limited number of dilution steps and samples we considered the arabidopsis thaliana data set published by \citet{Yuan2008}. The data set contains one gene of interest, \textit{MT7}, potentially differentially expressed under two growth conditions of the plant arabidopsis thaliana and two reference genes ubiquitin (\textit{UBQ}) and tublin.
+In order to illustrate the effect of applying variance approximations in a dataset with a limited number of dilution steps and samples we considered the arabidopsis thaliana dataset published by \citet{Yuan2008}.
+The dataset contains one gene of interest, \textit{MT7}, potentially differentially expressed under two growth conditions of the plant arabidopsis thaliana and two reference genes ubiquitin (\textit{UBQ}) and tublin.
 
 
 \subsubsection{Sample and data preparation}

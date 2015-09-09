@@ -943,7 +943,7 @@ The founders had no role in study design, data collection, analysis, publishing,
 %%
 %% Do not use \listoffigures as most will included as separate files
 
-% \section*{Figures}
+\section*{Figures}
 %   \begin{figure}[h!]
 %   \caption{\csentence{Sample figure title.}
 %       A short description of the figure content
@@ -962,7 +962,7 @@ The founders had no role in study design, data collection, analysis, publishing,
 \includegraphics[width=\textwidth]{fig1}
 \end{center}
 \caption{
-  Overview of CIC experiment data.
+  \csentence{Overview of CIC experiment data.}
   A: Raw $C_q$-values for different cell lines (samples) for each gene type and sample type.
   The point type and colour differentiates the different gene types.
   B: Dilution data for
@@ -978,7 +978,7 @@ The founders had no role in study design, data collection, analysis, publishing,
 \includegraphics[width=\textwidth]{fig2}
 \end{center}
 \caption{
-  Overview of DLBCL testis experiment data.
+  \csentence{Overview of DLBCL testis data.}
   A: Raw $C_q$-values for different patient samples for each gene type and sample type.
   The point type and colour differentiates the different gene types.
   B: Dilution data for
@@ -996,7 +996,7 @@ The founders had no role in study design, data collection, analysis, publishing,
 \includegraphics[width=\textwidth]{fig3}
 \end{center}
 \caption{
-  Overview of \citet{Yuan2008} experiment data.
+  \csentence{Overview of \citet{Yuan2008} data.}
   $C_q$-values against the dilution step for case and control samples.
   Dilution data are present for both the target (\textit{MT7}) and reference genes (Tublin, \textit{UBQ}).
   }
@@ -1011,6 +1011,7 @@ The founders had no role in study design, data collection, analysis, publishing,
 \includegraphics[width=\textwidth]{fig4}
 \end{center}
 \caption{
+  \csentence{Method performance.}
   Plot of the false positive rates (FPR, black) and true positive rates (TPR, grey) and their 95 \% confidence intervals achieved simulation experiments for each method at various $p$-value cut-offs (0.05, 0.01, 0.1) shown by solid red horizontal lines.
   The FPR and TPR are computed completely analogous to Table~\ref{tab:simexample}.
   The rates are plotted for each combination of 4 or 8 samples with 4 or 8 fold dilution curves.
@@ -1022,9 +1023,10 @@ The founders had no role in study design, data collection, analysis, publishing,
 % Simulation fig2
 \begin{figure}[h!]
 \begin{center}
-\includegraphics[width=\textwidth]{fig5}
+\includegraphics[width=0.9\textwidth]{fig5}
 \end{center}
 \caption{
+  \csentence{Standard error comparison.}
   The mean standard error of the $\ddcq$ for two methods (EC and EC\&VA1) over \Sexpr{n.sims} repeated simulations under the null (panel A) and alternative hypothesis (panel B) as a function of the number of dilution steps for a different number of samples in each group.
 }
 \label{fig:simstudy2}

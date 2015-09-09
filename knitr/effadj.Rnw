@@ -1053,19 +1053,22 @@ The founders had no role in study design, data collection, analysis, publishing,
 % \end{table}
 
 % CIC table
-\input{../output/Table1.tex}
-
-% DLBCL table
-\input{../output/Table2.tex}
-
-% Arabidopsis thaliana table
-\input{../output/Table3.tex}
-
-% Simulation tab
-\input{../output/Table4.tex}
-
 <<tab1, child='../output/Table1.tex', echo=FALSE>>=
 @
+
+% DLBCL table
+<<tab2, child='../output/Table2.tex', echo=FALSE>>=
+@
+
+% Arabidopsis thaliana table
+<<tab3, child='../output/Table3.tex', echo=FALSE>>=
+@
+
+% Simulation tab
+<<tab4, child='../output/Table4.tex', echo=FALSE>>=
+@
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                               %%

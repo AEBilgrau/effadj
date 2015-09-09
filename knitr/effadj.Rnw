@@ -69,7 +69,7 @@ Violation of the assumption leads to overly optimistic standard errors of the $\
 As qPCR is often used for validation it should be a high priority to account for the uncertainty of the AE estimate and thereby properly bounding the type I error rate and achieve the desired significance level.
 We suggest and benchmark different methods to obtain the standard error of the efficiency adjusted $\ddcq$ using the statistical delta method, Monte Carlo integration, or bootstrapping.
 Our suggested methods are founded in a linear mixed effects model (LMM) framework, but the problem and ideas apply in all qPCR experiments.
-The methods and impact of the AE uncertainty are illustrated in three qPCR applications and an simulation study.
+The methods and (in some cases drastic) impact of the AE uncertainty are illustrated in three qPCR applications and an simulation study.
 In addition, we validate findings suggesting that
 \textit{MGST1} is differentially expressed between high and low abundance culture initiating cells in multiple myeloma
 and that

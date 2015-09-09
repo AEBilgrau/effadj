@@ -159,9 +159,9 @@ $\sigma$ is the sample specific handling error and
 $\alpha$ is the percentage of the $\log_2$-AE.
 In practice, the transcript abundance level is determined by the cycle $C_q$ for which a given fluorescence measurement $F_{C_q}$ is reached.
 We rearrange \eqref{eq:fluorescencemodel} and notice that $C_q$ can be expressed as
-$% \begin{equation*}
+$
   \alpha C_q = \log_2 F_{C_q} - \log_2 \kappa \sigma N_0.
-$ % \end{equation*}
+$
 In order to estimate the relative amount of target (tgt) gene transcripts between case
 and control (ctrl) samples, we assume
 the amount of the reference (ref) gene template is the same in both the case
@@ -241,9 +241,9 @@ $
      \hat{\mu}_{\rref,\case}, \hat{\mu}_{\rref,\ctrl}, \hat{\gamma}_\rref)^\top.
 $
 We wish to test the hypothesis
-$ % \begin{equation*}
+$
   H_0 : c(\vtheta) = 0,
-$ % \end{equation*}
+$
 where $c$ is the continuously differentiable function of the
 fixed effects given by
 \begin{equation}
@@ -263,10 +263,6 @@ That is, the standard error,
 is of central interest.
 The standard error is used in the statistic for testing $H_0$ given by
 $t = c(\hat{\vtheta})/\mathrm{se}(\hat{\vtheta})$,
-% \begin{equation*}
-%   t = \frac{c(\hat{\vtheta})}
-%            {\sqrt{\Var\!\bigl[c(\hat{\vtheta})\bigr]}},
-% \end{equation*}
 which according to a first order Taylor series expansion of $c$ can be
 approximated by
 \begin{equation}
@@ -315,9 +311,9 @@ In practice, this is only problematic if the standard error of $\hat{\gamma}_j$ 
 One way to solve this problem is to use the $\log_2$ concentration as the response and the $C_q$-values as the explanatory variables in a regression model of the standard curve to estimate $\alpha_j$ directly.
 This approach is however also not without conceptual problems as this puts the errors on the explanatory variables.
 To this end, note that the hypothesis
-$% \begin{equation*}
+$
   H_0: \gamma_\tgt\gamma_\rref c(\hat{\vtheta}) = 0,
-$ % \end{equation*}
+$
 can be equivalently tested
 for which the standard error of the test-statistic can be worked out exactly.
 % We omitted doing so for two reasons;
@@ -411,7 +407,7 @@ For this study, DLBCL samples were collected from 8 testicular (case) and 8 noda
 Total RNA was isolated using a combined method of Trizol (Invitrogen) and Mirvana spin columns (Ambion). An amount of 10ng total RNA was synthesized into first strand cDNA in a 15$\mu$L reaction using TaqMan MicroRNA Reverse Transcription Kit (Applied Biosystems) according to the manufactures instruction. In total 1.33$\mu$L cDNA was used as template in the real time PCR amplification performed by Mx3000p QPCR system (Agilent Technologies/Stratgene) with sequence specific TaqMan primers (Applied Biosystems).
 As reference transcripts we chose \textit{RNU-6B} and \textit{RNU-24}, which were less variable and equally expressed across nodal and extra-nodal samples among a larger list of candidate reference genes.
 For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of pooled material from all 16 lymphomas.
-%In the preprocessing of the data the sample H420 was deemed an outlier and omitted.  % (Still used)
+
 
 \subsection{Arabidopsis thaliana study}
 

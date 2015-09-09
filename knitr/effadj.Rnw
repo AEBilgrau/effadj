@@ -1,4 +1,92 @@
-\documentclass{article}
+%% BioMed_Central_Tex_Template_v1.06
+%%                                      %
+%  bmc_article.tex            ver: 1.06 %
+%                                       %
+
+%%IMPORTANT: do not delete the first line of this template
+%%It must be present to enable the BMC Submission system to
+%%recognise this template!!
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                     %%
+%%  LaTeX template for BioMed Central  %%
+%%     journal article submissions     %%
+%%                                     %%
+%%          <8 June 2012>              %%
+%%                                     %%
+%%                                     %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                 %%
+%% For instructions on how to fill out this Tex template           %%
+%% document please refer to Readme.html and the instructions for   %%
+%% authors page on the biomed central website                      %%
+%% http://www.biomedcentral.com/info/authors/                      %%
+%%                                                                 %%
+%% Please do not use \input{...} to include other tex files.       %%
+%% Submit your LaTeX manuscript as one .tex document.              %%
+%%                                                                 %%
+%% All additional figures and files should be attached             %%
+%% separately and not embedded in the \TeX\ document itself.       %%
+%%                                                                 %%
+%% BioMed Central currently use the MikTex distribution of         %%
+%% TeX for Windows) of TeX and LaTeX.  This is available from      %%
+%% http://www.miktex.org                                           %%
+%%                                                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% additional documentclass options:
+%  [doublespacing]
+%  [linenumbers]   - put the line numbers on margins
+
+%%% loading packages, author definitions
+
+%\documentclass[twocolumn]{bmcart}% uncomment this for twocolumn layout and comment line below
+\documentclass{bmcart}
+
+%%% Load packages
+\usepackage{amsthm,amsmath}
+% \RequirePackage{natbib}
+\RequirePackage[authoryear]{natbib}% uncomment this for author-year bibliography
+\RequirePackage{hyperref}
+\usepackage[utf8]{inputenc} %unicode support
+%\usepackage[applemac]{inputenc} %applemac support if unicode package fails
+%\usepackage[latin1]{inputenc} %UNIX support if unicode package fails
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                             %%
+%%  If you wish to display your graphics for   %%
+%%  your own use using includegraphic or       %%
+%%  includegraphics, then comment out the      %%
+%%  following two lines of code.               %%
+%%  NB: These line *must* be included when     %%
+%%  submitting to BMC.                         %%
+%%  All figure files must be submitted as      %%
+%%  separate graphics through the BMC          %%
+%%  submission process, not included in the    %%
+%%  submitted article.                         %%
+%%                                             %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% \def\includegraphic{}
+% \def\includegraphics{}
+
+
+
+%%% Put your definitions there:
+\startlocaldefs
+
+% Run analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<run_master, echo=FALSE, results='hide', message=FALSE, warning=FALSE>>=
+source("../scripts/master.R")  # Simply runs the master script
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Our preamble %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -6,13 +94,13 @@
 \DeclareGraphicsExtensions{.eps}
 \usepackage[outdir=./]{epstopdf}
 
-\usepackage{authblk}  % For author affiliations
-\usepackage{amsmath}  % Enables the align enviroment
+% \usepackage{authblk}  % For author affiliations
+% \usepackage{amsmath}  % Enables the align enviroment
 \usepackage{amssymb}  % Math symbols (e.g. \mathbb{})
 \usepackage{dsfont}   % bold fonts
-\usepackage{natbib}
-\usepackage{hyperref}
-\usepackage{fullpage} % Larger margins
+% \usepackage{natbib}
+% \usepackage{hyperref}
+% \usepackage{fullpage} % Larger margins
 
 \renewcommand{\vec}{\boldsymbol} % for bold vectors
 \newcommand{\vtheta}{\vec{\theta}} % vector theta
@@ -27,53 +115,222 @@
 \newcommand{\slfrac}[2]{\left.#1\middle/#2\right.}
 \newcommand{\ddcq}{\Delta\Delta C_q}
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\endlocaldefs
 
-% Run analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-<<run_master, echo=FALSE, results='hide', message=FALSE, warning=FALSE>>=
-source("../scripts/master.R")  # Simply runs the master script
-@
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%% Begin ...
 \begin{document}
 
-% Title of paper
+%%% Start of article front matter
+\begin{frontmatter}
+
+\begin{fmbox}
+\dochead{Research}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% Enter the title of your article here     %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \title{Unaccounted uncertainty from qPCR efficiency estimates imply uncontrolled false positive rates}
 
-\author[12]{A.~E.~Bilgrau\thanks{To whom correspondence should be addressed (\texttt{abilgrau@math.aau.dk})}}
-\author[1]{S.~Falgreen}
-\author[1]{A.~Petersen}
-\author[1]{M.~K.~Kjeldsen}
-\author[1]{J.~S.~B{\o}dker}
-\author[1]{H.~E.~Johnsen}
-\author[1]{K.~Dybk{\ae}r}
-\author[13]{M.~B{\o}gsted}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% Enter the authors here                   %%
+%%                                          %%
+%% Specify information, if available,       %%
+%% in the form:                             %%
+%%   <key>={<id1>,<id2>}                    %%
+%%   <key>=                                 %%
+%% Comment or delete the keys which are     %%
+%% not used. Repeat \author command as much %%
+%% as required.                             %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\affil[1]{Department of Haematology, Aalborg University Hospital}
-\affil[2]{Department of Mathematical Sciences, Aalborg University}
-\affil[3]{Department of Clinical Medicine, Aalborg University Hospital}
+% \author[12]{A.~E.~Bilgrau}
+% \author[1]{S.~Falgreen}
+% \author[1]{A.~Petersen}
+% \author[1]{M.~K.~Kjeldsen}
+% \author[1]{J.~S.~B{\o}dker}
+% \author[1]{H.~E.~Johnsen}
+% \author[1]{K.~Dybk{\ae}r}
+% \author[13]{M.~B{\o}gsted}
 
-\maketitle
+\author[
+   addressref={aff1,aff2},        % id's of addresses, e.g. {aff1,aff2}
+   corref={aff1},                 % id of corresponding address, if any
+   noteref={n1},                  % id's of article notes, if any
+   email={abilgrau@math.aau.dk}   % email address
+]{\inits{AE}\fnm{Anders E} \snm{Bilgrau}}
+\author[
+   addressref={aff1},
+   email={falgreen@me.com}
+]{\inits{S}\fnm{Steffen} \snm{Falgreen}}
+\author[
+   addressref={aff1},
+   email={psredna@gmail.com}
+]{\inits{A}\fnm{Anders} \snm{Petersen}}
+\author[
+   addressref={aff1},
+   email={malene@kragkjeldsen.dk}
+]{\inits{MK}\fnm{Malene K} \snm{Kjeldsen}}
+\author[
+   addressref={aff1},
+   email={j.boedker@rn.dk}
+]{\inits{JS}\fnm{Julie S} \snm{B{\o}dker}}
+\author[
+   addressref={aff1},
+   email={haej@rn.dk}
+]{\inits{HE}\fnm{Hans E} \snm{Johnsen}}
+\author[
+   addressref={aff1},
+   email={k.dybkaer@rn.dk}
+]{\inits{K}\fnm{Karen} \snm{Dybk{\ae}r}}
+\author[
+   addressref={aff1,aff3},
+   email={martin.boegsted@rn.dk}
+]{\inits{M}\fnm{Martin} \snm{B{\o}gsted}}
 
-\begin{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% Enter the authors' addresses here        %%
+%%                                          %%
+%% Repeat \address commands as much as      %%
+%% required.                                %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\address[id=aff1]{%                           % unique id
+  \orgname{Department of Haematology, Aalborg University Hospital}, % university, etc
+  \street{Sdr.\ Skovvej 15},                     %
+  \postcode{9000}                                % post or zip code
+  \city{Aalborg},                              % city
+  \cny{Denmark}                                    % country
+}
+\address[id=aff2]{%
+  \orgname{Department of Mathematical Sciences, Aalborg University},
+  \street{Fredrik Bajers Vej 7G},
+  \postcode{9220}
+  \city{Aalborg {\O}},
+  \cny{Denmark}
+}
+\address[id=aff3]{%
+  \orgname{Department of Clinical Medicine, Aalborg University Hospital},
+  \street{Sdr.\ Skovvej 15},                     %
+  \postcode{9000}                                % post or zip code
+  \city{Aalborg},                              % city
+  \cny{Denmark}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% Enter short notes here                   %%
+%%                                          %%
+%% Short notes will be after addresses      %%
+%% on first page.                           %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{artnotes}
+%\note{Sample of title note}     % note to the article
+\note[id=n1]{Corresponding author} % note, connected to author
+\end{artnotes}
+
+\end{fmbox}% comment this for two column layout
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% The Abstract begins here                 %%
+%%                                          %%
+%% Please refer to the Instructions for     %%
+%% authors on http://www.biomedcentral.com  %%
+%% and include the section headings         %%
+%% accordingly for your article type.       %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{abstractbox}
+
+\begin{abstract} % abstract
+\parttitle{Background} %if any
 Accurate adjustment for the amplification efficiency (AE) has become an important part of real-time quantitative polymerase chain reaction (qPCR) experiments.
 The most commonly used correction strategy is to estimate the AE by dilution experiments and use this as a plug-in when efficiency correcting the $\ddcq$.
 Currently it is recommended to determine the AE with high precision as the plug-in approach does not account for the AE uncertainty,
 implicitly assuming an infinitely precise AE estimate.
+
+\parttitle{Results} %if any
 Determining the AE with such precision, however, requires tedious laboratory work and vast amounts of biological material.
 Violation of the assumption leads to overly optimistic standard errors of the $\ddcq$, confidence intervals, and $p$-values which ultimately increase the type I error rate beyond the expected significance level.
 As qPCR is often used for validation it should be a high priority to account for the uncertainty of the AE estimate and thereby properly bounding the type I error rate and achieve the desired significance level.
 We suggest methods founded in a linear mixed effects model (LMM) to obtain variance approximations of the efficiency adjusted $\ddcq$ using the statistical delta method, Monte Carlo integration, or bootstrapping.
+
+\parttitle{Conclusion} %if any
 We illustrate the impact of AE uncertainty in three qPCR data sets and use the methods to validate findings suggesting that \textit{MGST1} is differentially expressed between high and low abundance culture initiating cells in multiple myeloma and that micro-RNA-127 is differentially expressed between testicular and nodal lymphomas.
-Finally, we benchmark our methods in a simulation study. \\
-\bigskip
-\textbf{Keywords:} amplification efficiency; delta-delta Cq; $\ddcq$; efficiency adjusted; power calculation; qPCR
+Finally, we benchmark our methods in a simulation study.
 \end{abstract}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% The keywords begin here                  %%
+%%                                          %%
+%% Put each keyword in separate \kwd{}.     %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{keyword}
+\kwd{qPCR}
+\kwd{amplification efficiency}
+\kwd{delta-delta Cq}
+\kwd{$\ddcq$}
+\kwd{error propagation}
+\kwd{efficiency adjusted}
+\end{keyword}
+
+% MSC classifications codes, if any
+%\begin{keyword}[class=AMS]
+%\kwd[Primary ]{}
+%\kwd{}
+%\kwd[; secondary ]{}
+%\end{keyword}
+
+\end{abstractbox}
+%
+%\end{fmbox}% uncomment this for twcolumn layout
+
+\end{frontmatter}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% The Main Body begins here                %%
+%%                                          %%
+%% Please refer to the instructions for     %%
+%% authors on:                              %%
+%% http://www.biomedcentral.com/info/authors%%
+%% and include the section headings         %%
+%% accordingly for your article type.       %%
+%%                                          %%
+%% See the Results and Discussion section   %%
+%% for details on how to create sub-sections%%
+%%                                          %%
+%% use \cite{...} to cite references        %%
+%%  \cite{koon} and                         %%
+%%  \cite{oreg,khar,zvai,xjon,schn,pond}    %%
+%%  \nocite{smith,marg,hunn,advi,koha,mouse}%%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%% start of article main body
+% <put your article body there>
+
+%%%%%%%%%%%%%%%%
+%% Background %%
+%%
 
 \section{Introduction}
 Despite being an aging technique, real-time quantitative polymerase chain reaction (qPCR) \citep{Rainbow1996}---arguably one of the most significant biotech discoveries of all time---is still heavily used in molecular biology.
@@ -621,24 +878,86 @@ Functionality from the packages
 \texttt{GMCM} \citep{Bilgrau2015},
 were used for tables, figures, FDR/TPR confidence intervals, parallel execution of simulations, and multivariate normal simulations, respectively.
 
-\phantomsection
-\addcontentsline{toc}{section}{Acknowledgments}
-\section*{Acknowledgments}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% Backmatter begins here                   %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{backmatter}
+
+\section*{Competing interests}
+  The authors declare that they have no competing interests.
+
+\section*{Author's contributions}
+  AEB: \ldots
+
+
+\section*{Acknowledgements}
 This work was supported by
 the Myeloma Stem Cell Network; EU FP6; CHEPRE; Karen Elise Jensen Fonden; and the Danish Agency for Science, Technology and Innovation.
 The founders had no role in study design, data collection, analysis, publishing, or preparation of this paper.
- {\it Conflict of Interest}: None declared.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  The Bibliography                       %%
+%%                                                         %%
+%%  Bmc_mathpys.bst  will be used to                       %%
+%%  create a .BBL file for submission.                     %%
+%%  After submission of the .TEX file,                     %%
+%%  you will be prompted to submit your .BBL file.         %%
+%%                                                         %%
+%%                                                         %%
+%%  Note that the displayed Bibliography will not          %%
+%%  necessarily be rendered by Latex exactly as specified  %%
+%%  in the online Instructions for Authors.                %%
+%%                                                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\phantomsection
-\addcontentsline{toc}{section}{References}
-\bibliographystyle{plainnat}
-\bibliography{references}
+% if your bibliography is in bibtex format, use those commands:
+\bibliographystyle{bmc-mathphys} % Style BST file (bmc-mathphys, vancouver, spbasic).
+\bibliography{references}      % Bibliography file (usually '*.bib' )
+% for author-year bibliography (bmc-mathphys or spbasic)
+% a) write to bib file (bmc-mathphys only)
+% @settings{label, options="nameyear"}
+% b) uncomment next line
+%\nocite{label}
 
-\newpage
+% or include bibliography directly:
+% \begin{thebibliography}
+% \bibitem{b1}
+% \end{thebibliography}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                               %%
+%% Figures                       %%
+%%                               %%
+%% NB: this is for captions and  %%
+%% Titles. All graphics must be  %%
+%% submitted separately and NOT  %%
+%% included in the Tex document  %%
+%%                               %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%
+%% Do not use \listoffigures as most will included as separate files
+
+% \section*{Figures}
+%   \begin{figure}[h!]
+%   \caption{\csentence{Sample figure title.}
+%       A short description of the figure content
+%       should go here.}
+%       \end{figure}
+%
+% \begin{figure}[h!]
+%   \caption{\csentence{Sample figure title.}
+%       Figure legend text.}
+%       \end{figure}
+
 
 % CIC fig
-\begin{figure}
+\begin{figure}[h!]
 \begin{center}
 \includegraphics[width=\textwidth]{fig1}
 \end{center}
@@ -653,12 +972,8 @@ The founders had no role in study design, data collection, analysis, publishing,
 \label{fig:cqCIC}
 \end{figure}
 
-% CIC table
-\input{../output/Table1.tex}
-
-
 % DLBCL fig
-\begin{figure}
+\begin{figure}[h!]
 \begin{center}
 \includegraphics[width=\textwidth]{fig2}
 \end{center}
@@ -673,13 +988,10 @@ The founders had no role in study design, data collection, analysis, publishing,
 \label{fig:cqTestis}
 \end{figure}
 
-% DLBCL table
-\input{../output/Table2.tex}
-
 
 
 % Arabidopsis thaliana fig
-\begin{figure}
+\begin{figure}[h!]
 \begin{center}
 \includegraphics[width=\textwidth]{fig3}
 \end{center}
@@ -691,15 +1003,10 @@ The founders had no role in study design, data collection, analysis, publishing,
 \label{fig:cqYuan}
 \end{figure}
 
-% Arabidopsis thaliana table
-\input{../output/Table3.tex}
 
-
-% Simulation tab
-\input{../output/Table4.tex}
 
 % Simulation fig
-\begin{figure}
+\begin{figure}[h!]
 \begin{center}
 \includegraphics[width=\textwidth]{fig4}
 \end{center}
@@ -713,7 +1020,7 @@ The founders had no role in study design, data collection, analysis, publishing,
 
 
 % Simulation fig2
-\begin{figure}
+\begin{figure}[h!]
 \begin{center}
 \includegraphics[width=\textwidth]{fig5}
 \end{center}
@@ -724,7 +1031,58 @@ The founders had no role in study design, data collection, analysis, publishing,
 \end{figure}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                               %%
+%% Tables                        %%
+%%                               %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Use of \listoftables is discouraged.
+%%
+
+% \section*{Tables}
+% \begin{table}[h!]
+% \caption{Sample table title. This is where the description of the table should go.}
+%       \begin{tabular}{cccc}
+%         \hline
+%            & B1  &B2   & B3\\ \hline
+%         A1 & 0.1 & 0.2 & 0.3\\
+%         A2 & ... & ..  & .\\
+%         A3 & ..  & .   & .\\ \hline
+%       \end{tabular}
+% \end{table}
+
+% CIC table
+\input{../output/Table1.tex}
+
+% DLBCL table
+\input{../output/Table2.tex}
+
+% Arabidopsis thaliana table
+\input{../output/Table3.tex}
+
+% Simulation tab
+\input{../output/Table4.tex}
+
+<<tab1, child='../output/Table1.tex', echo=FALSE>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                               %%
+%% Additional Files              %%
+%%                               %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \section*{Additional Files}
+%   \subsection*{Additional file 1 --- Sample additional file title}
+%     Additional file descriptions text (including details of how to
+%     view the file, if it is in a non-standard format or the file extension).  This might
+%     refer to a multi-page table or a figure.
+%
+%   \subsection*{Additional file 2 --- Sample additional file title}
+%     Additional file descriptions text.
 
 
+\end{backmatter}
 \end{document}
 

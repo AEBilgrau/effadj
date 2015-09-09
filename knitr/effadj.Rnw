@@ -437,22 +437,22 @@ the target gene template between case and controls:
   \log_2\Bigl(\frac{N_{ 0,\tgt,\case}}{N_{0,\tgt,\ctrl}}\Bigr)
   &= \log_2 \kappa \sigma_{ \case} N_{0,\tgt,\case}
     -\log_2 \kappa \sigma_{ \case} N_{0,\rref,\case} \\
-  &\quad
+  &\qquad
        - \log_2 \kappa \sigma_{\ctrl} N_{0,\tgt,\ctrl}
        + \log_2 \kappa \sigma_{\ctrl} N_{0,\rref,\ctrl}  \\
   &=   - \bigl\{(\alpha_{\tgt}  C_{ q,\tgt,\case}
-       -  \alpha_{\rref} C_{q,\rref,\case})
-       - (\alpha_{\tgt}  C_{q,\tgt,\ctrl}
+       -  \alpha_{\rref} C_{q,\rref,\case}) \\
+  &\qquad- (\alpha_{\tgt}  C_{q,\tgt,\ctrl}
        - \alpha_{\rref} C_{q,\rref,\ctrl})\bigr\},
 \end{align*}
 assuming that the $C_q$-values have been determined by a common florescence level $F_{C_q}$.
 This method of estimating the log relative abundance between case and controls is often referred to as the $\ddcq$-method \citep{Livak2001}, after the double difference appearing in the expression:
-\begin{align}
+\begin{equation}
   \label{eq:ddcq}
   \ddcq :=
-    (\alpha_{ \tgt}C_{ q,\tgt,\case} - \alpha_{ \rref}C_{ q,\rref,\case})
-      - (\alpha_{ \tgt}C_{ q,\tgt,\ctrl} - \alpha_{ \rref}C_{ q,\rref,\ctrl}).
-\end{align}
+    (\alpha_{ \tgt}C_{ q,\tgt,\case} {-} \alpha_{ \rref}C_{ q,\rref,\case})
+      {-} (\alpha_{ \tgt}C_{ q,\tgt,\ctrl} {-} \alpha_{ \rref}C_{ q,\rref,\ctrl}).
+\end{equation}
 Thus we have $2^{-\ddcq}$ as the relative abundance of the original target transcript corrected for the AE.
 
 

@@ -867,7 +867,7 @@ We recommend the conservative approach of always accounting for the uncertainty 
 \section*{Supplementary Material and Software}
 
 The statistical analysis were done using the programming language \textsf{R} \texttt{v\Sexpr{paste0(version$major, ".", version$minor)}} \citep{Rproj} using \texttt{lme4}.
-All data, R code, LaTeX, and instructions to reproduce the present paper and results are freely available at
+All data, R code, LaTeX, and instructions for reproducing this present paper and results are freely available at
 \href{http://github.org/AEBilgrau/effadj/}{\texttt{github.org/AEBilgrau/effadj/}}
 using \texttt{knitr}, an extension of Sweave \citep{Xie2013, Leisch2002}.
 Functionality from the packages
@@ -892,13 +892,19 @@ were used for tables, figures, FDR/TPR confidence intervals, parallel execution 
   The authors declare that they have no competing interests.
 
 \section*{Author's contributions}
-  AEB: \ldots
-
+  AEB: Developed statistical methods, implemented and carried out analyses, and drafted manuscript.
+  SF: Aided in method development and analysis.
+  AP: Conduced DLBCL experiment and provided data.
+  MK: Conduced CIC experiment and provided data.
+  JS, HE, MD: Provided experimental aid and biological feedback.
+  MB: Provided statistical and methodological feedback, interpretation, and assisted in authoring the manuscript.
+  All authors read, commented, and approved the final manuscript.
 
 \section*{Acknowledgements}
 This work was supported by
 the Myeloma Stem Cell Network; EU FP6; CHEPRE; Karen Elise Jensen Fonden; and the Danish Agency for Science, Technology and Innovation.
 The founders had no role in study design, data collection, analysis, publishing, or preparation of this paper.
+Poul Svante Eriksen is also thanked for his comments on the statistical methods.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                  The Bibliography                       %%

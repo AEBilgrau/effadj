@@ -152,7 +152,7 @@ grps <-
                                        paste(x[1], "vs", x[2], "+", x[3]),
                                        paste(x[1], "vs", x[2])))
 
-caption.txt <- "Testis data: Method comparison for estimating the
+caption.txt <- "DLBCL data: Method comparison for estimating the
   $\\ddcq$-value.
   EC denotes use of the plugin-estimator.
   VA denotes that the efficiency correction was variance adjusted using the

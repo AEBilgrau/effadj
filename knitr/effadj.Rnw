@@ -60,6 +60,7 @@ source("../scripts/master.R")  # Simply runs the master script
 \maketitle
 
 \begin{abstract}
+\noindent\textbf{Background~~} %if any
 Accurate adjustment for the amplification efficiency (AE) is an important part of real-time quantitative polymerase chain reaction (qPCR) experiments.
 The most commonly used correction strategy is to estimate the AE by dilution experiments and use this as a plug-in when efficiency correcting the $\ddcq$.
 Currently, it is recommended to determine the AE with high precision as this plug-in approach does not account for the AE uncertainty,
@@ -67,6 +68,8 @@ implicitly assuming an infinitely precise AE estimate.
 Determining the AE with such precision, however, requires tedious laboratory work and vast amounts of biological material.
 Violation of the assumption leads to overly optimistic standard errors of the $\ddcq$, confidence intervals, and $p$-values which ultimately increase the type I error rate beyond the expected significance level.
 As qPCR is often used for validation it should be a high priority to account for the uncertainty of the AE estimate and thereby properly bounding the type I error rate and achieve the desired significance level.
+
+\noindent\textbf{Results~~} %if any
 We suggest and benchmark different methods to obtain the standard error of the efficiency adjusted $\ddcq$ using the statistical delta method, Monte Carlo integration, or bootstrapping.
 Our suggested methods are founded in a linear mixed effects model (LMM) framework, but the problem and ideas apply in all qPCR experiments.
 The methods and (in some cases drastic) impact of the AE uncertainty are illustrated in three qPCR applications and an simulation study.
@@ -74,6 +77,10 @@ In addition, we validate findings suggesting that
 \textit{MGST1} is differentially expressed between high and low abundance culture initiating cells in multiple myeloma
 and that
 microRNA-127 is differentially expressed between testicular and nodal lymphomas.
+
+\noindent\textbf{Conclusions~~}
+We conclude, that the commonly used efficiency corrected quantities disregard the uncertainty of the AE leading to increased false positive rates.
+Our suggestions show that it is possible to easily perform statistical inference of $\ddcq$, whilst properly accounting for the AE uncertainty and better controlling the false positive rate.
 \bigskip \\
 \textbf{Keywords:} amplification efficiency; delta-delta Cq; $\ddcq$; efficiency adjusted; power calculation; qPCR
 \end{abstract}

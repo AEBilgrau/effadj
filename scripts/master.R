@@ -60,3 +60,12 @@ source("../scripts/simulation.R")
 
 end.t <- proc.time()
 print(end.t - start.t)
+
+
+# Reformat tables
+files <- list.files("./../output", pattern = "*.tex", full.names = TRUE)
+for (file in files) {
+  rl <- readLines(file)
+  out <- gsub("\\hline\\hline", "\\hline", rl, fixed = TRUE)
+  cat(out, file = file, sep = "\n")
+}

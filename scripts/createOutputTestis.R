@@ -136,11 +136,12 @@ sink()
 # Writing LaTeX table
 #
 
-toTeX      <- signif(toTeX, 4)
+toTeX      <- signif(toTeX, 3)
 toTeX[, 5] <- sn(toTeX[, 5])
 
 colnames(toTeX) <- gsub("Pr(>|t|)", "$p$-value", colnames(toTeX), fixed = TRUE)
 colnames(toTeX) <- gsub("t ", "$t$-", colnames(toTeX), fixed = TRUE)
+colnames(toTeX) <- gsub("Std. Error", "se", colnames(toTeX), fixed = TRUE)
 
 rownames(toTeX) <- gsub("LMEM", "LMM", rownames(toTeX))
 rownames(toTeX) <- gsub("t.", "$t$-", rownames(toTeX), fixed = TRUE)
@@ -152,7 +153,7 @@ grps <-
                                        paste(x[1], "vs", x[2], "+", x[3]),
                                        paste(x[1], "vs", x[2])))
 
-caption.txt <- "Testis data: Method comparison for estimating the
+caption.txt <- "DLBCL data: Method comparison for estimating the
   $\\ddcq$-value.
   EC denotes use of the plugin-estimator.
   VA denotes that the efficiency correction was variance adjusted using the
@@ -166,6 +167,7 @@ toTeX <- toTeX[!grepl("LMM|t-test", rownames(toTeX)), ]
 w <- latex(toTeX,
            file    = "../output/Table2.tex",
            title   = "",
+           where   = "h!",
            label   = "table:tesits",
            caption = sprintf(caption.txt, length(testis.boot), "\\%"),
            caption.loc = "top",
@@ -173,7 +175,7 @@ w <- latex(toTeX,
            center  = "center",
            numeric.dollar = TRUE,
            keep.tex = TRUE,
-           size = "small")
+           size = "footnotesize")
 
 
 

@@ -213,6 +213,7 @@ w <- latex(ex.tab, file = "../output/Table4.tex", title = "",
            cgroup = ex.cgroup,
            rgroup = "$p$-values",
            caption = tmp.caption,
+           where   = "h!",
            label = "tab:simexample")
 
 #

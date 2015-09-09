@@ -128,6 +128,7 @@ toTeX      <- signif(toTeX, 4)
 toTeX[, 5] <- sn(toTeX[, 5])
 colnames(toTeX) <- gsub("Pr(>|t|)", "$p$-value", colnames(toTeX), fixed = TRUE)
 colnames(toTeX) <- gsub("t ", "$t$-", colnames(toTeX), fixed = TRUE)
+colnames(toTeX) <- gsub("Std. Error", "se", colnames(toTeX), fixed = TRUE)
 
 rownames(toTeX) <- gsub("LMEM", "LMM", rownames(toTeX))
 rownames(toTeX) <- gsub("t.", "$t$-", rownames(toTeX), fixed = TRUE)
@@ -143,6 +144,7 @@ caption.txt <- "\\citet{Yuan2008} data: Method comparison for estimating the
 w <- latex(toTeX,
            file    = "../output/Table3.tex",
            title   = "",
+           where   = "h!",
            label   = "table:yuan",
            caption = sprintf(caption.txt, n.boots, "\\%"),
            caption.loc = "top",
@@ -150,4 +152,4 @@ w <- latex(toTeX,
            center  = "center",
            numeric.dollar = TRUE,
            keep.tex = TRUE,
-           size = "small")
+           size = "footnotesize")

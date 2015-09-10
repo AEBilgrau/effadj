@@ -98,12 +98,12 @@ Validation without such an ability cannot be considered very meaningful and ther
 
 Like all experiments in molecular biology and chemistry, qPCR is sensitive not only to genes and gene transcripts of interest, but also laboratory settings and experimental conditions.
 There is an incredible amount of sources of systematic and non-systematic variation including temperature variations, concentration differences by pipetting errors, and primer affinity, in addition to the genuine biological variations of interest across case and control samples.
-Laboratory guidelines and increasingly sophisticated statistical modelling have been established to combat many of these systematic errors \citep{Bustin2010, Bustin2009, Spiess2015, Ruijter2013, Rao2013}.
+Laboratory guidelines and increasingly sophisticated statistical modelling have been established to combat many of these systematic errors \citep{Bustin2010, Bustin2009, Spiess2015}.
 
 The so-called $\ddcq$ quantity is the normalized relative expression of a target gene of interest between treated (case) and untreated samples (control) accounting for undesired variations using one or more endogenous reference genes (also called housekeeping gene) assumed to be approximately unchanged due to the treatment.
 The $\ddcq$-value is usually based on the assumption of perfect AEs for both the target and reference gene.
 However, the target and reference genes might be subject to different AE which yield biased $\ddcq$-values.
-In turn, the $\ddcq$ has been modified to an AE corrected versions \citep{Pfaffl2001, Rao2013b}.
+In turn, the $\ddcq$ has been modified to AE corrected versions \citep{Pfaffl2001, Rao2013, Rao2013b}.
 
 Despite the tremendous success of qPCR, `statistical inference considerations are still not accorded high enough priority' \citep{Bustin2009, Bustin2010}.
 We find this particular true for the estimation of the AE.
@@ -120,7 +120,7 @@ However, similar problems exist as the AE estimates from the amplification curve
 
 \citet{Svec2015} recently assessed the impact of the AE uncertainty as a function of the number of technical replications at each concentration and the qPCR instrument.
 They conclude that a minimum of $3$--$4$ replicates at each concentration are needed and that a significant inter qPCR instrument effect is present.
-They fail, however, to gauge the effect of the number of concentrations used---an arguably more important variable than the number of replicates as additional technical replicates rarely contribute with much information to determine the AE.
+However, they do not gauge the effect of the number of concentrations used---an important variable as additional technical replicates rarely contribute with much information to determine the AE.
 Nonetheless, \citet{Svec2015} do not address the impact of the AE uncertainty on formal statistical inference on the $\ddcq$, as this paper intends.
 
 % Precise aims of the paper
@@ -415,7 +415,7 @@ The association between oncogenesis and micro RNAs (miRNAs), short non-coding RN
 \subsubsection{Sample and data preparation}
 
 For this study, DLBCL samples were collected from 8 testicular (case) and 8 nodal (control) paraffin embedded lymphomas at Aalborg University Hospital.
-The samples were collected in accordance with a research protocol accepted by the Health Research Ethics Commmittee for North Denmark Region (No.~N-20100059).
+The samples were collected in accordance with a research protocol accepted by the Health Research Ethics Committee for North Denmark Region (No.~N-20100059).
 Total RNA was isolated using a combined method of Trizol (Invitrogen) and Mirvana spin columns (Ambion). An amount of 10ng total RNA was synthesized into first strand cDNA in a 15$\mu$L reaction using TaqMan MicroRNA Reverse Transcription Kit (Applied Biosystems) according to the manufactures instruction. In total 1.33$\mu$L cDNA was used as template in the real time PCR amplification performed by Mx3000p QPCR system (Agilent Technologies/Stratgene) with sequence specific TaqMan primers (Applied Biosystems).
 As reference transcripts we chose \textit{RNU-6B} and \textit{RNU-24}, which were less variable and equally expressed across nodal and extra-nodal samples among a larger list of candidate reference genes.
 For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of pooled material from all 16 lymphomas.
@@ -603,7 +603,7 @@ This illustrates that it is important to consider all aspects of uncertainty whe
 Problems with uncertainty in efficiency estimates should be handled by establishing well-estimated dilution curves as argued elsewhere \citep{Bustin2010}, however even in this case the presented method also allows for design guidelines for power calculations and assessing the influence of the estimated dilution curves.
 It is also noteworthy that model based estimation of the $\ddcq$ also allows for model checking by e.g.\ residual plots.
 
-Lastly, we note that the algorithm \citep{Mx300P2013} we used for threshold selection and $C_q$-value extraction in the CIC and DLBCL studies may not be optimal, cf.~\citep{Ruijter2013}, as it can be affected by the AE.
+Lastly, we note that the algorithm \citep{Mx300P2013} we used for threshold selection and $C_q$-value extraction in the CIC and DLBCL studies may not be optimal, cf.~\citet{Ruijter2013} and improvements by \citet{Spiess2015}, as it can be affected by the AE.
 Nonetheless, this has no bearing on the stated problem of this paper.
 The estimated standard error of $\ddcq$ is still affected in a similar manner by the uncertainty of the AE and thus too optimistic.
 

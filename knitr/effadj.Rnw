@@ -145,7 +145,7 @@ source("../scripts/master.R")  # Simply runs the master script
 \author[
    addressref={aff1,aff2},        % id's of addresses, e.g. {aff1,aff2}
    corref={aff1},                 % id of corresponding address, if any
-   noteref={n1},                  % id's of article notes, if any
+   % noteref={n1},                  % id's of article notes, if any
    email={abilgrau@math.aau.dk}   % email address
 ]{\inits{AE}\fnm{Anders E} \snm{Bilgrau}}
 \author[
@@ -218,10 +218,10 @@ source("../scripts/master.R")  # Simply runs the master script
 %%                                          %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{artnotes}
-%\note{Sample of title note}     % note to the article
-\note[id=n1]{Corresponding author} % note, connected to author
-\end{artnotes}
+% \begin{artnotes}
+% %\note{Sample of title note}     % note to the article
+% \note[id=n1]{Corresponding author} % note, connected to author
+% \end{artnotes}
 
 \end{fmbox}% comment this for two column layout
 

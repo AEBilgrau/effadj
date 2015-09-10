@@ -896,8 +896,8 @@ were used for tables, figures, FDR/TPR confidence intervals, parallel execution 
 \section*{Author's contributions}
   AEB: Developed statistical methods, implemented and carried out analyses, and drafted manuscript.
   SF: Aided in method development and analysis.
-  AP: Conduced DLBCL experiment and provided data.
-  MK: Conduced CIC experiment and provided data.
+  AP: Conduced the DLBCL experiment and provided data.
+  MK: Conduced the CIC experiment and provided data.
   JS, HE, MD: Provided experimental aid and biological feedback.
   MB: Provided statistical and methodological feedback, interpretation, and assisted in authoring the manuscript.
   All authors read, commented, and approved the final manuscript.

@@ -633,7 +633,7 @@ were used for tables, figures, FDR/TPR confidence intervals, parallel execution 
 \addcontentsline{toc}{section}{Acknowledgments}
 \section*{Acknowledgments}
 This work was supported by
-the Myeloma Stem Cell Network; EU FP6; CHEPRE; Karen Elise Jensen Fonden; and the Danish Agency for Science, Technology and Innovation.
+the Myeloma Stem Cell Network funded by EU FP6; Karen Elise Jensen Fonden; and CHEPRE funded by the Danish Agency for Science, Technology and Innovation.
 The founders had no role in study design, data collection, analysis, publishing, or preparation of this paper.
 Poul Svante Eriksen is also thanked for his comments on the statistical methods.
  {\it Conflict of Interest}: None declared.

@@ -90,17 +90,8 @@ source("../scripts/master.R")  # Simply runs the master script
 
 % Our preamble %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\graphicspath{{../output/}}
-\DeclareGraphicsExtensions{.eps}
-\usepackage[outdir=./]{epstopdf}
-
-% \usepackage{authblk}  % For author affiliations
-% \usepackage{amsmath}  % Enables the align enviroment
 \usepackage{amssymb}  % Math symbols (e.g. \mathbb{})
 \usepackage{dsfont}   % bold fonts
-% \usepackage{natbib}
-% \usepackage{hyperref}
-% \usepackage{fullpage} % Larger margins
 
 \renewcommand{\vec}{\boldsymbol} % for bold vectors
 \newcommand{\vtheta}{\vec{\theta}} % vector theta
@@ -150,15 +141,6 @@ source("../scripts/master.R")  # Simply runs the master script
 %% as required.                             %%
 %%                                          %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% \author[12]{A.~E.~Bilgrau}
-% \author[1]{S.~Falgreen}
-% \author[1]{A.~Petersen}
-% \author[1]{M.~K.~Kjeldsen}
-% \author[1]{J.~S.~B{\o}dker}
-% \author[1]{H.~E.~Johnsen}
-% \author[1]{K.~Dybk{\ae}r}
-% \author[13]{M.~B{\o}gsted}
 
 \author[
    addressref={aff1,aff2},        % id's of addresses, e.g. {aff1,aff2}

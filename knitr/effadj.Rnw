@@ -415,6 +415,7 @@ The association between oncogenesis and micro RNAs (miRNAs), short non-coding RN
 \subsubsection{Sample and data preparation}
 
 For this study, DLBCL samples were collected from 8 testicular (case) and 8 nodal (control) paraffin embedded lymphomas at Aalborg University Hospital.
+The samples were collected in accordance with a research protocol accepted by the Health Research Ethics Commmittee for North Denmark Region (No.~N-20100059).
 Total RNA was isolated using a combined method of Trizol (Invitrogen) and Mirvana spin columns (Ambion). An amount of 10ng total RNA was synthesized into first strand cDNA in a 15$\mu$L reaction using TaqMan MicroRNA Reverse Transcription Kit (Applied Biosystems) according to the manufactures instruction. In total 1.33$\mu$L cDNA was used as template in the real time PCR amplification performed by Mx3000p QPCR system (Agilent Technologies/Stratgene) with sequence specific TaqMan primers (Applied Biosystems).
 As reference transcripts we chose \textit{RNU-6B} and \textit{RNU-24}, which were less variable and equally expressed across nodal and extra-nodal samples among a larger list of candidate reference genes.
 For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of pooled material from all 16 lymphomas.

@@ -48,7 +48,7 @@
 
 %%% Load packages
 \usepackage{amsthm,amsmath}
-% \RequirePackage{natbib}
+\RequirePackage{natbib}
 % \RequirePackage[authoryear]{natbib}% uncomment this for author-year bibliography
 \RequirePackage{hyperref}
 \usepackage[utf8]{inputenc} %unicode support

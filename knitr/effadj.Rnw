@@ -49,7 +49,7 @@
 %%% Load packages
 \usepackage{amsthm,amsmath}
 % \RequirePackage{natbib}
-\RequirePackage[authoryear]{natbib}% uncomment this for author-year bibliography
+% \RequirePackage[authoryear]{natbib}% uncomment this for author-year bibliography
 \RequirePackage{hyperref}
 \usepackage[utf8]{inputenc} %unicode support
 %\usepackage[applemac]{inputenc} %applemac support if unicode package fails
@@ -72,8 +72,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-% \def\includegraphic{}
-% \def\includegraphics{}
+\def\includegraphic{}
+\def\includegraphics{}
 
 
 
@@ -339,7 +339,7 @@ Our suggestions show that it is possible to easily perform statistical inference
 %%
 
 \section{Introduction}
-Despite being an aging technique, real-time quantitative polymerase chain reaction (qPCR)---arguably one of the most significant biotech discoveries of all time---is still heavily used in molecular biology \citep{Rainbow1996}.
+Despite being an aging technique, real-time quantitative polymerase chain reaction (qPCR)---arguably one of the most significant biotech discoveries of all time---is still heavily used in molecular biology \cite{Rainbow1996}.
 qPCR is an extremely sensitive and cost-effective technique to amplify and quantitate the abundance of DNA and even mRNA by using so-called reverse transcriptase.
 In life sciences, qPCR is typically applied to quantify candidate gene transcripts that are biomarkers of diagnostic, prognostic, and even predictive value in e.g.\ infectious diseases and cancer.
 In the slip stream of high-volume omics-data, another very important application of qPCR has arisen.
@@ -350,30 +350,30 @@ Validation without such an ability cannot be considered very meaningful and ther
 
 Like all experiments in molecular biology and chemistry, qPCR is sensitive not only to genes and gene transcripts of interest, but also laboratory settings and experimental conditions.
 There is an incredible amount of sources of systematic and non-systematic variation including temperature variations, concentration differences by pipetting errors, and primer affinity, in addition to the genuine biological variations of interest across case and control samples.
-Laboratory guidelines and increasingly sophisticated statistical modelling have been established to combat many of these systematic errors \citep{Bustin2010, Bustin2009, Spiess2015}.
+Laboratory guidelines and increasingly sophisticated statistical modelling have been established to combat many of these systematic errors \cite{Bustin2010, Bustin2009, Spiess2015}.
 
 The so-called $\ddcq$ quantity is the normalized relative expression of a target gene of interest between treated (case) and untreated samples (control) accounting for undesired variations using one or more endogenous reference genes (also called housekeeping gene) assumed to be approximately unchanged due to the treatment.
 The $\ddcq$-value is usually based on the assumption of perfect AEs for both the target and reference gene.
 However, the target and reference genes might be subject to different AE which yield biased $\ddcq$-values.
-In turn, the $\ddcq$ has been modified to AE corrected versions \citep{Pfaffl2001, Rao2013, Rao2013b}.
+In turn, the $\ddcq$ has been modified to AE corrected versions \cite{Pfaffl2001, Rao2013, Rao2013b}.
 
-Despite the tremendous success of qPCR, `statistical inference considerations are still not accorded high enough priority' \citep{Bustin2009, Bustin2010}.
+Despite the tremendous success of qPCR, `statistical inference considerations are still not accorded high enough priority' \cite{Bustin2009, Bustin2010}.
 We find this particular true for the estimation of the AE.
 Although efficiency calibration has been extensively treated by \cite{Pfaffl2001} or in the more generalized model by \cite{Yuan2008}, there seems to be a lack of systematic studies of the unavoidable influence of the uncertainty of the AE estimate on the conclusions of qPCR experiments based on formal statistical inference.
 The current AE adjusted $\ddcq$ methods do not account for the \emph{uncertainty of the estimated AE} and thus effectively assumes the AE to be estimated with infinite precision.
 This assumption implies a systematic underestimation of the standard error of $\ddcq$ leading to too narrow confidence intervals, decreased $p$-values, and thereby increased type I error rates.
 If the AE is poorly determined this underestimation can drastically increase the standard error of $\ddcq$ and similar quantities.
 
-\citet{Nordgaard2006} studied error propagation including the effect of the AE uncertainty on the $C_q$-values.
+Error propagation and the effect of the AE uncertainty on the $C_q$-values has been studied by \cite{Nordgaard2006}.
 This study was, however, statistically informal and made no attempt to quantify the effect on the $\ddcq$ and inference hereof.
-Furthermore, \citet{Nordgaard2006} considered AE estimation from the amplification curve (thus for each sample) and not from separate dilution experiments.
+Furthermore, they considered AE estimation from the amplification curve (thus for each sample) and not from separate dilution experiments.
 In this paper, we discuss only the AE from dilution curves explicitly.
 However, similar problems exist as the AE estimates from the amplification curves \emph{also} have an associated standard error which affect the `down-steam' quantities and inference.
 
-\citet{Svec2015} recently assessed the impact of the AE uncertainty as a function of the number of technical replications at each concentration and the qPCR instrument.
+The work by \cite{Svec2015} recently assessed the impact of the AE uncertainty as a function of the number of technical replications at each concentration and the qPCR instrument.
 They conclude that a minimum of $3$--$4$ replicates at each concentration are needed and that a significant inter qPCR instrument effect is present.
 However, they do not gauge the effect of the number of concentrations used---an important variable as additional technical replicates rarely contribute with much information to determine the AE.
-Nonetheless, \citet{Svec2015} do not address the impact of the AE uncertainty on formal statistical inference on the $\ddcq$, as this paper intends.
+Nonetheless, they do not address the impact of the AE uncertainty on formal statistical inference on the $\ddcq$, as this paper intends.
 
 % Precise aims of the paper
 \subsection{Aims}
@@ -389,11 +389,11 @@ Note two important observations:
 First, the problem exists for \emph{all} statistical models and methods which incorrectly disregard the uncertainty of the AE estimate and is not limited to LMMs.
 Second, the problem exists not only for $\ddcq$-values, but also all similar quantities, e.g.\ $\Delta C_q$ and $C_q$, and the statistical inferences based on these.
 
-The idea of using LMMs for qPCR experiments is not new \citep{andersen2004,abruzzo2005,fu2006,Steibel2009,Matz2013}.
-\cite{andersen2004} and \cite{abruzzo2005} have used mixed effects modeling to identify candidate normalizing genes.
-\citet{fu2006} applied the related generalized estimation equations to handle intra and inter group variation.
-However, the usage of LMMs combined with the statistical delta method, Monte Carlo integration, or bootstrapping to handle uncertainty stemming from the efficiency estimation seems to be novel and provides a general statistical framework for qPCR experiments and may be considered an extension of the strategy by \citet{Yuan2008}.
-\citet{Steibel2009} and \citet{Matz2013} use the mixed models primarily for the $C_q$-value estimation.
+The idea of using LMMs for qPCR experiments is not new \cite{andersen2004,abruzzo2005,fu2006,Steibel2009,Matz2013}.
+For example, \cite{andersen2004} and \cite{abruzzo2005} have used mixed effects modeling to identify candidate normalizing genes.
+The work by \cite{fu2006} applied the related generalized estimation equations to handle intra and inter group variation.
+However, the usage of LMMs combined with the statistical delta method, Monte Carlo integration, or bootstrapping to handle uncertainty stemming from the efficiency estimation seems to be novel and provides a general statistical framework for qPCR experiments and may be considered an extension of the strategy by \cite{Yuan2008}.
+Others use the mixed models primarily for the $C_q$-value estimation \cite{Steibel2009,Matz2013}.
 
 We demonstrate that considering the uncertainty of the AE is, unsurprisingly, highly important when the AE is determined with inadequate precision and vice versa.
 We do so by three application examples and a simulation experiment.
@@ -446,7 +446,7 @@ the target gene template between case and controls:
        - \alpha_{\rref} C_{q,\rref,\ctrl})\bigr\},
 \end{align*}
 assuming that the $C_q$-values have been determined by a common florescence level $F_{C_q}$.
-This method of estimating the log relative abundance between case and controls is often referred to as the $\ddcq$-method \citep{Livak2001}, after the double difference appearing in the expression:
+This method of estimating the log relative abundance between case and controls is often referred to as the $\ddcq$-method \cite{Livak2001}, after the double difference appearing in the expression:
 \begin{equation}
   \label{eq:ddcq}
   \ddcq :=
@@ -470,7 +470,7 @@ To estimate $\ddcq$ of \eqref{eq:ddcq}, estimates of $\alpha_i$ are needed.
 A popular way of estimating the AE is by ordinary linear regression.
 I.e.\ by regressing $C_{q,ij}$ against a series of increasing values $0 = x_1 < \cdots < x_K$, defined by $N_{0,ijk} = N_{0,ij}2^{-x_k}$, and na\"{i}vely plugging $\hat{\alpha}_i$ into \eqref{eq:ddcq} and thus disregarding its uncertainty.
 Here, $k$ denotes the dilution step and $x_k$ the number of 2-fold dilutions (e.g.\ $x_1 = 1$ means the first dilution step halves the original concentration).
-The estimation of the expected $C_{q,ij}$-values and $\alpha_i$ can then be estimated simultaneously when formulated as a LMM \citep{Pinheiro2000a};
+The estimation of the expected $C_{q,ij}$-values and $\alpha_i$ can then be estimated simultaneously when formulated as a LMM \cite{Pinheiro2000a};
 \begin{equation}
   \label{eq:model}
   C_{q,ijsk} = \mu_{ij} + A_{js} + \gamma_{i} x_k + \epsilon_{ijsk},
@@ -539,7 +539,7 @@ approximated by
   }.
   \label{eq:tstat}
 \end{equation}
-According to \citet[Section 2.4.2]{Pinheiro2000a}, $t$ is approximately
+According to \cite[Section 2.4.2]{Pinheiro2000a}, $t$ is approximately
 $t$-distributed with $\eta$ degrees of freedom.
 The degrees of freedom of multilevel mixed effects models are non-trivial to obtain in general.
 We do not pursue this further and restrict ourselves to the case of balanced experimental designs where $\eta$ is obtained relatively straight-forwardly.
@@ -554,7 +554,7 @@ Likewise, $p$-values can be obtained by computing $P(\lvert t \rvert > T)$ where
 Alternatively to \eqref{eq:tstat}, the variance $\Var\!\bigl[c(\hat{\vtheta})\bigr]$ can be evaluated by Monte Carlo integration.
 One way is to simulate a large number $N$ of parameters $\vtheta_1, \ldots, \vtheta_N$ from a multivariate normal distribution using the estimated parameters ${\cal{N}}_6(\hat{\vtheta}, \Var[\hat{\vtheta}])$ and compute the sample variance of $c(\vtheta_1), \ldots, c(\vtheta_N)$.
 
-Both maximum likelihood (ML) and restricted maximum likelihood estimation (REML) of LMMs is implemented in the R-packages \texttt{lme4} and \texttt{nlme} \citep{Bates2014, Pinheiro2000a}.
+Both maximum likelihood (ML) and restricted maximum likelihood estimation (REML) of LMMs is implemented in the R-packages \texttt{lme4} and \texttt{nlme} \cite{Bates2014, Pinheiro2000a}.
 The packages readily provides the estimate $\hat{\vtheta}$ and $\Var[\hat{\vtheta}]$ and we use these in the construction of test and confidence intervals for the $\ddcq$ as described above.
 The needed gradient in \eqref{eq:tstat} is computed straight-forwardly from \eqref{eq:c}.
 % \begin{equation*}
@@ -594,7 +594,7 @@ The estimate where the uncertainty of the AE is considered is referred to as eff
 \label{sec:bootstrap}
 
 We now consider hypothesis testing and confidence intervals for $\ddcq$ by bootstrapping as an alternative approach.
-The bootstrap, which avoids calculating gradients, is often cited to perform better in small sample situations \citep{Efron1982}.
+The bootstrap, which avoids calculating gradients, is often cited to perform better in small sample situations \cite{Efron1982}.
 
 The basic idea of the bootstrap is that inference on $\ddcq$ can be conducted by re-sampling the sample data and performing inference on the re-sampled data.
 In the usual qPCR setup with paired samples and dilution data, straight-forward bootstrapping will quickly fail.
@@ -630,7 +630,7 @@ Here, both new random effects and noise terms are realized and added to the fitt
 \section{Applications}
 
 We applied the described approaches to two qPCR validation experiments regarding culture initiating cells (CICs) in multiple myeloma (MM) and non-coding microRNAs in diffuse large B-cell lymphoma (DLBCL).
-In both experiments, the $C_q$-values were extracted for both the reference and target transcripts with automatic baseline and threshold selection \citep{Mx300P2013}.
+In both experiments, the $C_q$-values were extracted for both the reference and target transcripts with automatic baseline and threshold selection \cite{Mx300P2013}.
 We also illustrate the method on a public available qPCR dataset concerning the differential gene expression in arabidopsis thaliana grown under different conditions.
 In order to gauge the performance of the methods we subsequently performed a simulation study.
 
@@ -640,8 +640,8 @@ In order to gauge the performance of the methods we subsequently performed a sim
 A cell is culture initiating if it can initiate a sustained production of cells when cultured in vitro.
 The viability potential of a cell population can be assessed by measuring the number of culture initiating cells (CICs).
 This number can be estimated by a dilution experiment where cells are seeded in decreasing numbers.
-The ratio of CICs can then be estimated by e.g.~Poisson regression \citep{Lefkovits1999}.
-CICs are of particular interest in cancer research as cancers with high culture initiating potential seemingly have stem cell like properties making them resistant towards chemotherapy \citep{Chen2013}.
+The ratio of CICs can then be estimated by e.g.~Poisson regression \cite{Lefkovits1999}.
+CICs are of particular interest in cancer research as cancers with high culture initiating potential seemingly have stem cell like properties making them resistant towards chemotherapy \cite{Chen2013}.
 
 In search for genes associated with a high culture initiating potential in MM we made limiting dilution experiments of 14 MM cell lines and divided them into 7 cell lines with low and 7 cell lines with high culture initiating potential.
 Gene expression profiling by microarrays identified genes \textit{MGST1} and \textit{MMSET} to be differentially expressed between cell lines with high and low abundance of CICs.
@@ -662,7 +662,7 @@ For each target and reference transcripts a standard curve based on seven 2-fold
 \subsection{DLBCL study}
 
 \subsubsection{Introduction}
-The association between oncogenesis and micro RNAs (miRNAs), short non-coding RNA transcripts with regulatory capabilities, has recently prompted an immense research activity. The possibility to change treatment strategies by transfecting antisense oligonucleotide to control abnormally up-regulated miRNAs in malignant tissue is of particular interest \citep{Garzon2010}. In that respect up-regulated \textit{miR-127} and \textit{miR-143} in testicular DLBCL have shown treatment changing potential \citep{Robertus2009}. However, as the number of screened miRNAs was high and the sample size was low in Robertus et al.'s work invoking high risk of false discoveries we set out to validate the differential expression of \textit{miR-127} and \textit{miR-143} in tissues from our own laboratory using our improved qPCR analysis workflow.
+The association between oncogenesis and micro RNAs (miRNAs), short non-coding RNA transcripts with regulatory capabilities, has recently prompted an immense research activity. The possibility to change treatment strategies by transfecting antisense oligonucleotide to control abnormally up-regulated miRNAs in malignant tissue is of particular interest \cite{Garzon2010}. In that respect up-regulated \textit{miR-127} and \textit{miR-143} in testicular DLBCL have shown treatment changing potential \cite{Robertus2009}. However, as the number of screened miRNAs was high and the sample size was low in Robertus et al.'s work invoking high risk of false discoveries we set out to validate the differential expression of \textit{miR-127} and \textit{miR-143} in tissues from our own laboratory using our improved qPCR analysis workflow.
 
 \subsubsection{Sample and data preparation}
 
@@ -676,12 +676,12 @@ For each target and reference transcripts a standard curve based on seven 2-fold
 \subsection{Arabidopsis thaliana study}
 
 \subsubsection{Introduction}
-In order to illustrate the effect of applying variance approximations in a dataset with a limited number of dilution steps and samples we considered the arabidopsis thaliana dataset published by \citet{Yuan2008}.
+In order to illustrate the effect of applying variance approximations in a dataset with a limited number of dilution steps and samples we considered the arabidopsis thaliana dataset published by \cite{Yuan2008}.
 The dataset contains one gene of interest, \textit{MT7}, potentially differentially expressed under two growth conditions of the plant arabidopsis thaliana and two reference genes ubiquitin (\textit{UBQ}) and tublin.
 
 
 \subsubsection{Sample and data preparation}
-The arabidopsis thaliana plant growth, RNA extraction, and qPCR experiments were carried out as described in \citet{Yang2006}. The cDNA was diluted into 1-to-4 and 1-to-16 serial dilutions. Real-time PCR experiments was performed in duplicates for each concentration \citep{Yuan2008}.
+The arabidopsis thaliana plant growth, RNA extraction, and qPCR experiments were carried out as described in \cite{Yang2006}. The cDNA was diluted into 1-to-4 and 1-to-16 serial dilutions. Real-time PCR experiments was performed in duplicates for each concentration \cite{Yuan2008}.
 
 Due to the the study design, we naturally fitted estimation efficiencies $\gamma_{ij} = \alpha_{ij}^{-1}$ for each group.
 Because of the few samples we omitted the, in this case, meaningless random sample effect of the LMM.
@@ -852,10 +852,10 @@ The approach was used to validate that:
 In the latter application, we saw a dramatic increase in the standard error of the estimate when the
 variance approximation was introduced, potentially leading to a change of significance for the presented dataset depending on the desired significance level.
 This illustrates that it is important to consider all aspects of uncertainty when conducting AE correction of qPCR experiments.
-Problems with uncertainty in efficiency estimates should be handled by establishing well-estimated dilution curves as argued elsewhere \citep{Bustin2010}, however even in this case the presented method also allows for design guidelines for power calculations and assessing the influence of the estimated dilution curves.
+Problems with uncertainty in efficiency estimates should be handled by establishing well-estimated dilution curves as argued elsewhere \cite{Bustin2010}, however even in this case the presented method also allows for design guidelines for power calculations and assessing the influence of the estimated dilution curves.
 It is also noteworthy that model based estimation of the $\ddcq$ also allows for model checking by e.g.\ residual plots.
 
-Lastly, we note that the algorithm \citep{Mx300P2013} we used for threshold selection and $C_q$-value extraction in the CIC and DLBCL studies may not be optimal, cf.~\citet{Ruijter2013} and improvements by \citet{Spiess2015}, as it can be affected by the AE.
+Lastly, we note that the algorithm \cite{Mx300P2013} we used for threshold selection and $C_q$-value extraction in the CIC and DLBCL studies may not be optimal, cf.~\cite{Ruijter2013} and improvements by \cite{Spiess2015}, as it can be affected by the AE.
 Nonetheless, this has no bearing on the stated problem of this paper.
 The estimated standard error of $\ddcq$ is still affected in a similar manner by the uncertainty of the AE and thus too optimistic.
 
@@ -869,16 +869,16 @@ We recommend the conservative and proper approach of \emph{always} accounting fo
 \addcontentsline{toc}{section}{Supplementary Material and Software}
 \section*{Supplementary Material and Software}
 
-The statistical analysis were done using the programming language \textsf{R} \texttt{v\Sexpr{paste0(version$major, ".", version$minor)}} \citep{Rproj} using \texttt{lme4}.
+The statistical analysis were done using the programming language \textsf{R} \texttt{v\Sexpr{paste0(version$major, ".", version$minor)}} \cite{Rproj} using \texttt{lme4}.
 All data, R code, LaTeX, and instructions for reproducing this present paper and results are freely available at
 \href{http://github.org/AEBilgrau/effadj/}{\texttt{github.org/AEBilgrau/effadj/}}
-using \texttt{knitr}, an extension of Sweave \citep{Xie2013, Leisch2002}.
+using \texttt{knitr}, an extension of Sweave \cite{Xie2013, Leisch2002}.
 Functionality from the packages
-\texttt{Hmisc} \citep{Harrell2015},
-\texttt{lattice} (and \texttt{latticeExtra}) \citep{Sarkar2008},
-\texttt{epiR} \citep{Stevenson2015},
-\texttt{snowfall} \citep{Knaus2013}, and
-\texttt{GMCM} \citep{Bilgrau2015},
+\texttt{Hmisc} \cite{Harrell2015},
+\texttt{lattice} (and \texttt{latticeExtra}) \cite{Sarkar2008},
+\texttt{epiR} \cite{Stevenson2015},
+\texttt{snowfall} \cite{Knaus2013}, and
+\texttt{GMCM} \cite{Bilgrau2015},
 were used for tables, figures, FDR/TPR confidence intervals, parallel execution of simulations, and multivariate normal simulations, respectively.
 
 
@@ -967,9 +967,9 @@ Poul Svante Eriksen is also thanked for his comments on the statistical methods.
 
 % CIC fig
 \begin{figure}[h!]
-\begin{center}
-\includegraphics[width=\textwidth]{fig1}
-\end{center}
+% \begin{center}
+% \includegraphics[width=\textwidth]{fig1}
+% \end{center}
 \caption{
   \csentence{Overview of CIC experiment data.}
   A: Raw $C_q$-values for different cell lines (samples) for each gene type and sample type.
@@ -983,9 +983,9 @@ Poul Svante Eriksen is also thanked for his comments on the statistical methods.
 
 % DLBCL fig
 \begin{figure}[h!]
-\begin{center}
-\includegraphics[width=\textwidth]{fig2}
-\end{center}
+% \begin{center}
+% \includegraphics[width=\textwidth]{fig2}
+% \end{center}
 \caption{
   \csentence{Overview of DLBCL testis data.}
   A: Raw $C_q$-values for different patient samples for each gene type and sample type.
@@ -1001,11 +1001,11 @@ Poul Svante Eriksen is also thanked for his comments on the statistical methods.
 
 % Arabidopsis thaliana fig
 \begin{figure}[h!]
-\begin{center}
-\includegraphics[width=\textwidth]{fig3}
-\end{center}
+% \begin{center}
+% \includegraphics[width=\textwidth]{fig3}
+% \end{center}
 \caption{
-  \csentence{Overview of \citet{Yuan2008} data.}
+  \csentence{Overview of Arabidopsis thaliana data \cite{Yuan2008}.}
   $C_q$-values against the dilution step for case and control samples.
   Dilution data are present for both the target (\textit{MT7}) and reference genes (Tublin, \textit{UBQ}).
   }
@@ -1016,9 +1016,9 @@ Poul Svante Eriksen is also thanked for his comments on the statistical methods.
 
 % Simulation fig
 \begin{figure}[h!]
-\begin{center}
-\includegraphics[width=\textwidth]{fig4}
-\end{center}
+% \begin{center}
+% \includegraphics[width=\textwidth]{fig4}
+% \end{center}
 \caption{
   \csentence{Method performance.}
   Plot of the false positive rates (FPR, black) and true positive rates (TPR, grey) and their 95 \% confidence intervals achieved simulation experiments for each method at various $p$-value cut-offs (0.05, 0.01, 0.1) shown by solid red horizontal lines.
@@ -1031,9 +1031,9 @@ Poul Svante Eriksen is also thanked for his comments on the statistical methods.
 
 % Simulation fig2
 \begin{figure}[h!]
-\begin{center}
-\includegraphics[width=0.9\textwidth]{fig5}
-\end{center}
+% \begin{center}
+% \includegraphics[width=0.9\textwidth]{fig5}
+% \end{center}
 \caption{
   \csentence{Standard error comparison.}
   The mean standard error of the $\ddcq$ for two methods (EC and EC\&VA1) over \Sexpr{n.sims} repeated simulations under the null (panel A) and alternative hypothesis (panel B) as a function of the number of dilution steps for a different number of samples in each group.

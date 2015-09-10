@@ -136,7 +136,8 @@ rownames(toTeX) <- gsub("ECVA", "EC\\\\&VA", rownames(toTeX))
 
 grps <- sapply(list(g1, g2), function(x) paste(x[1], "vs", x[2]))
 
-caption.txt <- "\\citet{Yuan2008} data: Method comparison for estimating the
+caption.txt <- "Arabidopsis thaliana data \\cite{Yuan2008}:
+  Method comparison for estimating the
   $\\ddcq$-value. EC denotes use of the plug-in estimator disregarding
   uncertainty in the AE.
   EC\\&VA1 denotes that the efficiency correction was variance adjusted using

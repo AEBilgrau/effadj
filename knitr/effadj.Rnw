@@ -456,7 +456,8 @@ From these $t$-scores the TPR can estimated by
 \begin{equation*}
   \widehat{\mathrm{TPR}} =
     \frac{1}{n}\sum_{i=1}^n
-      \bbOne\bigl[\vert t_i \vert > t_{1-\alpha/2,\eta} \bigr],
+      \bbOne\bigl[\vert t_i \vert > t_{1-\alpha/2,\eta}
+                  \bigm\vert c(\theta) = \delta \bigr],
 \end{equation*}
 where $\bbOne[\;\cdot\;]$ is the indicator function.
 Hence, the estimated TPR is the fraction of tests correctly declared significant.
@@ -465,7 +466,8 @@ Likewise, an estimate of the FPR is obtained by simulating $n$ datasets under th
 \begin{equation*}
   \widehat{\mathrm{FPR}} =
     \frac{1}{n}\sum_{i=1}^n
-      \bbOne\bigl[ \vert t_i \vert >  t_{1 - \alpha/2,\eta} \bigr],
+      \bbOne\bigl[ \vert t_i \vert >  t_{1 - \alpha/2,\eta}
+                  \bigm\vert c(\theta) = 0 \bigr],
 \end{equation*}
 i.e.\ the fraction of tests incorrectly declared significant.
 

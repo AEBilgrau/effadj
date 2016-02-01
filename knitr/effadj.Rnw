@@ -16,6 +16,7 @@
 
 \renewcommand{\vec}{\boldsymbol} % for bold vectors
 \newcommand{\vtheta}{\vec{\theta}} % vector theta
+\newcommand{\hvtheta}{\hat{\vec{\theta}}} % vector theta-hat
 
 \newcommand{\tgt}{\textrm{tgt}}
 \newcommand{\rref}{\textrm{ref}}
@@ -247,7 +248,7 @@ Let the maximum likelihood estimates of the fixed effects
 \end{equation*}
 be denoted by
 $
-  \hat{\vtheta} =
+  \hvtheta =
     (\hat{\mu}_{\tgt,\case},  \hat{\mu}_{\tgt,\ctrl},  \hat{\gamma}_\tgt,
      \hat{\mu}_{\rref,\case}, \hat{\mu}_{\rref,\ctrl}, \hat{\gamma}_\rref)^\top.
 $
@@ -265,25 +266,36 @@ fixed effects given by
                - (\mu_{\tgt,\ctrl}  \gamma_\tgt^{-1}
                -  \mu_{\rref,\ctrl} \gamma_\rref^{-1})\bigr\}.
 \end{equation}
-The main task of this paper is to approximate the standard error of $c(\hat{\vtheta})$ and thereby account for the uncertainty of $\ddcq$.
+The main task of this paper is to approximate the standard error of $c(\hvtheta)$ and thereby account for the uncertainty of $\ddcq$.
 That is, the standard error,
 \begin{equation}
   \label{eq:se}
-  \mathrm{se}(\hat{\vtheta}) = \sqrt{\Var\!\bigl[c(\hat{\vtheta})\bigr]},
+  \mathrm{se}(\hvtheta) = \sqrt{\Var\!\bigl[c(\hvtheta)\bigr]},
 \end{equation}
 is of central interest.
 The standard error is used in the statistic for testing $H_0$ given by
-$t = c(\hat{\vtheta})/\mathrm{se}(\hat{\vtheta})$,
-which according to a first order Taylor series expansion of $c$ can be
-approximated by
+$t = c(\hvtheta)/\mathrm{se}(\hvtheta)$.
+From a first order Taylor expansion of $c$ around $\vtheta$,
+\begin{equation*}
+  c(\hvtheta) \approx
+  c(\vtheta) +  \nabla c(\vtheta)^\top (\hvtheta - \vtheta),
+\end{equation*}
+where $\Var[\hvtheta]$ is the variance-covariance matrix and $\nabla c(\vtheta)$ the gradient vector,
+the variance can be obtained
+\begin{equation*}
+  \Var\!\bigl[c(\hvtheta)\bigr]
+  \approx
+  \nabla c(\vtheta)^\top \Var[\hvtheta] \nabla c(\vtheta).
+\end{equation*}
+Hence we approximate $t$ by
 \begin{equation}
   t =
   \frac{
-    c(\hat{\vtheta})
+    c(\hvtheta)
   }{
-   \sqrt{\nabla c(\hat{\vtheta})^\top
-        \Var[\hat{\vtheta}]
-        \nabla c(\hat{\vtheta})}
+   \sqrt{\nabla c(\hvtheta)^\top
+        \Var[\hvtheta]
+        \nabla c(\hvtheta)}
   }.
   \label{eq:tstat}
 \end{equation}
@@ -294,19 +306,19 @@ We do not pursue this further and restrict ourselves to the case of balanced exp
 
 On the basis of \eqref{eq:tstat}, an approximate $(1 - \alpha) 100\%$ confidence interval of $c(\vtheta)$ can then be given by
 \begin{equation*}
-     c(\hat{\vtheta}) \pm
-     t_{\alpha/2,\eta}\sqrt{\nabla c(\hat{\vtheta})^{\top}\Var[\hat{\vtheta}]\nabla c(\hat{\vtheta})}.
+     c(\hvtheta) \pm
+     t_{\alpha/2,\eta}\sqrt{\nabla c(\hvtheta)^{\top}\Var[\hvtheta]\nabla c(\hvtheta)}.
 \end{equation*}
 Likewise, $p$-values can be obtained by computing $P(\lvert t \rvert > T)$ where $T$ is $t$-distributed with $\eta$ degrees of freedom.
 
-Alternatively to \eqref{eq:tstat}, the variance $\Var\!\bigl[c(\hat{\vtheta})\bigr]$ can be evaluated by Monte Carlo integration.
-One way is to simulate a large number $N$ of parameters $\vtheta_1, \ldots, \vtheta_N$ from a multivariate normal distribution using the estimated parameters ${\cal{N}}_6(\hat{\vtheta}, \Var[\hat{\vtheta}])$ and compute the sample variance of $c(\vtheta_1), \ldots, c(\vtheta_N)$.
+Alternatively to \eqref{eq:tstat}, the variance $\Var\!\bigl[c(\hvtheta)\bigr]$ can be evaluated by Monte Carlo integration.
+One way is to simulate a large number $N$ of parameters $\vtheta_1, \ldots, \vtheta_N$ from a multivariate normal distribution using the estimated parameters ${\cal{N}}_6(\hvtheta, \Var[\hvtheta])$ and compute the sample variance of $c(\vtheta_1), \ldots, c(\vtheta_N)$.
 
 Both maximum likelihood (ML) and restricted maximum likelihood estimation (REML) of LMMs is implemented in the R-packages \texttt{lme4} and \texttt{nlme} \citep{Bates2014, Pinheiro2000a}.
-The packages readily provides the estimate $\hat{\vtheta}$ and $\Var[\hat{\vtheta}]$ and we use these in the construction of test and confidence intervals for the $\ddcq$ as described above.
+The packages readily provides the estimate $\hvtheta$ and $\Var[\hvtheta]$ and we use these in the construction of test and confidence intervals for the $\ddcq$ as described above.
 The needed gradient in \eqref{eq:tstat} is computed straight-forwardly from \eqref{eq:c}.
 % \begin{equation*}
-%   \nabla c(\hat{\vtheta}) =
+%   \nabla c(\hvtheta) =
 %   \left(
 %     \gamma_\tgt^{-1} ,
 %     -\gamma_\tgt^{-1} ,
@@ -323,7 +335,7 @@ One way to solve this problem is to use the $\log_2$ concentration as the respon
 This approach is not without conceptual problems as this puts the errors on the explanatory variables.
 To this end, note that the hypothesis
 $
-  H_0: \gamma_\tgt\gamma_\rref c(\hat{\vtheta}) = 0,
+  H_0: \gamma_\tgt\gamma_\rref c(\hvtheta) = 0,
 $
 can be equivalently tested
 for which the standard error of the test-statistic can be worked out exactly.

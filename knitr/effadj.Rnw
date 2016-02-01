@@ -34,7 +34,7 @@
 
 % Run analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-<<run_master, echo=FALSE, results='hide', message=FALSE, warning=FALSE>>=
+<<run_master, echo=FALSE, results='hide', message=FALSE, error=FALSE>>=
 source("../scripts/master.R")  # Simply runs the master script
 @
 

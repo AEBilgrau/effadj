@@ -163,16 +163,16 @@ $\ddcq$ we model the amplification process
 in the following way
 \begin{equation}
   \label{eq:fluorescencemodel}
-  F_{C_q} = \kappa \sigma N_0 (2^{\alpha})^{C_q},
+  F_{C_q} = \kappa N_0 (2^{\alpha})^{C_q},
 \end{equation}
 where $F_{C_q}$ is the fluorescence measurement at the $C_q$'th cycle,
-$\kappa$ is a proportionality constant, $N_0$ is the number of transcripts of interest in the initial sample before amplification,
-$\sigma$ is a sample-specific error and
-$\alpha$ is the percentage of the $\log_2$-AE.
+$\kappa$ is a sample-specific proportionality constant,
+$N_0$ is the number of transcripts of interest in the initial sample before amplification, and
+$2^\alpha$ is the AE from which $\alpha$ is interpreted as the percentage growth on the log scale.
 In practice, the transcript abundance level is determined by the cycle $C_q$ for which a given fluorescence measurement $F_{C_q}$ is reached.
 We rearrange \eqref{eq:fluorescencemodel} and notice that $C_q$ can be expressed as
 $
-  \alpha C_q = \log_2 F_{C_q} - \log_2 \kappa \sigma N_0.
+  \alpha C_q = \log_2 F_{C_q} - \log_2 \kappa N_0.
 $
 In order to estimate the relative amount of target (tgt) gene transcripts between case
 and control (ctrl) samples, we assume
@@ -184,11 +184,11 @@ arrive at the following expression for the $\log_2$-fold change of
 the target gene template between case and controls:
 \begin{align*}
   \log_2\Bigl(\frac{N_{ 0,\tgt,\case}}{N_{0,\tgt,\ctrl}}\Bigr)
-  &= \log_2 \kappa \sigma_{ \case} N_{0,\tgt,\case}
-    -\log_2 \kappa \sigma_{ \case} N_{0,\rref,\case} \\
+  &= \log_2 \kappa_{ \case} N_{0,\tgt,\case}
+    -\log_2 \kappa_{ \case} N_{0,\rref,\case} \\
   &\quad
-       - \log_2 \kappa \sigma_{\ctrl} N_{0,\tgt,\ctrl}
-       + \log_2 \kappa \sigma_{\ctrl} N_{0,\rref,\ctrl}  \\
+       - \log_2 \kappa_{\ctrl} N_{0,\tgt,\ctrl}
+       + \log_2 \kappa_{\ctrl} N_{0,\rref,\ctrl}  \\
   &=   - \bigl\{(\alpha_{\tgt}  C_{ q,\tgt,\case}
        -  \alpha_{\rref} C_{q,\rref,\case})
        - (\alpha_{\tgt}  C_{q,\tgt,\ctrl}

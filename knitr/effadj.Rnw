@@ -224,9 +224,14 @@ The estimation of the expected $C_{q,ij}$-values and $\alpha_i$ can then be esti
   \label{eq:model}
   C_{q,ijsk} = \mu_{ij} + A_{js} + \gamma_{i} x_k + \epsilon_{ijsk},
 \end{equation}
-where $A_{js}$ is a random effect from sample $s$ under the $j$'th sample type,
-$\gamma_{i} = \alpha_i^{-1}$, and
-$\mu_{ij}$ is the group means.
+where
+$\mu_{ij}$ is the group means,
+$A_{js}$ is a random effect from sample $s$ under the $j$'th sample type, and
+$\gamma_{i} = \alpha_i^{-1}$ is the inverse $\log_2$-AE.
+That is,
+\begin{equation*}
+  \text{AE}_i = 2^{\frac{1}{\gamma_i}} = 2^{\alpha_i}.
+\end{equation*}
 The random effects $A_{js}$ are ${\cal{N}}(0,\sigma_S^2)$-distributed and
 the error terms $\epsilon_{ijsk}$ are independent and ${\cal{N}}(0,\sigma^2_j)$-distributed with a sample type specific variance $\sigma^2_j$.
 The random effects account for the paired samples across tgt/ref for each $j$.

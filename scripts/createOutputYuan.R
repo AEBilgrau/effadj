@@ -135,11 +135,15 @@ rownames(toTeX) <- gsub("ECVA", "EC\\\\&VA", rownames(toTeX))
 
 grps <- sapply(list(g1, g2), function(x) paste(x[1], "vs", x[2]))
 
-caption.txt <- "\\citet{Yuan2008} data: Method comparison for estimating the
-  $\\ddcq$-value. EC denotes use of the plug-in estimator disregarding
-  uncertainty in the AE.
-  EC\\&VA1 denotes that the efficiency correction was variance adjusted using
-  the delta method."
+caption.txt <- "
+\\citet{Yuan2008} data: Method comparison for estimating the $\\ddcq$-value.
+EC: Efficiency corrected LMM estimate ignoring the uncertainty of the
+efficiency estimates.
+EC\\&VA1: EC and variance adjusted LMM estimate using the delta method.
+The last two columns show the $95%s$ lower and upper confidence interval
+limits.
+"
+
 w <- latex(toTeX,
            file    = "../output/Table3.tex",
            title   = "",

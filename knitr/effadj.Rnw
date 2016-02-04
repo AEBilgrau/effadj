@@ -506,7 +506,7 @@ The values of the considered estimators for $\ddcq$ are seen in Table~\ref{table
 The table also shows results of tests for difference in gene expression assessed by the $\ddcq$ for both target genes \textit{MGST1} and \textit{MMSET} normalized to each of the reference genes \textit{GAPDH} and \textit{ACTB}.
 We used four different methods to estimate and perform inference:
   (1) EC: Efficiency corrected LMM estimate ignoring the uncertainty of the efficiency estimates.
-  (2) EC\&VA1: EC and variance adjusted LMM estimate using 1.~order approximation.
+  (2) EC\&VA1: EC and variance adjusted LMM estimate using a first order approximation.
   (3) EC\&VA2: EC and variance adjusted LMM estimate using Monte Carlo integration.
   (4) Bootstrap: Estimate by the bootstrap described in Section \ref{sec:bootstrap} fitting the LMM and using the EC estimate.
 

@@ -522,8 +522,8 @@ In conclusion, there is good evidence that \textit{MGST1} is differentially expr
 For the target gene \textit{MMSET} normalized with respect to both reference genes, all estimates are not significantly different from zero.
 Again, the various methods all agree and no substantial inter-method differences are seen and we find no evidence for differential expression of \textit{MMSET} between cell lines with high and low abundance of CICs.
 
-In all instances, our bootstrap scheme provides a standard deviation larger than what is obtained using the delta or Monte Carlo methods.
-The mean of the bootstrap distribution seems consistently larger that the other methods.
+
+In all instances, the mean of the bootstrap distribution agree well with the obtained using the delta or Monte Carlo methods while the bootstrap scheme seems to provide a larger standard deviation.
 
 We see that the large number of dilution steps, as recommended and expected, ensures a low impact of the AE on the standard error and thus on the inference of the $\ddcq$.
 

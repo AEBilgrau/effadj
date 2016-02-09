@@ -3,7 +3,7 @@
 # Analysis of CIC data                                                         #
 # Written by:                                                                  #
 #   Anders Ellern Bilgrau, Steffen Falgreen, and Martin Boegsted               #
-# Last revision: 11th of June, 2015                                            #
+# Last revision: 9th of Feb, 2015                                              #
 ################################################################################
 
 #
@@ -110,8 +110,7 @@ for (i in 1:length(grps.list.cic)) {
   m <- paste(grps.list.cic[[i]], collapse = " vs. ")
   cat("\n\n\n\n\n===", m,"===\n")
   print(summary(fit <- qPCRfit(as.data.qPCR(cic.tmp), weighted = we)))
-  print(plot(fit, col = cic.tmp$sampleName, pch = cic.tmp$sampleType),
-        main = m)
+  print(plot(fit, col = cic.tmp$sampleName, pch = cic.tmp$sampleType, main = m))
 
   # Create results for table
   results <- rbind(

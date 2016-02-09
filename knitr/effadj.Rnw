@@ -493,7 +493,9 @@ Likewise, an estimate of the FPR is obtained by simulating $n$ datasets under th
 \end{equation*}
 i.e.\ the fraction of tests incorrectly declared significant.
 
-Based on the above statistical model, we estimate the FPR and the TPR for each discussed method under different choices of sample sizes and number of dilutions whilst fixing the size of the sample and experimental variations.
+Simulating under the log-linear statistical model described above, we estimate the FPR and the TPR for each discussed method under different choices of sample sizes and number of dilutions whilst fixing the size of the sample and experimental variations.
+These constant sample and experimental variations corresponds a homoscedastic errors on the log-scale.
+
 
 
 \section{Results}

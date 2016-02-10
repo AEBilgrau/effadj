@@ -495,7 +495,7 @@ i.e.\ the fraction of tests incorrectly declared significant.
 
 Simulating under the log-linear statistical model described above, we estimate the FPR and the TPR for each discussed method under different choices of sample sizes and number of dilutions whilst fixing the size of the sample and experimental variations.
 These constant sample and experimental variations corresponds a homoscedastic errors on the log-scale.
-
+No technical replications are simulated.
 
 
 \section{Results}

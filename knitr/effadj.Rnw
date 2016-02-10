@@ -584,6 +584,7 @@ We simulated \Sexpr{n.sims} datasets under both the null and alternative hypothe
 The effect size under the alternative was set to $\delta = 10/9$.
 The sample and experimental standard deviations were set to $\sigma_{S} = 1$ and $\sigma = 1$, respectively.
 The AE for the target and reference genes were set to 0.80 and 0.95, respectively.
+The parameters were primarily chosen to conveniently yield estimates and error rates on a sensible scale whilst secondarily being comparable to estimated quantities in the applications.
 
 The four discussed methods were applied to the $2\times \Sexpr{n.sims}$ datasets and the $p$-value testing the null hypothesis were computed.
 The results of these tests are summarized in Table \ref{tab:simexample} from which the FPR and TPR can be computed at the $5$\% cutoff.

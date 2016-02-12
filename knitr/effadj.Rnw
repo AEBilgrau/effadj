@@ -115,9 +115,11 @@ If the AE is poorly determined, this underestimation can drastically increase th
 
 \citet{Nordgaard2006} studied error propagation including the effect of the AE uncertainty on the $C_q$-values.
 This study was, however, statistically informal and made no attempt to quantify the effect on the $\ddcq$ and inference hereof.
-Furthermore, \citet{Nordgaard2006} considered AE estimation from the amplification curve (thus for each sample) and not from separate dilution experiments.
-In this paper, we discuss only the AE from dilution curves explicitly.
-However, similar problems exist as the AE estimates from the amplification curves \emph{also} have an associated standard error which affect the `down-steam' quantities and inference.
+Furthermore, \citet{Nordgaard2006} considered AE estimation from the amplification curve (thus for each well) and not from separate dilution experiments.
+In this paper, we explicitly discuss only the AE estimation from dilution curves, which assumes a constant AE across certain genes.
+While this assumption has been contested \citet{},
+the problem still exist as AE estimates from amplification curves \emph{also} have an associated error which affect all `down-steam' estimated quantities and inference.
+The numerous AEs estimated for \emph{all} wells arguably increases the problem as even more errors---one for each well---is propagated futher on.
 
 \citet{Svec2015} recently assessed the impact of the AE uncertainty as a function of the number of technical replications at each concentration and the qPCR instrument.
 They conclude that a minimum of $3$--$4$ replicates at each concentration are needed and that a significant inter qPCR instrument effect is present.

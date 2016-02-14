@@ -113,17 +113,21 @@ The current AE adjusted $\ddcq$ methods do not account for the \emph{uncertainty
 This assumption entails a systematic underestimation of the standard error of $\ddcq$ leading to too narrow confidence intervals, decreased $p$-values, and thereby increased type I error rates.
 If the AE is poorly determined, this underestimation can drastically increase the standard error of $\ddcq$ and similar quantities.
 
-\citet{Nordgaard2006} studied error propagation including the effect of the AE uncertainty on the $C_q$-values.
+\citet{Nordgaard2006} studied error propagation, including the effect of the AE uncertainty, on the $C_q$-values.
 This study was, however, statistically informal and made no attempt to quantify the effect on the $\ddcq$ and inference hereof.
 Furthermore, \citet{Nordgaard2006} considered AE estimation from the amplification curve (thus for each well) and not from separate dilution experiments.
 In this paper, we explicitly discuss only the AE estimation from dilution curves, which assumes a constant AE across certain genes.
 While this assumption has been contested and alternatives by branching processes suggested \citep{Peccoud1996, Jacob1998, Lalam2004, Lalam2007}, the problem \emph{still} exist as AE estimates from individual amplification curves \emph{also} have an associated error which affect all `down-steam' estimated quantities and inference.
 The numerous estimated well-specific AEs arguably amplify the problem as even more errors---one for each well---is propagated futher on.
+\citet{Tellinghuisen2014a, Tellinghuisen2014b, Tellinghuisen2015} recently stressed and discussed the importance and negative impact of improper error handling, include AE estimation, with an emphasis on determining the florescence level at the hypothetical cycle zero and $C_q$-values using different methods.
 
-\citet{Svec2015} recently assessed the impact of the AE uncertainty as a function of the number of technical replications at each concentration and the qPCR instrument.
+\citet{Svec2015} also recently assessed the impact of the AE uncertainty as a function of the number of technical replications at each concentration and the qPCR instrument.
 They conclude that a minimum of $3$--$4$ replicates at each concentration are needed and that a significant inter qPCR instrument effect is present.
 However, they do not gauge the effect of the number of concentrations used---an important variable as additional technical replicates rarely contribute with much information to determine the AE.
 Nonetheless, \citet{Svec2015} do not address the impact of the AE uncertainty on formal statistical inference on the $\ddcq$, as this paper intends.
+
+
+
 
 % Precise aims of the paper
 \subsection{Aims}
@@ -620,23 +624,26 @@ Similar figures might also aid in designing qPCR experiments and help determine 
 
 \section{Discussion and conclusion}
 % Main message
-The commonly used efficiency corrected $\ddcq$ approach to analysis of qPCR data disregards the uncertainty of the estimated AE leading to increased false positive rates.
+The commonly used efficiency corrected $\ddcq$ and many other to approaches to the analysis of qPCR data disregards the uncertainty of the estimated AE leading to increased false positive rates.
 As qPCR experiments are often used for validation this is highly undesirable.
 Our primary approach based on the statistical delta-method to approximate the variance of the efficiency adjusted $\ddcq$, shows that it is possible to perform statistical inference about qPCR experiments whilst more properly accounting for the AE uncertainty.
-We also note that the problem is not limited to the $\ddcq$ statistic.
+We stress that the problem is not limited to the $\ddcq$ statistic, but all statisics that depend on the AE.
+Likewise, the problem is also persists for `single-curve' AEs estimated for each well on the plate.
 
 The approach was used to validate that:
 (1) \textit{MGST1} is differentially expressed between MM cell lines of high and low abundance of CICs and
 (2) analyze and study the hypothesis that miRNA-127 is differentially expressed between testicular and nodal DLBCL, and
 (3) illustrate the effect of a small number of dilution steps.
 
-In the latter application, we saw a dramatic increase in the standard error of the estimate when the
-variance approximation was introduced, potentially leading to a change of significance for the presented dataset depending on the desired significance level.
+In the latter application, we saw a dramatic increase in the standard error of the estimate when the variance approximation was introduced, potentially leading to a change of significance for the presented dataset depending on the desired significance level.
 This illustrates that it is important to consider all aspects of uncertainty when conducting AE correction of qPCR experiments.
-Problems with uncertainty in efficiency estimates should be handled by establishing well-estimated dilution curves as argued elsewhere \citep{Bustin2010}, however even in this case the presented method also allows for design guidelines for power calculations and assessing the influence of the estimated dilution curves.
+
+Although not in the context of $\ddcq$ estimation, \citet{Tellinghuisen2014b} concluded that uncertainty as well as bias of the AE estimate substatially impacts subsequent quantities.
+
+Problems with uncertainty in AE estimates should be handled by establishing well-estimated dilution curves as argued elsewhere \citep{Bustin2010}, however even in this case the presented method also allows for design guidelines for power calculations and assessing the influence of the estimated dilution curves.
 It is also noteworthy that model based estimation of the $\ddcq$ also allows for model checking by e.g.\ residual plots.
 
-Lastly, we note that the algorithm \citep{Mx300P2013} we used for threshold selection and $C_q$-value extraction in the CIC and DLBCL studies may not be optimal, cf.~\citet{Ruijter2013} and improvements by \citet{Spiess2015}, as it can be affected by the AE.
+Lastly, we note that the algorithm \citep{Mx300P2013} we used for threshold selection and $C_q$-value extraction in the CIC and DLBCL studies may not be optimal---cf.~\citet{Ruijter2013}, \citet{Tellinghuisen2014a}, and improvements by \citet{Spiess2015}---as it can be affected by the AE.
 Nonetheless, this has no bearing on the stated problem of this paper.
 The estimated standard error of $\ddcq$ is still affected in a similar manner by the uncertainty of the AE and thus too optimistic.
 

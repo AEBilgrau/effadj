@@ -43,7 +43,7 @@ source("../scripts/master.R")  # Simply runs the master script
 \begin{document}
 
 % Title of paper
-\title{Unaccounted uncertainty from qPCR efficiency estimates imply uncontrolled false positive rates}
+\title{Unaccounted uncertainty from qPCR efficiency estimates entails uncontrolled false positive rates}
 
 \author[12]{A.~E.~Bilgrau\thanks{To whom correspondence should be addressed (\texttt{abilgrau@math.aau.dk})}}
 \author[1]{S.~Falgreen}
@@ -110,7 +110,7 @@ Despite the tremendous success of qPCR, `statistical inference considerations ar
 We find this particular true for the estimation of the AE.
 Although efficiency calibration has been extensively treated by \cite{Pfaffl2001} or in the more generalized model by \cite{Yuan2008}, there seems to be a lack of systematic studies of the unavoidable influence of the uncertainty of the AE estimate on the conclusions of qPCR experiments based on formal statistical inference.
 The current AE adjusted $\ddcq$ methods do not account for the \emph{uncertainty of the estimated AE} and thus effectively assumes the AE to be estimated with infinite precision.
-This assumption implies a systematic underestimation of the standard error of $\ddcq$ leading to too narrow confidence intervals, decreased $p$-values, and thereby increased type I error rates.
+This assumption entails a systematic underestimation of the standard error of $\ddcq$ leading to too narrow confidence intervals, decreased $p$-values, and thereby increased type I error rates.
 If the AE is poorly determined, this underestimation can drastically increase the standard error of $\ddcq$ and similar quantities.
 
 \citet{Nordgaard2006} studied error propagation including the effect of the AE uncertainty on the $C_q$-values.
@@ -443,6 +443,8 @@ The lymphoma tissues were collected during the diagnostic procedure in accordanc
 Total RNA was isolated using a combined method of Trizol (Invitrogen) and Mirvana spin columns (Ambion). An amount of 10ng total RNA was synthesized into first strand cDNA in a 15$\mu$L reaction using TaqMan MicroRNA Reverse Transcription Kit (Applied Biosystems) according to the manufactures instruction. In total 1.33$\mu$L cDNA was used as template in the real time PCR amplification performed by Mx3000p QPCR system (Agilent Technologies/Stratgene) with sequence specific TaqMan primers (Applied Biosystems).
 As reference transcripts we chose \textit{RNU-6B} and \textit{RNU-24}, which were less variable and equally expressed across nodal and extra-nodal samples among a larger list of candidate reference genes.
 For each target and reference transcripts a standard curve based on seven 2-fold dilutions was constructed on a reference sample consisting of pooled material from all 16 lymphomas.
+
+
 
 
 \subsection{Arabidopsis thaliana study}

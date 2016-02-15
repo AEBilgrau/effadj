@@ -35,7 +35,7 @@ SimqPCRData <-
            n.samples    = 4,         # Number of samples
            n.replicates = 3,         # Number of replicates
            n.dilutions  = 5,         # Number of dilutions
-           tech.sd      = 1,       # Variance of technical replicates
+           tech.sd      = 1,         # Variance of technical replicates
            alpha.tgt    = 0.80,      # Efficiency of target gene
            alpha.ref    = 0.95,      # Efficiency of reference gene
            sample.sd    = 1,         # Sample standard deviation

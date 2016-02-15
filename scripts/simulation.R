@@ -527,6 +527,7 @@ get.est.sd <- function(x) {
   return(x[-c(1,4), "Std. Error"])
 }
 
+# Format results
 sim.res.alt <- lapply(sim.res.alt, function(y) sapply(y, get.est.sd))
 sim.res.alt <- simplify2array(sim.res.alt)
 
@@ -554,8 +555,11 @@ for (j in 1:2) {
 
   if (j == 1) par(mar = c(4, 3, 2, 0) + 0.1)
 
-  axis(2); axis(1, at = dilutions); grid(); box()
-  for (i in 1:nrow(sim.tmp)) {
+  axis(2)
+  axis(1, at = dilutions)
+  box()
+
+  for (i in seq_len(nrow(sim.tmp))) {
     lines(dilutions, sim.tmp[i, ], col = cols[i],
           lty = 1, lwd = 2, type = "b", pch = 16)
     lines(dilutions, sim.tmp.va[i, ], col = cols[i],

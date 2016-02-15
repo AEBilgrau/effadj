@@ -3,7 +3,7 @@
 # Analysis of CIC data                                                         #
 # Written by:                                                                  #
 #   Anders Ellern Bilgrau, Steffen Falgreen, and Martin Boegsted               #
-# Last revision: 11th of June, 2015                                            #
+# Last revision: 9th of Feb, 2015                                              #
 ################################################################################
 
 #
@@ -110,8 +110,7 @@ for (i in 1:length(grps.list.cic)) {
   m <- paste(grps.list.cic[[i]], collapse = " vs. ")
   cat("\n\n\n\n\n===", m,"===\n")
   print(summary(fit <- qPCRfit(as.data.qPCR(cic.tmp), weighted = we)))
-  print(plot(fit, col = cic.tmp$sampleName, pch = cic.tmp$sampleType),
-        main = m)
+  print(plot(fit, col = cic.tmp$sampleName, pch = cic.tmp$sampleType, main = m))
 
   # Create results for table
   results <- rbind(
@@ -154,14 +153,19 @@ grps <-
                                            paste(x[1], "vs", x[2], "+", x[3]),
                                            paste(x[1], "vs", x[2])))
 
-caption.txt <- "CIC data: Method comparison for estimating the
-  $\\ddcq$-value.
-  EC denotes use of the plugin-estimator.
-  VA denotes that the efficiency correction was variance adjusted using the
-  delta method (1) or Monte Carlo integration (2).
-  Bootstrap shows the mean and standard deviation of %d
-  bootstrap samples using the EC estimate. The last two columns show the $95%s$
-  lower and upper confidence interval limits."
+caption.txt <- "
+CIC data: Method comparison for estimating the $\\ddcq$-value.
+EC: Efficiency corrected LMM estimate ignoring the uncertainty of the
+efficiency estimates.
+EC\\&VA1: EC and variance adjusted LMM estimate using the delta method.
+EC\\&VA2: EC and variance adjusted LMM estimate using Monte Carlo integration.
+Bootstrap: Estimate by the bootstrap described in Section \\ref{sec:bootstrap}
+fitting the LMM and using the EC estimate.
+Bootstrap shows the mean and standard deviation of %d bootstrap samples using
+the EC estimate.
+The last two columns show the $95%s$ lower and upper confidence interval
+limits.
+"
 
 toTeX <- toTeX[!grepl("LMM|t-test", rownames(toTeX)), ]
 

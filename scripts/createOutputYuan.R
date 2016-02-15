@@ -149,7 +149,7 @@ limits.
 w <- latex(toTeX,
            file    = "../output/Table3.tex",
            title   = "",
-           where   = "h!",
+           where   = "!ht",
            label   = "table:yuan",
            caption = sprintf(caption.txt, n.boots, "\\%"),
            caption.loc = "top",

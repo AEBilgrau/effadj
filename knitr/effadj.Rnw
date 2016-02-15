@@ -982,20 +982,20 @@ Poul Svante Eriksen is also thanked for his comments on the statistical methods.
 %% Do not use \listoffigures as most will included as separate files
 
 \section*{Figures}
-%   \begin{figure}[h!]
+%   \begin{figure}[!ht]
 %   \caption{\csentence{Sample figure title.}
 %       A short description of the figure content
 %       should go here.}
 %       \end{figure}
 %
-% \begin{figure}[h!]
+% \begin{figure}[!ht]
 %   \caption{\csentence{Sample figure title.}
 %       Figure legend text.}
 %       \end{figure}
 
 
 % CIC fig
-\begin{figure}[h!]
+\begin{figure}[!ht]
 % \begin{center}
 % \includegraphics[width=\textwidth]{fig1}
 % \end{center}
@@ -1011,7 +1011,7 @@ Poul Svante Eriksen is also thanked for his comments on the statistical methods.
 \end{figure}
 
 % DLBCL fig
-\begin{figure}[h!]
+\begin{figure}[!ht]
 % \begin{center}
 % \includegraphics[width=\textwidth]{fig2}
 % \end{center}
@@ -1029,7 +1029,7 @@ Poul Svante Eriksen is also thanked for his comments on the statistical methods.
 
 
 % Arabidopsis thaliana fig
-\begin{figure}[h!]
+\begin{figure}[!ht]
 % \begin{center}
 % \includegraphics[width=\textwidth]{fig3}
 % \end{center}
@@ -1044,7 +1044,7 @@ Poul Svante Eriksen is also thanked for his comments on the statistical methods.
 
 
 % Simulation fig
-\begin{figure}[h!]
+\begin{figure}[!ht]
 % \begin{center}
 % \includegraphics[width=\textwidth]{fig4}
 % \end{center}
@@ -1059,7 +1059,7 @@ Poul Svante Eriksen is also thanked for his comments on the statistical methods.
 
 
 % Simulation fig2
-\begin{figure}[h!]
+\begin{figure}[!ht]
 % \begin{center}
 % \includegraphics[width=0.9\textwidth]{fig5}
 % \end{center}
@@ -1081,7 +1081,7 @@ Poul Svante Eriksen is also thanked for his comments on the statistical methods.
 %%
 
 % \section*{Tables}
-% \begin{table}[h!]
+% \begin{table}[!ht]
 % \caption{Sample table title. This is where the description of the table should go.}
 %       \begin{tabular}{cccc}
 %         \hline

@@ -172,7 +172,7 @@ toTeX <- toTeX[!grepl("LMM|t-test", rownames(toTeX)), ]
 w <- latex(toTeX,
            file    = "../output/Table2.tex",
            title   = "",
-           where   = "h!",
+           where   = "!ht",
            label   = "table:tesits",
            caption = sprintf(caption.txt, length(testis.boot), "\\%"),
            caption.loc = "top",

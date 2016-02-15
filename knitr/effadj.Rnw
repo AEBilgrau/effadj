@@ -113,13 +113,14 @@ The current AE adjusted $\ddcq$ methods do not account for the \emph{uncertainty
 This assumption entails a systematic underestimation of the standard error of $\ddcq$ leading to too narrow confidence intervals, decreased $p$-values, and thereby increased type I error rates.
 If the AE is poorly determined, this underestimation can drastically increase the standard error of $\ddcq$ and similar quantities.
 
-\citet{Nordgaard2006} studied error propagation, including the effect of the AE uncertainty, on the $C_q$-values.
+Recently, some effort has been devoted to studying error propagation in qPCR \citep{Nordgaard2006, Tellinghuisen2014a, Tellinghuisen2014b, Tellinghuisen2015}.
+\citet{Nordgaard2006} studied error propagation primarily on the $C_q$-values including the effect of the AE uncertainty.
 This study was, however, statistically informal and made no attempt to quantify the effect on the $\ddcq$ and inference hereof.
 Furthermore, \citet{Nordgaard2006} considered AE estimation from the amplification curve (thus for each well) and not from separate dilution experiments.
 In this paper, we explicitly discuss only the AE estimation from dilution curves, which assumes a constant AE across certain genes.
 While this assumption has been contested and alternatives by branching processes suggested \citep{Peccoud1996, Jacob1998, Lalam2004, Lalam2007}, the problem \emph{still} exist as AE estimates from individual amplification curves \emph{also} have an associated error which affect all `down-steam' estimated quantities and inference.
-The numerous estimated well-specific AEs arguably amplify the problem as even more errors---one for each well---is propagated futher on.
-\citet{Tellinghuisen2014a, Tellinghuisen2014b, Tellinghuisen2015} recently stressed and discussed the importance and negative impact of improper error handling, include AE estimation, with an emphasis on determining the florescence level at the hypothetical cycle zero and $C_q$-values using different methods.
+The numerous estimated well-specific AEs arguably amplify the problem as even more errors---one for each well---is propagated further on.
+\citet{Tellinghuisen2014a, Tellinghuisen2014b, Tellinghuisen2015} stressed and discussed the importance and negative impact of improper error handling, include AE estimation, with an emphasis on determining the florescence level at the hypothetical cycle zero and $C_q$-values using different methods.
 
 \citet{Svec2015} also recently assessed the impact of the AE uncertainty as a function of the number of technical replications at each concentration and the qPCR instrument.
 They conclude that a minimum of $3$--$4$ replicates at each concentration are needed and that a significant inter qPCR instrument effect is present.
@@ -627,7 +628,7 @@ Similar figures might also aid in designing qPCR experiments and help determine 
 The commonly used efficiency corrected $\ddcq$ and many other to approaches to the analysis of qPCR data disregards the uncertainty of the estimated AE leading to increased false positive rates.
 As qPCR experiments are often used for validation this is highly undesirable.
 Our primary approach based on the statistical delta-method to approximate the variance of the efficiency adjusted $\ddcq$, shows that it is possible to perform statistical inference about qPCR experiments whilst more properly accounting for the AE uncertainty.
-We stress that the problem is not limited to the $\ddcq$ statistic, but all statisics that depend on the AE.
+We stress that the problem is not limited to the $\ddcq$ statistic, but all statistics that depend on the AE.
 Likewise, the problem is also persists for `single-curve' AEs estimated for each well on the plate.
 
 The approach was used to validate that:
@@ -638,7 +639,10 @@ The approach was used to validate that:
 In the latter application, we saw a dramatic increase in the standard error of the estimate when the variance approximation was introduced, potentially leading to a change of significance for the presented dataset depending on the desired significance level.
 This illustrates that it is important to consider all aspects of uncertainty when conducting AE correction of qPCR experiments.
 
-Although not in the context of $\ddcq$ estimation, \citet{Tellinghuisen2014b} concluded that uncertainty as well as bias of the AE estimate substatially impacts subsequent quantities.
+Although not in the context of $\ddcq$ estimation, \citet{Tellinghuisen2014b} concluded that uncertainty as well as bias of the AE estimate substantially impacts subsequent quantities.
+They highlight that some methods achieve very good performance as measured by the low standard errors by tacitly assuming the AE known and fixed to 2 resulting in an apparent.
+This is an unsurprising consequence as it essentially the same as disregarding the AE uncertainty.
+We also note, as seen in this paper, that a low standard error in itself is not always proper benchmark of procedures.
 
 Problems with uncertainty in AE estimates should be handled by establishing well-estimated dilution curves as argued elsewhere \citep{Bustin2010}, however even in this case the presented method also allows for design guidelines for power calculations and assessing the influence of the estimated dilution curves.
 It is also noteworthy that model based estimation of the $\ddcq$ also allows for model checking by e.g.\ residual plots.

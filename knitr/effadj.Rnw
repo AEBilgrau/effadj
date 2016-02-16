@@ -291,13 +291,14 @@ From a first order Taylor expansion of $c$ around $\vtheta$,
   c(\hvtheta) \approx
   c(\vtheta) +  \nabla c(\vtheta)^\top (\hvtheta - \vtheta),
 \end{equation*}
-where $\Var[\hvtheta]$ is the variance-covariance matrix and $\nabla c(\vtheta)$ the gradient vector,
-the variance can be obtained
+where $\Var[\hvtheta]$ is the variance-covariance matrix and $\nabla c(\vtheta)$ is the gradient vector,
+the variance can be obtained by
 \begin{equation*}
   \Var\!\bigl[c(\hvtheta)\bigr]
   \approx
   \nabla c(\vtheta)^\top \Var[\hvtheta] \nabla c(\vtheta).
 \end{equation*}
+This expression coincide with the one given for error propagation in \citet[p.~95]{Tellinghuisen2014b}.
 Hence we approximate $t$ by
 \begin{equation}
   t =

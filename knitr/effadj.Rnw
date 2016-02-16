@@ -120,12 +120,12 @@ Furthermore, \citet{Nordgaard2006} considered AE estimation from the amplificati
 In this paper, we explicitly discuss only the AE estimation from dilution curves, which assumes a constant AE across certain genes.
 While this assumption has been contested and alternatives by branching processes suggested \citep{Peccoud1996, Jacob1998, Lalam2004, Lalam2007}, the problem \emph{still} exist as AE estimates from individual amplification curves \emph{also} have an associated error which affect all `down-steam' estimated quantities and inference.
 The numerous estimated well-specific AEs arguably amplify the problem as even more errors---one for each well---is propagated further on.
-\citet{Tellinghuisen2014a, Tellinghuisen2014b, Tellinghuisen2015} stressed and discussed the importance and negative impact of improper error handling, include AE estimation, with an emphasis on determining the florescence level at the hypothetical cycle zero and $C_q$-values using different methods.
+\citet{Tellinghuisen2014a, Tellinghuisen2014b, Tellinghuisen2015} stressed and discussed the importance and negative impact of improper error handling, include AE estimation, although again with emphasis on determining $C_q$-values and the florescence level at the hypothetical cycle zero using different methods.
 
-\citet{Svec2015} also recently assessed the impact of the AE uncertainty as a function of the number of technical replications at each concentration and the qPCR instrument.
+\citet{Svec2015} also recently assessed the impact of AE uncertainty as a function of the number of technical replicates at each concentration and the qPCR instrument.
 They conclude that a minimum of $3$--$4$ replicates at each concentration are needed and that a significant inter qPCR instrument effect is present.
 However, they do not gauge the effect of the number of concentrations used---an important variable as additional technical replicates rarely contribute with much information to determine the AE.
-Nonetheless, \citet{Svec2015} do not address the impact of the AE uncertainty on formal statistical inference on the $\ddcq$, as this paper intends.
+Nonetheless, \citet{Svec2015} also do not address the impact of AE uncertainty on formal statistical inference on the $\ddcq$, as this paper intends.
 
 
 

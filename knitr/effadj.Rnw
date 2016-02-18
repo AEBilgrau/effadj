@@ -116,11 +116,10 @@ If the AE is poorly determined, this underestimation can drastically increase th
 Recently, some effort has been devoted to studying error propagation in qPCR \citep{Nordgaard2006, Tellinghuisen2014a, Tellinghuisen2014b, Tellinghuisen2015}.
 \citet{Nordgaard2006} studied error propagation primarily on the $C_q$-values including the effect of the AE uncertainty.
 This study was, however, statistically informal and made no attempt to quantify the effect on the $\ddcq$ and inference hereof.
-Furthermore, \citet{Nordgaard2006} considered AE estimation from the amplification curve (thus for each well) and not from separate dilution experiments.
+Furthermore, \citet{Nordgaard2006} considered AE estimation from the amplification curve (thus for each well) and not from separate dilution experiments.\citet{Tellinghuisen2014a, Tellinghuisen2014b, Tellinghuisen2015} stressed and discussed the importance and negative impact of improper error handling, including AE estimation, although again with emphasis on determining $C_q$-values and the florescence level at the hypothetical cycle zero using different methods.
 In this paper, we explicitly discuss only the AE estimation from dilution curves, which assumes a constant AE across certain genes.
-While this assumption has been contested and alternatives by branching processes suggested \citep{Peccoud1996, Jacob1998, Lalam2004, Lalam2007}, the problem \emph{still} exist as AE estimates from individual amplification curves \emph{also} have an associated error which affect all `down-steam' estimated quantities and inference.
+While this assumption has been contested and alternatives by branching processes suggested \citep{Peccoud1996, Jacob1998, Lalam2004, Lalam2007}, the problem still exist as AE estimates from individual amplification curves also have an associated error which affect all `down-steam' estimated quantities and inference.
 The numerous estimated well-specific AEs arguably amplify the problem as even more errors---one for each well---is propagated further on.
-\citet{Tellinghuisen2014a, Tellinghuisen2014b, Tellinghuisen2015} stressed and discussed the importance and negative impact of improper error handling, include AE estimation, although again with emphasis on determining $C_q$-values and the florescence level at the hypothetical cycle zero using different methods.
 
 \citet{Svec2015} also recently assessed the impact of AE uncertainty as a function of the number of technical replicates at each concentration and the qPCR instrument.
 They conclude that a minimum of $3$--$4$ replicates at each concentration are needed and that a significant inter qPCR instrument effect is present.
@@ -142,7 +141,7 @@ We investigate the use of the statistical delta method, Monte Carlo integration,
 
 Note two important observations:
 First, the problem exists for \emph{all} statistical models and methods which incorrectly disregard the uncertainty of the AE estimate and is not limited to LMMs.
-Second, the problem exists not only for $\ddcq$-values, but also all similar quantities, e.g.\ $\Delta C_q$ and $C_q$, and the statistical inferences based on these.
+Secondly, the problem exists not only for $\ddcq$-values, but also all similar quantities, e.g.\ $\Delta C_q$ and $C_q$, and the statistical inferences based on these.
 
 The idea of using LMMs for qPCR experiments is not new \citep{andersen2004,abruzzo2005,fu2006,Steibel2009,Matz2013}.
 \cite{andersen2004} and \cite{abruzzo2005} have used mixed effects modeling to identify candidate normalizing genes.
@@ -175,7 +174,7 @@ where $F_{C_q}$ is the fluorescence measurement at the $C_q$'th cycle,
 $\kappa$ is a sample-specific proportionality constant,
 $N_0$ is the number of transcripts of interest in the initial sample before amplification, and
 $2^\alpha$ is the AE from which $\alpha$ is interpreted as the percentage growth on the log scale.
-In practice, the transcript abundance level is determined by the cycle $C_q$ for which a given fluorescence measurement $F_{C_q}$ is reached.
+In practice, the transcript abundance level is determined by the cycle $C_q$ for which a given fluorescence measurement $F_{C_q}$ is reached. Please note, by sample-specific we mean inter sample variations, like pipetting error, which should be accounted for by the reference genes.
 We rearrange \eqref{eq:fluorescencemodel} and notice that $C_q$ can be expressed as
 $
   \alpha C_q = \log_2 F_{C_q} - \log_2 \kappa N_0.
@@ -225,7 +224,7 @@ To estimate $\ddcq$ of \eqref{eq:ddcq}, estimates of $\alpha_i$ are needed.
 A popular way of estimating the AE is by ordinary linear regression.
 I.e.\ by regressing $C_{q,ij}$ against a series of increasing values $0 = x_1 < \cdots < x_K$, defined by $N_{0,ijk} = N_{0,ij}2^{-x_k}$, and na\"{i}vely plugging $\hat{\alpha}_i$ into \eqref{eq:ddcq} and thus disregarding its uncertainty.
 Here, $k$ denotes the dilution step and $x_k$ the number of 2-fold dilutions (e.g.\ $x_1 = 1$ means the first dilution step halves the original concentration).
-The estimation of the expected $C_{q,ij}$-values and $\alpha_i$ can then be estimated simultaneously when formulated as a LMM \citep{Pinheiro2000a};
+The $C_{q,ij}$-values and $\alpha_i$ can then be estimated simultaneously when formulated as a LMM \citep{Pinheiro2000a};
 \begin{equation}
   \label{eq:model}
   C_{q,ijsk} = \mu_{ij} + A_{js} + \gamma_{i} x_k + \epsilon_{ijsk},
@@ -298,7 +297,7 @@ the variance can be obtained by
   \approx
   \nabla c(\vtheta)^\top \Var[\hvtheta] \nabla c(\vtheta).
 \end{equation*}
-This expression coincide with the one given for error propagation in \citet[p.~95]{Tellinghuisen2014b}.
+Notice, this expression coincides with the formula for error propagation in \citet[p.~95]{Tellinghuisen2014b}.
 Hence we approximate $t$ by
 \begin{equation}
   t =
@@ -394,9 +393,9 @@ The rather complicated designs of qPCR experiments with paired samples, dilution
 Alternatively, parametric bootstrap can be used by simulating datasets from the fitted model.
 Here, both new random effects and noise terms are realized and added to the fitted values to generate new datasets.
 
-Re-sampling methods in qPCR data has been proposed by \cite{Pfaffl2002} also to infer the relative expression directly by permutation testing.
-Unlike the permutation testing of \cite{Pfaffl2002}, the bootstrap is here used to estimate the only mean and standard error of $\ddcq$ and not \emph{directly} test the stated hypothesis.
-The bootstrap approach also allows for constructing confidence intervals
+Re-sampling methods for qPCR data have previously been proposed by \cite{Pfaffl2002} to infer the relative expression directly by permutation testing.
+Unlike the permutation testing of \cite{Pfaffl2002}, the bootstrap is here used to estimate the mean and standard error of $\ddcq$ and not \emph{directly} test the stated hypothesis.
+The bootstrap approach suggested here also allows for constructing confidence intervals.
 
 % In the following real data data applications, we draw \Sexpr{n.boots} bootstrap samples (both parametric and non-parametric) and used them to carry out statistical inference.
 % First, the standard error of $\ddcq$ is calculated by the sample standard deviation of the bootstrap distribution.
@@ -504,7 +503,7 @@ Likewise, an estimate of the FPR is obtained by simulating $n$ datasets under th
 i.e.\ the fraction of tests incorrectly declared significant.
 
 Simulating under the log-linear statistical model described above, we estimate the FPR and the TPR for each discussed method under different choices of sample sizes and number of dilutions whilst fixing the size of the sample and experimental variations.
-These constant sample and experimental variations corresponds a homoscedastic errors on the log-scale.
+These constant sample and experimental variations corresponds to homoscedastic errors on the log-scale.
 No technical replications are simulated.
 
 
@@ -626,14 +625,19 @@ Similar figures might also aid in designing qPCR experiments and help determine 
 
 \section{Discussion and conclusion}
 % Main message
-The commonly used efficiency corrected $\ddcq$ and many other to approaches to the analysis of qPCR data disregards the uncertainty of the estimated AE leading to increased false positive rates.
+The commonly used efficiency corrected $\ddcq$ and many other approaches to the analysis of qPCR data disregards the uncertainty of the estimated AE leading to increased false positive rates.
 As qPCR experiments are often used for validation this is highly undesirable.
-Our primary approach based on the statistical delta-method to approximate the variance of the efficiency adjusted $\ddcq$, shows that it is possible to perform statistical inference about qPCR experiments whilst more properly accounting for the AE uncertainty.
-We stress that the problem is not limited to the $\ddcq$ statistic, but all statistics that depend on the AE.
-Likewise, the problem is also persists for `single-curve' AEs estimated for each well on the plate.
+Our primary approach based on the statistical delta-method to approximate the variance of the efficiency adjusted $\ddcq$, shows that it is possible to perform statistical inference about qPCR experiments whilst more properly accounting for the AE uncertainty. We stress that the problem is not limited to the $\ddcq$ statistic, but all statistics that depend on the AE.
 
-The approach was used to validate that:
-(1) \textit{MGST1} is differentially expressed between MM cell lines of high and low abundance of CICs and
+In this paper, we chose to focus on the widely used dilution curve approach as it is complex enough to capture the most important variations but also simple enough to be easily interpretable. This is probably also why the reason dilution curves, when carefully used, are still very popular in qPCR experiments. However, this approach has been critized in the litterature as it relies on a number of assumption \citep{Peccoud1996, Jacob1998, Lalam2004, Lalam2007}. First, the dilution curve approach assumes the AE to be constant up to the $C_q$'th cycle. A way to check this is to assess whether the dilution curves are reasonably linear, as non-constant behaviour up to the $C_q$'th cycle in our dynamic range would imply the dilution curves to level off. In our data examples, we do not see any violation of the linear behaviour. Secondly, one also assumes the AE varies between wells. However, if we assume that the actual reciprocal AE $\gamma_A$ varies around a true reciprocal AE value $\gamma$, by a random variation $\Gamma$, say, which could be assumed to be Gaussian distributed with mean 0 and variance $\sigma_\Gamma^2$ one arrives at the following model for $C_q$
+\begin{align*}
+C_q &= \mu + (\gamma + \Gamma)N_0 + \epsilon\\
+    &= \mu + \gamma N_0 + \underbrace{(\epsilon+\Gamma N_0)}_\text{error term}
+\end{align*}
+From this follows the proposed cycle dependent variation is captured by the error term in the LMM. We note, however, due to the multiplication with $N_0$ a variance heterogeneity could be present. We have therefore assessed the LMMs by plotting the residuals against the fitted values and noticed no variance heterogeneity to be present. In conclusion we find our model sufficient to capture the variation for the problems we have at hand.
+
+In practice, the approach was used to validate that:
+(1) \textit{MGST1} is differentially expressed between MM cell lines of high and low abundance of CICs,
 (2) analyze and study the hypothesis that miRNA-127 is differentially expressed between testicular and nodal DLBCL, and
 (3) illustrate the effect of a small number of dilution steps.
 
@@ -641,8 +645,7 @@ In the latter application, we saw a dramatic increase in the standard error of t
 This illustrates that it is important to consider all aspects of uncertainty when conducting AE correction of qPCR experiments.
 
 Although not in the context of $\ddcq$ estimation, \citet{Tellinghuisen2014b} concluded that uncertainty as well as bias of the AE estimate substantially impacts subsequent quantities.
-They highlight that some methods achieve very good performance as measured by the low standard errors by tacitly assuming the AE known and fixed to 2 resulting in an apparent.
-This is an unsurprising consequence as it essentially the same as disregarding the AE uncertainty.
+They highlight that some methods achieve very good performance as measured by the low standard errors by tacitly assuming the AE known and fixed to 2. This is an unsurprising consequence as it is essentially the same as disregarding the AE uncertainty.
 We also note, as seen in this paper, that a low standard error in itself is not always proper benchmark of procedures.
 
 Problems with uncertainty in AE estimates should be handled by establishing well-estimated dilution curves as argued elsewhere \citep{Bustin2010}, however even in this case the presented method also allows for design guidelines for power calculations and assessing the influence of the estimated dilution curves.

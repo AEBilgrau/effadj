@@ -633,7 +633,7 @@ Our primary approach based on the statistical delta-method to approximate the va
 
 In this paper, we focus on the widely used dilution curve approach as it is complex enough to capture the most important variations but also simple enough to be easily interpretable.
 This is probably also why the reason dilution curves, when carefully used, are still very popular in qPCR experiments.
-However, this approach has been critized in the litterature as it relies on a number of assumption \citep{Peccoud1996, Jacob1998, Lalam2004, Lalam2007}.
+However, this approach has been criticized in the literature as it relies on a number of assumption \citep{Peccoud1996, Jacob1998, Lalam2004, Lalam2007}.
 First, the dilution curve approach assumes the AE to be constant up to the $C_q$'th cycle.
 A way to check this is to assess whether the dilution curves are reasonably linear, as non-constant behaviour up to the $C_q$'th cycle in our dynamic range would imply the dilution curves to level off.
 In our data examples, we do not see any violation of the linear behaviour. Secondly, one also assumes the AE varies between wells.

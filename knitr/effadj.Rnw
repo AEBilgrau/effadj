@@ -464,7 +464,7 @@ The dataset contains one gene of interest, \textit{MT7}, potentially differentia
 \subsubsection{Sample and data preparation}
 The arabidopsis thaliana plant growth, RNA extraction, and qPCR experiments were carried out as described in \citet{Yang2006}. The cDNA was diluted into 1-to-4 and 1-to-16 serial dilutions. Real-time PCR experiments was performed in duplicates for each concentration \citep{Yuan2008}.
 
-Due to the the study design, we naturally fitted estimation efficiencies $\gamma_{ij} = \alpha_{ij}^{-1}$ for each group.
+Due to the study design, we naturally fitted estimation efficiencies $\gamma_{ij} = \alpha_{ij}^{-1}$ for each group.
 Because of the few samples we omitted the, in this case, meaningless random sample effect of the LMM.
 
 

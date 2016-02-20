@@ -3,7 +3,7 @@
 # Master script for the paper:                                                 #
 #                                                                              #
 #            Unaccounted uncertainty from qPCR efficiency estimates            #
-#                   imply uncontrolled false positive rates                    #
+#                   entails uncontrolled false positive rates                  #
 #                                                                              #
 #                           Bilgrau et al. (2015)                              #
 #                                                                              #
